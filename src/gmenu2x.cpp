@@ -710,7 +710,6 @@ void GMenu2X::showSettings() {
 #ifdef ENABLE_CPUFREQ
 	int curMenuClock = confInt["menuClock"];
 #endif
-	bool showRootFolder = fileExists(CARD_ROOT);
 
 	FileLister fl_tr(GMENU2X_SYSTEM_DIR "/translations");
 	fl_tr.browse();
@@ -737,8 +736,6 @@ void GMenu2X::showSettings() {
 #endif
 	sd.addSetting(new MenuSettingBool(this, ts, tr["Output logs"], tr["Logs the output of the links. Use the Log Viewer to read them."], &confInt["outputLogs"]));
 	sd.addSetting(new MenuSettingInt(this, ts, tr["Screen Timeout"], tr["Set screen's backlight timeout in seconds"], &confInt["backlightTimeout"], 0, 120));
-//	sd.addSetting(new MenuSettingMultiString(this, ts, tr["Tv-Out encoding"], tr["Encoding of the tv-out signal"], &confStr["tvoutEncoding"], &encodings));
-	sd.addSetting(new MenuSettingBool(this, ts, tr["Show root"], tr["Show root folder in the file selection dialogs"], &showRootFolder));
 
 	if (sd.exec() && sd.edited()) {
 #ifdef ENABLE_CPUFREQ
@@ -757,11 +754,7 @@ void GMenu2X::showSettings() {
 			tr.setLang(lang);
 			confStr["lang"] = lang;
 		}
-		/*if (fileExists(CARD_ROOT) && !showRootFolder)
-			unlink(CARD_ROOT);
-		else if (!fileExists(CARD_ROOT) && showRootFolder)
-			symlink("/", CARD_ROOT);*/
-		//WARNING: the above might be dangerous with CARD_ROOT set to /
+
 		writeConfig();
 	}
 }
