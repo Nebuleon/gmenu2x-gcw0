@@ -60,7 +60,7 @@ ContextMenu::ContextMenu(GMenu2X &gmenu2x, Menu &menu)
 		}
 		if (!app->isOpk()) {
 			options.push_back(std::make_shared<MenuOption>(
-					tr.translate("Delete $1 link", app->getTitle().c_str(), NULL),
+					tr.translate("Delete $1", app->getTitle().c_str(), NULL),
 					std::bind(&GMenu2X::deleteLink, &gmenu2x)));
 		}
 	}

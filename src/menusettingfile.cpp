@@ -41,7 +41,7 @@ MenuSettingFile::MenuSettingFile(
 	btn->setAction(BIND(&MenuSettingFile::clear));
 	buttonBox.add(btn);
 
-	btn = new IconButton(gmenu2x, ts, "skin:imgs/buttons/accept.png", gmenu2x->tr["Select a file"]);
+	btn = new IconButton(gmenu2x, ts, "skin:imgs/buttons/accept.png", gmenu2x->tr["Select"]);
 	btn->setAction(BIND(&MenuSettingFile::edit));
 	buttonBox.add(btn);
 }

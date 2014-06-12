@@ -41,7 +41,7 @@ MenuSettingDir::MenuSettingDir(
 	buttonBox.add(btn);
 
 	btn = new IconButton(gmenu2x, ts, "skin:imgs/buttons/accept.png",
-			gmenu2x->tr["Select a directory"]);
+			gmenu2x->tr["Select"]);
 	btn->setAction(BIND(&MenuSettingDir::edit));
 	buttonBox.add(btn);
 }

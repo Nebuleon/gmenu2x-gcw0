@@ -904,7 +904,7 @@ void GMenu2X::editLink() {
 	string linkSelScreens = linkApp->getSelectorScreens();
 	int linkClock = linkApp->clock();
 
-	string diagTitle = tr.translate("Edit link: $1",linkTitle.c_str(),NULL);
+	string diagTitle = tr.translate("Edit $1",linkTitle.c_str(),NULL);
 	string diagIcon = linkApp->getIconPath();
 
 	SettingsDialog sd(this, input, ts, diagTitle, diagIcon);
@@ -913,18 +913,18 @@ void GMenu2X::editLink() {
 		sd.addSetting(new MenuSettingString(this, ts, tr["Description"], tr["Link description"], &linkDescription, diagTitle, diagIcon));
 		sd.addSetting(new MenuSettingMultiString(this, ts, tr["Section"], tr["The section this link belongs to"], &newSection, &menu->getSections()));
 		sd.addSetting(new MenuSettingImage(this, ts, tr["Icon"],
-						tr.translate("Select an icon for the link: $1",
+						tr.translate("Select an icon for this link",
 							linkTitle.c_str(), NULL), &linkIcon, "png"));
 		sd.addSetting(new MenuSettingFile(this, ts, tr["Manual"],
-						tr["Select a graphic/textual manual or a readme"],
-						&linkManual, "man.png,txt"));
+					tr["Select a manual or README file"],
+					&linkManual, "man.png,txt"));
 	}
 	if (!linkApp->isOpk() || !linkApp->getSelectorDir().empty()) {
 		sd.addSetting(new MenuSettingDir(this, ts, tr["Selector Directory"], tr["Directory to scan for the selector"], &linkSelDir));
 		sd.addSetting(new MenuSettingBool(this, ts, tr["Selector Browser"], tr["Allow the selector to change directory"], &linkSelBrowser));
 	}
 #ifdef ENABLE_CPUFREQ
-	sd.addSetting(new MenuSettingInt(this, ts, tr["Clock frequency"], tr["Cpu clock frequency to set when launching this link"], &linkClock, cpuFreqMin, confInt["maxClock"], cpuFreqMultiple));
+	sd.addSetting(new MenuSettingInt(this, ts, tr["Clock frequency"], tr["CPU clock frequency for this link"], &linkClock, cpuFreqMin, confInt["maxClock"], cpuFreqMultiple));
 #endif
 	if (!linkApp->isOpk()) {
 		sd.addSetting(new MenuSettingString(this, ts, tr["Selector Filter"], tr["Selector filter (Separate values with a comma)"], &linkSelFilter, diagTitle, diagIcon));

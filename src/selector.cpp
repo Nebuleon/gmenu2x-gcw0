@@ -67,13 +67,13 @@ int Selector::exec(int startSelection) {
 
 	if (link->getSelectorBrowser()) {
 		gmenu2x->drawButton(&bg, "start", gmenu2x->tr["Exit"],
-		gmenu2x->drawButton(&bg, "accept", gmenu2x->tr["Select a file"],
+		gmenu2x->drawButton(&bg, "accept", gmenu2x->tr["Select"],
 		gmenu2x->drawButton(&bg, "cancel", gmenu2x->tr["Up one folder"],
 		gmenu2x->drawButton(&bg, "left", "", 5)-10)));
 	} else {
 		gmenu2x->drawButton(&bg, "start", gmenu2x->tr["Exit"],
 		gmenu2x->drawButton(&bg, "cancel", "",
-		gmenu2x->drawButton(&bg, "accept", gmenu2x->tr["Select a file"], 5)) - 10);
+		gmenu2x->drawButton(&bg, "accept", gmenu2x->tr["Select"], 5)) - 10);
 	}
 
 	unsigned int top, height;

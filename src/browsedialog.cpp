@@ -25,7 +25,7 @@ BrowseDialog::BrowseDialog(
 	btn->setAction(BIND(&BrowseDialog::directoryUp));
 	buttonBox.add(btn);
 
-	btn = new IconButton(gmenu2x, ts, "skin:imgs/buttons/accept.png", gmenu2x->tr["Enter folder"]);
+	btn = new IconButton(gmenu2x, ts, "skin:imgs/buttons/accept.png", gmenu2x->tr["Select"]);
 	btn->setAction(BIND(&BrowseDialog::directoryEnter));
 	buttonBox.add(btn);
 
