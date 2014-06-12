@@ -6,7 +6,7 @@ http://projects.qi-hardware.com/index.php/p/gmenu2x
 Credits for the translations:
 -----
 English & Italian by Massimiliano Torromeo
-French by Yodaz
+French by Paul Cercueil
 Danish by claus
 Dutch by superfly
 Spanish by pedator
