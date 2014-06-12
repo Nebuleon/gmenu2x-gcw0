@@ -212,8 +212,6 @@ LinkApp::LinkApp(GMenu2X *gmenu2x_, const char* linkfile)
 			if (value=="false") selectorbrowser = false;
 		} else if (name == "selectorscreens") {
 			setSelectorScreens( value );
-		} else if (name == "selectoraliases") {
-			setAliasFile( value );
 		} else if (!isOpk()) {
 			if (name == "title") {
 				title = value;
@@ -330,7 +328,6 @@ bool LinkApp::save() {
 		if (!selectordir.empty()     ) f << "selectordir="     << selectordir     << endl;
 		if (!selectorbrowser         ) f << "selectorbrowser=false"               << endl;
 		if (!selectorscreens.empty() ) f << "selectorscreens=" << selectorscreens << endl;
-		if (!aliasfile.empty()       ) f << "selectoraliases=" << aliasfile       << endl;
 		f.close();
 		sync();
 		return true;
@@ -708,17 +705,6 @@ const string &LinkApp::getSelectorScreens() {
 void LinkApp::setSelectorScreens(const string &selectorscreens) {
 	this->selectorscreens = selectorscreens;
 	edited = true;
-}
-
-const string &LinkApp::getAliasFile() {
-	return aliasfile;
-}
-
-void LinkApp::setAliasFile(const string &aliasfile) {
-	if (fileExists(aliasfile)) {
-		this->aliasfile = aliasfile;
-		edited = true;
-	}
 }
 
 void LinkApp::renameFile(const string &name) {

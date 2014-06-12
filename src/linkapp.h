@@ -39,7 +39,6 @@ private:
 	std::string exec, params, workdir, manual, selectordir, selectorfilter, selectorscreens;
 	bool selectorbrowser, editable;
 
-	std::string aliasfile;
 	std::string file;
 
 	bool dontleave;
@@ -86,8 +85,6 @@ public:
 	void setSelectorScreens(const std::string &selectorscreens);
 	const std::string &getSelectorFilter();
 	void setSelectorFilter(const std::string &selectorfilter);
-	const std::string &getAliasFile();
-	void setAliasFile(const std::string &aliasfile);
 
 	int clock();
 	const std::string &clockStr(int maxClock);

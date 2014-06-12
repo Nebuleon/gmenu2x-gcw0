@@ -44,7 +44,6 @@ Selector::Selector(GMenu2X *gmenu2x, LinkApp *link, const string &selectorDir) :
 	Dialog(gmenu2x)
 {
 	this->link = link;
-	loadAliases();
 	selRow = 0;
 	if (selectorDir.empty())
 		dir = link->getSelectorDir();
@@ -242,9 +241,7 @@ void Selector::prepare(FileLister *fl, vector<string> *screens, vector<string> *
 		pos = noext.rfind(".");
 		if (pos!=string::npos && pos>0)
 			noext = noext.substr(0, pos);
-		titles->at(i) = getAlias(noext);
-		if (titles->at(i).empty())
-			titles->at(i) = noext;
+		titles->at(i) = noext;
 
 		DEBUG("Searching for screen '%s%s.png'\n", screendir.c_str(), noext.c_str());
 
@@ -260,27 +257,4 @@ void Selector::freeScreenshots(vector<string> *screens) {
 		if (!screens->at(i).empty())
 			gmenu2x->sc.del(screens->at(i));
 	}
-}
-
-void Selector::loadAliases() {
-	aliases.clear();
-	if (fileExists(link->getAliasFile())) {
-		string line;
-		ifstream infile (link->getAliasFile().c_str(), ios_base::in);
-		while (getline(infile, line, '\n')) {
-			string::size_type position = line.find("=");
-			string name = trim(line.substr(0,position));
-			string value = trim(line.substr(position+1));
-			aliases[name] = value;
-		}
-		infile.close();
-	}
-}
-
-string Selector::getAlias(const string &key) {
-	unordered_map<string, string>::iterator i = aliases.find(key);
-	if (i == aliases.end())
-		return "";
-	else
-		return i->second;
 }

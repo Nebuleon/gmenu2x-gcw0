@@ -35,10 +35,7 @@ private:
 	int selRow;
 	LinkApp *link;
 	std::string file, dir;
-	std::unordered_map<std::string, std::string> aliases;
 
-	void loadAliases();
-	std::string getAlias(const std::string &key);
 	void prepare(FileLister *fl, std::vector<std::string> *screens,
 			std::vector<std::string> *titles);
 	void freeScreenshots(std::vector<std::string> *screens);
