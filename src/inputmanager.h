@@ -26,9 +26,10 @@
 #include <vector>
 
 #define INPUT_KEY_REPEAT_DELAY 250
-#define INPUT_KEY_REPEAT_RATE  150
 
+class GMenu2X;
 class Menu;
+class InputManager;
 
 enum EventCode {
 	REMOVE_LINKS,
@@ -45,6 +46,7 @@ struct Joystick {
 	bool axisState[2][2];
 	Uint8 hatState;
 	SDL_TimerID timer;
+	InputManager *inputManager;
 };
 #endif
 
@@ -62,8 +64,10 @@ public:
 	InputManager();
 	~InputManager();
 
-	void init(const std::string &conffile, Menu *menu);
+	void init(GMenu2X *gmenu2x, const std::string &conffile, Menu *menu);
 	Button waitForPressedButton();
+	void repeatRateChanged();
+	Uint32 joystickRepeatCallback(Uint32 timeout, struct Joystick *joystick);
 	bool pollButton(Button *button);
 	bool getButton(Button *button, bool wait);
 
@@ -75,6 +79,7 @@ private:
 		unsigned int kb_code, js_code;
 	};
 
+	GMenu2X *gmenu2x;
 	Menu *menu;
 
 	ButtonMapEntry buttonMap[BUTTON_TYPE_SIZE];

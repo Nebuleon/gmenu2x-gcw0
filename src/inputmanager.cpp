@@ -20,6 +20,7 @@
 
 #include "debug.h"
 #include "inputmanager.h"
+#include "gmenu2x.h"
 #include "utilities.h"
 #include "powersaver.h"
 #include "menu.h"
@@ -29,8 +30,11 @@
 
 using namespace std;
 
-void InputManager::init(const string &conffile, Menu *menu) {
+void InputManager::init(GMenu2X *gmenu2x, const string &conffile, Menu *menu) {
+	this->gmenu2x = gmenu2x;
 	this->menu = menu;
+
+	repeatRateChanged();
 
 	for (int i = 0; i < BUTTON_TYPE_SIZE; i++) {
 		buttonMap[i].js_mapped = false;
@@ -52,7 +56,7 @@ InputManager::InputManager()
 	for (i = 0; i < SDL_NumJoysticks(); i++) {
 		struct Joystick joystick = {
 			SDL_JoystickOpen(i), false, false, false, false,
-			SDL_HAT_CENTERED, nullptr,
+			SDL_HAT_CENTERED, nullptr, this,
 		};
 		joysticks.push_back(joystick);
 	}
@@ -125,6 +129,20 @@ InputManager::Button InputManager::waitForPressedButton() {
 	Button button;
 	while (!getButton(&button, true));
 	return button;
+}
+
+static int repeatRateMs(int repeatRate)
+{
+	return repeatRate == 0 ? 0 : 1000 / repeatRate;
+}
+
+void InputManager::repeatRateChanged() {
+	int ms = repeatRateMs(gmenu2x->confInt["buttonRepeatRate"]);
+	if (ms == 0) {
+		SDL_EnableKeyRepeat(0, 0);
+	} else {
+		SDL_EnableKeyRepeat(INPUT_KEY_REPEAT_DELAY, ms);
+	}
 }
 
 bool InputManager::pollButton(Button *button) {
@@ -276,9 +294,23 @@ bool InputManager::getButton(Button *button, bool wait) {
 	return true;
 }
 
-Uint32 keyRepeatCallback(Uint32 timeout __attribute__((unused)), void *d)
+Uint32 keyRepeatCallback(Uint32 timeout, void *d)
 {
 	struct Joystick *joystick = (struct Joystick *) d;
+	return joystick->inputManager->joystickRepeatCallback(timeout, joystick);
+}
+
+void InputManager::startTimer(Joystick *joystick)
+{
+	if (joystick->timer)
+		return;
+
+	joystick->timer = SDL_AddTimer(INPUT_KEY_REPEAT_DELAY,
+				keyRepeatCallback, joystick);
+}
+
+Uint32 InputManager::joystickRepeatCallback(Uint32 timeout __attribute__((unused)), struct Joystick *joystick)
+{
 	Uint8 hatState;
 
 	if (joystick->axisState[1][AXIS_STATE_NEGATIVE])
@@ -300,16 +332,7 @@ Uint32 keyRepeatCallback(Uint32 timeout __attribute__((unused)), void *d)
 	};
 	SDL_PushEvent((SDL_Event *) &e);
 
-	return INPUT_KEY_REPEAT_RATE;
-}
-
-void InputManager::startTimer(Joystick *joystick)
-{
-	if (joystick->timer)
-		return;
-
-	joystick->timer = SDL_AddTimer(INPUT_KEY_REPEAT_DELAY,
-				keyRepeatCallback, joystick);
+	return repeatRateMs(gmenu2x->confInt["buttonRepeatRate"]);
 }
 
 void InputManager::stopTimer(Joystick *joystick)
