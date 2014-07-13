@@ -86,7 +86,6 @@ int Selector::exec(int startSelection) {
 
 	bg.convertToDisplayFormat();
 
-	Uint32 selTick = SDL_GetTicks(), curTick;
 	uint i, firstElement = 0, iY;
 
 	prepare(&fl,&screens,&titles);
@@ -104,21 +103,20 @@ int Selector::exec(int startSelection) {
 		if (selected < firstElement)
 			firstElement = selected;
 
+		//Screenshot
+		if (selected-fl.dirCount()<screens.size()
+				&& !screens[selected-fl.dirCount()].empty()) {
+			Surface *screenshot = gmenu2x->sc[screens[selected-fl.dirCount()]];
+			if (screenshot)
+				screenshot->blitRight(
+						gmenu2x->s, 320, 0, 320, 240,
+						128u);
+		}
+
 		//Selection
 		iY = top + (selected - firstElement) * fontheight;
 		if (selected<fl.size())
 			gmenu2x->s->box(1, iY, 309, fontheight, gmenu2x->skinConfColors[COLOR_SELECTION_BG]);
-
-		//Screenshot
-		if (selected-fl.dirCount()<screens.size()
-				&& !screens[selected-fl.dirCount()].empty()) {
-			curTick = SDL_GetTicks();
-			if (curTick - selTick > 200) {
-				gmenu2x->sc[screens[selected-fl.dirCount()]]->blitRight(
-						gmenu2x->s, 311, 42, 160, 160,
-						min((curTick - selTick - 200) / 3, 255u));
-			}
-		}
 
 		//Files & Dirs
 		gmenu2x->s->setClipRect(0, top, 311, height);
@@ -149,7 +147,6 @@ int Selector::exec(int startSelection) {
 			case InputManager::UP:
 				if (selected == 0) selected = fl.size() -1;
 				else selected -= 1;
-				selTick = SDL_GetTicks();
 				break;
 
 			case InputManager::ALTLEFT:
@@ -157,13 +154,11 @@ int Selector::exec(int startSelection) {
 					selected = 0;
 				else
 					selected -= nb_elements - 1;
-				selTick = SDL_GetTicks();
 				break;
 
 			case InputManager::DOWN:
 				if (selected+1>=fl.size()) selected = 0;
 				else selected += 1;
-				selTick = SDL_GetTicks();
 				break;
 
 			case InputManager::ALTRIGHT:
@@ -171,7 +166,6 @@ int Selector::exec(int startSelection) {
 					selected = fl.size() - 1;
 				else
 					selected += nb_elements - 1;
-				selTick = SDL_GetTicks();
 				break;
 
 			case InputManager::CANCEL:
