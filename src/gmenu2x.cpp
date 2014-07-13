@@ -901,7 +901,6 @@ void GMenu2X::editLink() {
 	string linkSelFilter = linkApp->getSelectorFilter();
 	string linkSelDir = linkApp->getSelectorDir();
 	bool linkSelBrowser = linkApp->getSelectorBrowser();
-	string linkSelScreens = linkApp->getSelectorScreens();
 	int linkClock = linkApp->clock();
 
 	string diagTitle = tr.translate("Edit $1",linkTitle.c_str(),NULL);
@@ -928,7 +927,6 @@ void GMenu2X::editLink() {
 #endif
 	if (!linkApp->isOpk()) {
 		sd.addSetting(new MenuSettingString(this, ts, tr["Selector Filter"], tr["Selector filter (Separate values with a comma)"], &linkSelFilter, diagTitle, diagIcon));
-		sd.addSetting(new MenuSettingDir(this, ts, tr["Selector Screenshots"], tr["Directory of the screenshots for the selector"], &linkSelScreens));
 #if defined(PLATFORM_A320) || defined(PLATFORM_GCW0)
 		sd.addSetting(new MenuSettingBool(this, ts, tr["Display Console"], tr["Must be enabled for console-based applications"], &linkApp->consoleApp));
 #endif
@@ -941,8 +939,6 @@ void GMenu2X::editLink() {
 		linkApp->setManual(linkManual);
 		linkApp->setSelectorFilter(linkSelFilter);
 		linkApp->setSelectorDir(linkSelDir);
-		linkApp->setSelectorBrowser(linkSelBrowser);
-		linkApp->setSelectorScreens(linkSelScreens);
 		linkApp->setClock(linkClock);
 
 		INFO("New Section: '%s'\n", newSection.c_str());

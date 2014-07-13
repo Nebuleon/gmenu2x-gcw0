@@ -36,7 +36,7 @@ class LinkApp : public Link {
 private:
 	std::string sclock;
 	int iclock;
-	std::string exec, params, workdir, manual, selectordir, selectorfilter, selectorscreens;
+	std::string exec, params, workdir, manual, selectordir, selectorfilter;
 	bool selectorbrowser, editable;
 
 	std::string file;
@@ -81,8 +81,6 @@ public:
 	void setSelectorDir(const std::string &selectordir);
 	bool getSelectorBrowser();
 	void setSelectorBrowser(bool value);
-	const std::string &getSelectorScreens();
-	void setSelectorScreens(const std::string &selectorscreens);
 	const std::string &getSelectorFilter();
 	void setSelectorFilter(const std::string &selectorfilter);
 
