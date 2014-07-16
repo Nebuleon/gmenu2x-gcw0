@@ -213,6 +213,8 @@ LinkApp::LinkApp(GMenu2X *gmenu2x_, const char* linkfile)
 				title = value;
 			} else if (name == "description") {
 				description = value;
+			} else if (name == "launchmsg") {
+				launchMsg = value;
 			} else if (name == "icon") {
 				setIcon(value);
 			} else if (name == "exec") {
@@ -311,6 +313,7 @@ bool LinkApp::save() {
 		if (!isOpk()) {
 			if (!title.empty()       ) f << "title="           << title           << endl;
 			if (!description.empty() ) f << "description="     << description     << endl;
+			if (!launchMsg.empty()   ) f << "launchmsg="       << launchMsg       << endl;
 			if (!icon.empty()        ) f << "icon="            << icon            << endl;
 			if (!exec.empty()        ) f << "exec="            << exec            << endl;
 			if (!params.empty()      ) f << "params="          << params          << endl;
@@ -335,7 +338,10 @@ void LinkApp::drawRun() {
 	//Darkened background
 	gmenu2x->s->box(0, 0, gmenu2x->resX, gmenu2x->resY, 0,0,0,150);
 
-	string text = gmenu2x->tr.translate("Launching $1",getTitle().c_str(),NULL);
+	string text = getLaunchMsg().empty()
+		? gmenu2x->tr.translate("Launching $1", getTitle().c_str(), nullptr)
+		: gmenu2x->tr.translate(getLaunchMsg().c_str(), nullptr);
+
 	int textW = gmenu2x->font->getTextWidth(text);
 	int boxW = 62+textW;
 	int halfBoxW = boxW/2;

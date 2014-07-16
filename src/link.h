@@ -56,6 +56,7 @@ public:
 	void setTitle(const std::string &title);
 	const std::string &getDescription();
 	void setDescription(const std::string &description);
+	const std::string &getLaunchMsg();
 	const std::string &getIcon();
 	void setIcon(const std::string &icon);
 	const std::string &getIconPath();
@@ -65,7 +66,7 @@ public:
 protected:
 	GMenu2X *gmenu2x;
 	bool edited;
-	std::string title, description, icon, iconPath;
+	std::string title, description, launchMsg, icon, iconPath;
 
 	Surface *iconSurface;
 	Surface *icon_hover;
