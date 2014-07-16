@@ -93,15 +93,13 @@ int constrain(int x, int imin, int imax) {
 }
 
 //Configuration parsing utilities
-int evalIntConf (int val, int def, int imin, int imax) {
-	if (val==0 && (val<imin || val>imax))
-		return def;
-	val = constrain(val, imin, imax);
-	return val;
-}
-int evalIntConf (int *val, int def, int imin, int imax) {
-	*val = evalIntConf(*val, def, imin, imax);
-	return *val;
+int evalIntConf (ConfIntHash& hash, const std::string &key, int def, int imin, int imax) {
+	auto it = hash.find(key);
+	if (it == hash.end()) {
+		return hash[key] = def;
+	} else {
+		return it->second = constrain(it->second, imin, imax);
+	}
 }
 
 bool split (vector<string> &vec, const string &str, const string &delim, bool destructive) {

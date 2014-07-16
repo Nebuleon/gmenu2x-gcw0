@@ -23,8 +23,12 @@
 
 #include <string>
 #include <vector>
+#include <unordered_map>
 
 #include "inputmanager.h"
+
+typedef std::unordered_map<std::string, std::string, std::hash<std::string> > ConfStrHash;
+typedef std::unordered_map<std::string, int, std::hash<std::string> > ConfIntHash;
 
 class case_less {
 public:
@@ -40,8 +44,7 @@ bool rmtree(std::string path);
 
 int constrain(int x, int imin, int imax);
 
-int evalIntConf(int val, int def, int imin, int imax);
-int evalIntConf(int *val, int def, int imin, int imax);
+int evalIntConf(ConfIntHash& hash, const std::string &key, int def, int imin, int imax);
 
 bool split(std::vector<std::string> &vec, const std::string &str,
 		const std::string &delim, bool destructive=true);

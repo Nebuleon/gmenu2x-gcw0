@@ -27,11 +27,11 @@
 #include "touchscreen.h"
 #include "inputmanager.h"
 #include "surface.h"
+#include "utilities.h"
 
 #include <iostream>
 #include <memory>
 #include <string>
-#include <unordered_map>
 #include <vector>
 
 class Button;
@@ -67,9 +67,6 @@ enum color {
 
 	NUM_COLORS,
 };
-
-typedef std::unordered_map<std::string, std::string, std::hash<std::string> > ConfStrHash;
-typedef std::unordered_map<std::string, int, std::hash<std::string> > ConfIntHash;
 
 class GMenu2X {
 private:
