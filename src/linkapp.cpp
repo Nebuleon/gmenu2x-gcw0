@@ -37,6 +37,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 
+#include <array>
 #include <fstream>
 #include <sstream>
 
@@ -54,9 +55,7 @@
 
 using namespace std;
 
-static const char *tokens[] = { "%f", "%F", "%u", "%U", };
-
-#define ARRAY_SIZE(x) (!sizeof(x) ?: sizeof(x) / sizeof((x)[0]))
+static array<const char *, 4> tokens = { "%f", "%F", "%u", "%U", };
 
 #ifdef HAVE_LIBOPK
 LinkApp::LinkApp(GMenu2X *gmenu2x_, const char* linkfile,
@@ -145,10 +144,9 @@ LinkApp::LinkApp(GMenu2X *gmenu2x_, const char* linkfile)
 
 			} else if (!strncmp(key, "Exec", lkey)) {
 				string tmp = buf;
-				unsigned int i;
 
-				for (i = 0; i < ARRAY_SIZE(tokens); i++) {
-					if (tmp.find(tokens[i]) != tmp.npos) {
+				for (auto token : tokens) {
+					if (tmp.find(token) != tmp.npos) {
 						selectordir = CARD_ROOT;
 						break;
 					}
@@ -565,12 +563,13 @@ void LinkApp::launch(const string &selectedFile) {
 		if (params.empty()) {
 			params = path;
 		} else {
-			unsigned int i;
 			string::size_type pos;
 
-			for (i = 0; i < sizeof(tokens) / sizeof(tokens[0]); i++)
-				while((pos = params.find(tokens[i])) != params.npos)
+			for (auto token : tokens) {
+				while ((pos = params.find(token)) != params.npos) {
 					params.replace(pos, 2, path);
+				}
+			}
 		}
 	}
 
