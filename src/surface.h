@@ -79,7 +79,6 @@ public:
 	int rectangle(Sint16, Sint16, Uint16, Uint16, Uint8 r, Uint8 g, Uint8 b, Uint8 a);
 	int rectangle(Sint16, Sint16, Uint16, Uint16, RGBAColor);
 	int rectangle(SDL_Rect, RGBAColor);
-	int hline(Sint16 x, Sint16 y, Uint16 h, Uint8 r, Uint8 g, Uint8 b, Uint8 a);
 
 private:
 	Surface(SDL_Surface *raw, bool freeWhenDone);

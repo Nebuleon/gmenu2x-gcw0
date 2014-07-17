@@ -87,8 +87,8 @@ void TextDialog::drawText(vector<string> *text, unsigned int y,
 		int rowY = y + (i - firstRow) * fontHeight;
 		if (line == "----") { // horizontal ruler
 			rowY += fontHeight / 2;
-			gmenu2x->s->hline(5, rowY, gmenu2x->resX - 16, 255, 255, 255, 130);
-			gmenu2x->s->hline(5, rowY+1, gmenu2x->resX - 16, 0, 0, 0, 130);
+			gmenu2x->s->box(5, rowY, gmenu2x->resX - 16, 1, 255, 255, 255, 130);
+			gmenu2x->s->box(5, rowY+1, gmenu2x->resX - 16, 1, 0, 0, 0, 130);
 		} else {
 			gmenu2x->font->write(gmenu2x->s, line, 5, rowY);
 		}

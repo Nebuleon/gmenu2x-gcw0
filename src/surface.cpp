@@ -172,10 +172,6 @@ int Surface::rectangle(SDL_Rect re, RGBAColor c) {
 	return rectangle(re.x, re.y, re.w, re.h, c.r, c.g, c.b, c.a);
 }
 
-int Surface::hline(Sint16 x, Sint16 y, Uint16 w, Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
-	return hlineRGBA(raw, x, x + w - 1, y, r, g, b, a);
-}
-
 void Surface::clearClipRect() {
 	SDL_SetClipRect(raw,NULL);
 }
