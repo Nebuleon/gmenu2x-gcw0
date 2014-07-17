@@ -27,8 +27,6 @@
 #include "surface.h"
 #include "utilities.h"
 
-#include <SDL_gfxPrimitives.h>
-
 using namespace std;
 
 #define KEY_WIDTH 20

@@ -56,7 +56,6 @@
 #include <unistd.h>
 #include <math.h>
 #include <SDL.h>
-#include <SDL_gfxPrimitives.h>
 #include <signal.h>
 
 #include <sys/statvfs.h>

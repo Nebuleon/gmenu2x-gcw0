@@ -22,8 +22,6 @@
 #include "gmenu2x.h"
 #include "surface.h"
 
-#include <SDL_gfxPrimitives.h>
-
 #include <unistd.h>
 
 using namespace std;

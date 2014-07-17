@@ -29,7 +29,6 @@
 #include "utilities.h"
 
 #include <SDL.h>
-#include <SDL_gfxPrimitives.h>
 #include <algorithm>
 
 //for browsing the filesystem

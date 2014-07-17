@@ -24,7 +24,6 @@
 #include "menusetting.h"
 
 #include <SDL.h>
-#include <SDL_gfxPrimitives.h>
 
 using namespace std;
 
