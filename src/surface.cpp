@@ -150,28 +150,16 @@ void Surface::blitRight(Surface *destination, int x, int y, int w, int h, int a)
 	blitRight(destination->raw,x,y,w,h,a);
 }
 
-void Surface::box(Sint16 x, Sint16 y, Uint16 w, Uint16 h, Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
-	boxRGBA(raw, x, y, x + w - 1, y + h - 1, r, g, b, a);
-}
-void Surface::box(Sint16 x, Sint16 y, Uint16 w, Uint16 h, Uint8 r, Uint8 g, Uint8 b) {
-	SDL_Rect re = { x, y, w, h };
-	SDL_FillRect(raw, &re, SDL_MapRGBA(raw->format, r, g, b, 255));
-}
-void Surface::box(Sint16 x, Sint16 y, Uint16 w, Uint16 h, RGBAColor c) {
-	box(x, y, w, h, c.r, c.g, c.b, c.a);
-}
 void Surface::box(SDL_Rect re, RGBAColor c) {
-	boxRGBA(raw, re.x, re.y, re.x + re.w - 1, re.y + re.h - 1, c.r, c.g, c.b, c.a);
+	if (c.a == 255) {
+		SDL_FillRect(raw, &re, c.pixelValue(raw->format));
+	} else if (c.a != 0) {
+		boxRGBA(raw, re.x, re.y, re.x + re.w - 1, re.y + re.h - 1, c.r, c.g, c.b, c.a);
+	}
 }
 
-void Surface::rectangle(Sint16 x, Sint16 y, Uint16 w, Uint16 h, Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
-	rectangleRGBA(raw, x, y, x + w - 1, y + h - 1, r, g, b, a);
-}
-void Surface::rectangle(Sint16 x, Sint16 y, Uint16 w, Uint16 h, RGBAColor c) {
-	rectangle(x, y, w, h, c.r, c.g, c.b, c.a);
-}
 void Surface::rectangle(SDL_Rect re, RGBAColor c) {
-	rectangle(re.x, re.y, re.w, re.h, c.r, c.g, c.b, c.a);
+	rectangleRGBA(raw, re.x, re.y, re.x + re.w - 1, re.y + re.h - 1, c.r, c.g, c.b, c.a);
 }
 
 void Surface::clearClipRect() {

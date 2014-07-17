@@ -33,6 +33,9 @@ struct RGBAColor {
 	RGBAColor() : r(0), g(0), b(0), a(0) {}
 	RGBAColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 255)
 		: r(r), g(g), b(b), a(a) {}
+	Uint32 pixelValue(SDL_PixelFormat *fmt) {
+		return SDL_MapRGBA(fmt, r, g, b, a);
+	}
 };
 
 /**
@@ -75,13 +78,20 @@ public:
 		font->write(this, text, x, y, halign, valign);
 	}
 
-	void box(Sint16 x, Sint16 y, Uint16 w, Uint16 h, Uint8 r, Uint8 g, Uint8 b, Uint8 a);
-	void box(Sint16 x, Sint16 y, Uint16 w, Uint16 h, Uint8 r, Uint8 g, Uint8 b);
-	void box(Sint16 x, Sint16 y, Uint16 w, Uint16 h, RGBAColor);
-	void box(SDL_Rect, RGBAColor);
-	void rectangle(Sint16, Sint16, Uint16, Uint16, Uint8 r, Uint8 g, Uint8 b, Uint8 a);
-	void rectangle(Sint16, Sint16, Uint16, Uint16, RGBAColor);
-	void rectangle(SDL_Rect, RGBAColor);
+	void box(SDL_Rect re, RGBAColor c);
+	void box(Sint16 x, Sint16 y, Uint16 w, Uint16 h, RGBAColor c) {
+		box((SDL_Rect){ x, y, w, h }, c);
+	}
+	void box(Sint16 x, Sint16 y, Uint16 w, Uint16 h, Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
+		box((SDL_Rect){ x, y, w, h }, RGBAColor(r, g, b, a));
+	}
+	void rectangle(SDL_Rect re, RGBAColor c);
+	void rectangle(Sint16 x, Sint16 y, Uint16 w, Uint16 h, RGBAColor c) {
+		rectangle((SDL_Rect){ x, y, w, h }, c);
+	}
+	void rectangle(Sint16 x, Sint16 y, Uint16 w, Uint16 h, Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
+		rectangle((SDL_Rect){ x, y, w, h }, RGBAColor(r, g, b, a));
+	}
 
 private:
 	Surface(SDL_Surface *raw, bool freeWhenDone);
