@@ -29,9 +29,8 @@
 
 struct RGBAColor {
 	uint8_t r, g, b, a;
+	static RGBAColor fromString(std::string const& strColor);
 };
-
-RGBAColor strtorgba(const std::string &strColor);
 
 /**
 	Wrapper around SDL_Surface

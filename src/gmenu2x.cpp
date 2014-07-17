@@ -830,7 +830,8 @@ void GMenu2X::setSkin(const string &skin, bool setWallpaper) {
 					if (value.length()>1 && value.at(0)=='"' && value.at(value.length()-1)=='"')
 						skinConfStr[name] = value.substr(1,value.length()-2);
 					else if (value.at(0) == '#')
-						skinConfColors[stringToColor(name)] = strtorgba( value.substr(1,value.length()) );
+						skinConfColors[stringToColor(name)] =
+							RGBAColor::fromString(value.substr(1, value.length()));
 					else
 						skinConfInt[name] = atoi(value.c_str());
 				}
