@@ -25,9 +25,10 @@
 
 #include <SDL.h>
 #include <string>
+#include <cstdint>
 
 struct RGBAColor {
-	unsigned short r,g,b,a;
+	uint8_t r, g, b, a;
 };
 
 RGBAColor strtorgba(const std::string &strColor);
