@@ -802,12 +802,12 @@ void GMenu2X::setSkin(const string &skin, bool setWallpaper) {
 	sc.setSkin(skin);
 
 	//reset colors to the default values
-	skinConfColors[COLOR_TOP_BAR_BG] = (RGBAColor){255,255,255,130};
-	skinConfColors[COLOR_BOTTOM_BAR_BG] = (RGBAColor){255,255,255,130};
-	skinConfColors[COLOR_SELECTION_BG] = (RGBAColor){255,255,255,130};
-	skinConfColors[COLOR_MESSAGE_BOX_BG] = (RGBAColor){255,255,255,255};
-	skinConfColors[COLOR_MESSAGE_BOX_BORDER] = (RGBAColor){80,80,80,255};
-	skinConfColors[COLOR_MESSAGE_BOX_SELECTION] = (RGBAColor){160,160,160,255};
+	skinConfColors[COLOR_TOP_BAR_BG] = RGBAColor(255, 255, 255, 130);
+	skinConfColors[COLOR_BOTTOM_BAR_BG] = RGBAColor(255, 255, 255, 130);
+	skinConfColors[COLOR_SELECTION_BG] = RGBAColor(255, 255, 255, 130);
+	skinConfColors[COLOR_MESSAGE_BOX_BG] = RGBAColor(255, 255, 255);
+	skinConfColors[COLOR_MESSAGE_BOX_BORDER] = RGBAColor(80, 80, 80);
+	skinConfColors[COLOR_MESSAGE_BOX_SELECTION] = RGBAColor(160, 160, 160);
 
 	/* Load skin settings from user directory if present,
 	 * or from the system directory. */
