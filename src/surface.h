@@ -61,10 +61,10 @@ public:
 	void setClipRect(int x, int y, int w, int h);
 	void setClipRect(SDL_Rect rect);
 
-	bool blit(Surface *destination, int x, int y, int w=0, int h=0, int a=-1) const;
-	bool blit(Surface *destination, SDL_Rect container, Font::HAlign halign = Font::HAlignLeft, Font::VAlign valign = Font::VAlignTop) const;
-	bool blitCenter(Surface *destination, int x, int y, int w=0, int h=0, int a=-1) const;
-	bool blitRight(Surface *destination, int x, int y, int w=0, int h=0, int a=-1) const;
+	void blit(Surface *destination, int x, int y, int w=0, int h=0, int a=-1) const;
+	void blit(Surface *destination, SDL_Rect container, Font::HAlign halign = Font::HAlignLeft, Font::VAlign valign = Font::VAlignTop) const;
+	void blitCenter(Surface *destination, int x, int y, int w=0, int h=0, int a=-1) const;
+	void blitRight(Surface *destination, int x, int y, int w=0, int h=0, int a=-1) const;
 
 	void write(Font *font, const std::string &text, int x, int y,
 			Font::HAlign halign = Font::HAlignLeft,
@@ -72,19 +72,19 @@ public:
 		font->write(this, text, x, y, halign, valign);
 	}
 
-	int box(Sint16 x, Sint16 y, Uint16 w, Uint16 h, Uint8 r, Uint8 g, Uint8 b, Uint8 a);
-	int box(Sint16 x, Sint16 y, Uint16 w, Uint16 h, Uint8 r, Uint8 g, Uint8 b);
-	int box(Sint16 x, Sint16 y, Uint16 w, Uint16 h, RGBAColor);
-	int box(SDL_Rect, RGBAColor);
-	int rectangle(Sint16, Sint16, Uint16, Uint16, Uint8 r, Uint8 g, Uint8 b, Uint8 a);
-	int rectangle(Sint16, Sint16, Uint16, Uint16, RGBAColor);
-	int rectangle(SDL_Rect, RGBAColor);
+	void box(Sint16 x, Sint16 y, Uint16 w, Uint16 h, Uint8 r, Uint8 g, Uint8 b, Uint8 a);
+	void box(Sint16 x, Sint16 y, Uint16 w, Uint16 h, Uint8 r, Uint8 g, Uint8 b);
+	void box(Sint16 x, Sint16 y, Uint16 w, Uint16 h, RGBAColor);
+	void box(SDL_Rect, RGBAColor);
+	void rectangle(Sint16, Sint16, Uint16, Uint16, Uint8 r, Uint8 g, Uint8 b, Uint8 a);
+	void rectangle(Sint16, Sint16, Uint16, Uint16, RGBAColor);
+	void rectangle(SDL_Rect, RGBAColor);
 
 private:
 	Surface(SDL_Surface *raw, bool freeWhenDone);
-	bool blit(SDL_Surface *destination, int x, int y, int w=0, int h=0, int a=-1) const;
-	bool blitCenter(SDL_Surface *destination, int x, int y, int w=0, int h=0, int a=-1) const;
-	bool blitRight(SDL_Surface *destination, int x, int y, int w=0, int h=0, int a=-1) const;
+	void blit(SDL_Surface *destination, int x, int y, int w=0, int h=0, int a=-1) const;
+	void blitCenter(SDL_Surface *destination, int x, int y, int w=0, int h=0, int a=-1) const;
+	void blitRight(SDL_Surface *destination, int x, int y, int w=0, int h=0, int a=-1) const;
 
 	SDL_Surface *raw;
 	bool freeWhenDone;

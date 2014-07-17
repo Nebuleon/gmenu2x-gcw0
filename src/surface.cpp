@@ -112,8 +112,8 @@ void Surface::flip() {
 	SDL_Flip(raw);
 }
 
-bool Surface::blit(SDL_Surface *destination, int x, int y, int w, int h, int a) const {
-	if (destination == NULL || a==0) return false;
+void Surface::blit(SDL_Surface *destination, int x, int y, int w, int h, int a) const {
+	if (destination == NULL || a==0) return;
 
 	SDL_Rect src = { 0, 0, static_cast<Uint16>(w), static_cast<Uint16>(h) };
 	SDL_Rect dest;
@@ -121,55 +121,53 @@ bool Surface::blit(SDL_Surface *destination, int x, int y, int w, int h, int a) 
 	dest.y = y;
 	if (a>0 && a!=raw->format->alpha)
 		SDL_SetAlpha(raw, SDL_SRCALPHA|SDL_RLEACCEL, a);
-	return SDL_BlitSurface(raw, (w==0 || h==0) ? NULL : &src, destination, &dest);
+	SDL_BlitSurface(raw, (w==0 || h==0) ? NULL : &src, destination, &dest);
 }
-bool Surface::blit(Surface *destination, int x, int y, int w, int h, int a) const {
-	return blit(destination->raw,x,y,w,h,a);
+void Surface::blit(Surface *destination, int x, int y, int w, int h, int a) const {
+	blit(destination->raw,x,y,w,h,a);
 }
 
-bool Surface::blitCenter(SDL_Surface *destination, int x, int y, int w, int h, int a) const {
+void Surface::blitCenter(SDL_Surface *destination, int x, int y, int w, int h, int a) const {
 	int oh, ow;
 	if (w==0) ow = halfW; else ow = min(halfW,w/2);
 	if (h==0) oh = halfH; else oh = min(halfH,h/2);
-	return blit(destination,x-ow,y-oh,w,h,a);
+	blit(destination,x-ow,y-oh,w,h,a);
 }
-bool Surface::blitCenter(Surface *destination, int x, int y, int w, int h, int a) const {
-	return blitCenter(destination->raw,x,y,w,h,a);
-}
-
-bool Surface::blitRight(SDL_Surface *destination, int x, int y, int w, int h, int a) const {
-	if (!w) w = raw->w;
-	return blit(destination,x-min(raw->w,w),y,w,h,a);
-}
-bool Surface::blitRight(Surface *destination, int x, int y, int w, int h, int a) const {
-	if (!w) w = raw->w;
-	return blitRight(destination->raw,x,y,w,h,a);
+void Surface::blitCenter(Surface *destination, int x, int y, int w, int h, int a) const {
+	blitCenter(destination->raw,x,y,w,h,a);
 }
 
-int Surface::box(Sint16 x, Sint16 y, Uint16 w, Uint16 h, Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
-	return boxRGBA(raw, x, y, x + w - 1, y + h - 1, r, g, b, a);
+void Surface::blitRight(SDL_Surface *destination, int x, int y, int w, int h, int a) const {
+	if (!w) w = raw->w;
+	blit(destination,x-min(raw->w,w),y,w,h,a);
 }
-int Surface::box(Sint16 x, Sint16 y, Uint16 w, Uint16 h, Uint8 r, Uint8 g, Uint8 b) {
+void Surface::blitRight(Surface *destination, int x, int y, int w, int h, int a) const {
+	if (!w) w = raw->w;
+	blitRight(destination->raw,x,y,w,h,a);
+}
+
+void Surface::box(Sint16 x, Sint16 y, Uint16 w, Uint16 h, Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
+	boxRGBA(raw, x, y, x + w - 1, y + h - 1, r, g, b, a);
+}
+void Surface::box(Sint16 x, Sint16 y, Uint16 w, Uint16 h, Uint8 r, Uint8 g, Uint8 b) {
 	SDL_Rect re = { x, y, w, h };
-	return SDL_FillRect(raw, &re, SDL_MapRGBA(raw->format, r, g, b, 255));
+	SDL_FillRect(raw, &re, SDL_MapRGBA(raw->format, r, g, b, 255));
 }
-int Surface::box(Sint16 x, Sint16 y, Uint16 w, Uint16 h, RGBAColor c) {
-	return box(x, y, w, h, c.r, c.g, c.b, c.a);
+void Surface::box(Sint16 x, Sint16 y, Uint16 w, Uint16 h, RGBAColor c) {
+	box(x, y, w, h, c.r, c.g, c.b, c.a);
 }
-int Surface::box(SDL_Rect re, RGBAColor c) {
-	return boxRGBA(
-		raw, re.x, re.y, re.x + re.w - 1, re.y + re.h - 1, c.r, c.g, c.b, c.a
-		);
+void Surface::box(SDL_Rect re, RGBAColor c) {
+	boxRGBA(raw, re.x, re.y, re.x + re.w - 1, re.y + re.h - 1, c.r, c.g, c.b, c.a);
 }
 
-int Surface::rectangle(Sint16 x, Sint16 y, Uint16 w, Uint16 h, Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
-	return rectangleRGBA(raw, x, y, x + w - 1, y + h - 1, r, g, b, a);
+void Surface::rectangle(Sint16 x, Sint16 y, Uint16 w, Uint16 h, Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
+	rectangleRGBA(raw, x, y, x + w - 1, y + h - 1, r, g, b, a);
 }
-int Surface::rectangle(Sint16 x, Sint16 y, Uint16 w, Uint16 h, RGBAColor c) {
-	return rectangle(x, y, w, h, c.r, c.g, c.b, c.a);
+void Surface::rectangle(Sint16 x, Sint16 y, Uint16 w, Uint16 h, RGBAColor c) {
+	rectangle(x, y, w, h, c.r, c.g, c.b, c.a);
 }
-int Surface::rectangle(SDL_Rect re, RGBAColor c) {
-	return rectangle(re.x, re.y, re.w, re.h, c.r, c.g, c.b, c.a);
+void Surface::rectangle(SDL_Rect re, RGBAColor c) {
+	rectangle(re.x, re.y, re.w, re.h, c.r, c.g, c.b, c.a);
 }
 
 void Surface::clearClipRect() {
@@ -188,7 +186,7 @@ void Surface::setClipRect(SDL_Rect rect) {
 	SDL_SetClipRect(raw,&rect);
 }
 
-bool Surface::blit(Surface *destination, SDL_Rect container, Font::HAlign halign, Font::VAlign valign) const {
+void Surface::blit(Surface *destination, SDL_Rect container, Font::HAlign halign, Font::VAlign valign) const {
 	switch (halign) {
 	case Font::HAlignLeft:
 		break;
@@ -211,5 +209,5 @@ bool Surface::blit(Surface *destination, SDL_Rect container, Font::HAlign halign
 		break;
 	}
 
-	return blit(destination,container.x,container.y);
+	blit(destination,container.x,container.y);
 }
