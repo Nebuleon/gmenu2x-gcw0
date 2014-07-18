@@ -67,7 +67,7 @@ void Font::write(Surface *surface, const string &text,
 	}
 
 	if (text.find("\n", 0) == string::npos) {
-		writeLine(surface, text.c_str(), x, y, halign, valign);
+		writeLine(surface, text, x, y, halign, valign);
 		return;
 	}
 
@@ -75,15 +75,19 @@ void Font::write(Surface *surface, const string &text,
 	split(v, text, "\n");
 
 	for (vector<string>::const_iterator it = v.begin(); it != v.end(); it++) {
-		writeLine(surface, it->c_str(), x, y, halign, valign);
+		writeLine(surface, *it, x, y, halign, valign);
 		y += lineSpacing;
 	}
 }
 
-void Font::writeLine(Surface *surface, const char *text,
+void Font::writeLine(Surface *surface, std::string const& text,
 				int x, int y, HAlign halign, VAlign valign)
 {
 	if (!font) {
+		return;
+	}
+	if (text.empty()) {
+		// SDL_ttf will return a nullptr when rendering the empty string.
 		return;
 	}
 
@@ -99,9 +103,9 @@ void Font::writeLine(Surface *surface, const char *text,
 	}
 
 	SDL_Color color = { 0, 0, 0, 0 };
-	SDL_Surface *s = TTF_RenderUTF8_Blended(font, text, color);
+	SDL_Surface *s = TTF_RenderUTF8_Blended(font, text.c_str(), color);
 	if (!s) {
-		ERROR("Font rendering failed for text \"%s\"\n", text);
+		ERROR("Font rendering failed for text \"%s\"\n", text.c_str());
 		return;
 	}
 
@@ -140,9 +144,9 @@ void Font::writeLine(Surface *surface, const char *text,
 	color.g = 0xff;
 	color.b = 0xff;
 
-	s = TTF_RenderUTF8_Blended(font, text, color);
+	s = TTF_RenderUTF8_Blended(font, text.c_str(), color);
 	if (!s) {
-		ERROR("Font rendering failed for text \"%s\"\n", text);
+		ERROR("Font rendering failed for text \"%s\"\n", text.c_str());
 		return;
 	}
 	SDL_BlitSurface(s, NULL, surface->raw, &rect);

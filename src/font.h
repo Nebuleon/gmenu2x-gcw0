@@ -41,7 +41,7 @@ public:
 private:
 	Font(TTF_Font *font);
 
-	void writeLine(Surface *surface, const char *text,
+	void writeLine(Surface *surface, std::string const& text,
 				int x, int y, HAlign halign, VAlign valign);
 
 	TTF_Font *font;
