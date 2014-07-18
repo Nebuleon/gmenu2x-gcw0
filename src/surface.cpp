@@ -25,8 +25,6 @@
 #include "surfacecollection.h"
 #include "utilities.h"
 
-#include <SDL_gfxPrimitives.h>
-
 #include <algorithm>
 #include <cassert>
 #include <iostream>
@@ -161,7 +159,27 @@ void Surface::box(SDL_Rect re, RGBAColor c) {
 }
 
 void Surface::rectangle(SDL_Rect re, RGBAColor c) {
-	rectangleRGBA(raw, re.x, re.y, re.x + re.w - 1, re.y + re.h - 1, c.r, c.g, c.b, c.a);
+	if (re.h >= 1) {
+		// Top.
+		box(SDL_Rect { re.x, re.y, re.w, 1 }, c);
+	}
+	if (re.h >= 2) {
+		Sint16 ey = re.y + re.h - 1;
+		// Bottom.
+		box(SDL_Rect { re.x, ey, re.w, 1 }, c);
+
+		Sint16 ex = re.x + re.w - 1;
+		Sint16 sy = re.y + 1;
+		Uint16 sh = re.h - 2;
+		// Left.
+		if (re.w >= 1) {
+			box(SDL_Rect { re.x, sy, 1, sh }, c);
+		}
+		// Right.
+		if (re.w >= 2) {
+			box(SDL_Rect { ex, sy, 1, sh }, c);
+		}
+	}
 }
 
 void Surface::clearClipRect() {
