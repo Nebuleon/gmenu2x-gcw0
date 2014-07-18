@@ -99,6 +99,16 @@ private:
 	void blitCenter(SDL_Surface *destination, int x, int y, int w=0, int h=0, int a=-1) const;
 	void blitRight(SDL_Surface *destination, int x, int y, int w=0, int h=0, int a=-1) const;
 
+	/** Draws the given rectangle on this surface in the given color, blended
+	  * according to the alpha value of the color argument.
+	  */
+	void fillRectAlpha(SDL_Rect rect, RGBAColor c);
+
+	/** Clips the given rectangle against this surface's active clipping
+	  * rectangle.
+	  */
+	void applyClipRect(SDL_Rect& rect);
+
 	SDL_Surface *raw;
 	bool freeWhenDone;
 	int halfW, halfH;

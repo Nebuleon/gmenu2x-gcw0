@@ -27,6 +27,8 @@
 
 #include <SDL_gfxPrimitives.h>
 
+#include <algorithm>
+#include <cassert>
 #include <iostream>
 
 using namespace std;
@@ -154,7 +156,7 @@ void Surface::box(SDL_Rect re, RGBAColor c) {
 	if (c.a == 255) {
 		SDL_FillRect(raw, &re, c.pixelValue(raw->format));
 	} else if (c.a != 0) {
-		boxRGBA(raw, re.x, re.y, re.x + re.w - 1, re.y + re.h - 1, c.r, c.g, c.b, c.a);
+		fillRectAlpha(re, c);
 	}
 }
 
@@ -176,6 +178,29 @@ void Surface::setClipRect(int x, int y, int w, int h) {
 
 void Surface::setClipRect(SDL_Rect rect) {
 	SDL_SetClipRect(raw,&rect);
+}
+
+void Surface::applyClipRect(SDL_Rect& rect) {
+	SDL_Rect clip;
+	SDL_GetClipRect(raw, &clip);
+
+	// Clip along X-axis.
+	if (rect.x < clip.x) {
+		rect.w = max(rect.x + rect.w - clip.x, 0);
+		rect.x = clip.x;
+	}
+	if (rect.x + rect.w > clip.x + clip.w) {
+		rect.w = max(clip.x + clip.w - rect.x, 0);
+	}
+
+	// Clip along Y-axis.
+	if (rect.y < clip.y) {
+		rect.h = max(rect.y + rect.h - clip.y, 0);
+		rect.y = clip.y;
+	}
+	if (rect.y + rect.h > clip.y + clip.h) {
+		rect.h = max(clip.y + clip.h - rect.y, 0);
+	}
 }
 
 void Surface::blit(Surface *destination, SDL_Rect container, Font::HAlign halign, Font::VAlign valign) const {
@@ -202,4 +227,78 @@ void Surface::blit(Surface *destination, SDL_Rect container, Font::HAlign halign
 	}
 
 	blit(destination,container.x,container.y);
+}
+
+static inline uint32_t mult8x4(uint32_t c, uint8_t a) {
+	return ((((c >> 8) & 0x00FF00FF) * a) & 0xFF00FF00)
+	     | ((((c & 0x00FF00FF) * a) & 0xFF00FF00) >> 8);
+}
+
+void Surface::fillRectAlpha(SDL_Rect rect, RGBAColor c) {
+	applyClipRect(rect);
+	if (rect.w == 0 || rect.h == 0) {
+		// Entire rectangle is outside clipping area.
+		return;
+	}
+
+	if (SDL_MUSTLOCK(raw)) {
+		if (SDL_LockSurface(raw) < 0) {
+			return;
+		}
+	}
+
+	SDL_PixelFormat *format = raw->format;
+	uint32_t color = c.pixelValue(format);
+	uint8_t alpha = c.a;
+
+	uint8_t* edge = static_cast<uint8_t*>(raw->pixels)
+	               + rect.y * raw->pitch
+	               + rect.x * format->BytesPerPixel;
+
+	// Blending: surf' = surf * (1 - alpha) + fill * alpha
+
+	if (format->BytesPerPixel == 2) {
+		uint32_t Rmask = format->Rmask;
+		uint32_t Gmask = format->Gmask;
+		uint32_t Bmask = format->Bmask;
+
+		// Pre-multiply the fill color. We're hardcoding alpha to 1: 15/16bpp
+		// modes are unlikely to have an alpha channel and even if they do,
+		// the written alpha isn't used by gmenu2x.
+		uint16_t f = (((color & Rmask) * alpha >> 8) & Rmask)
+		           | (((color & Gmask) * alpha >> 8) & Gmask)
+		           | (((color & Bmask) * alpha >> 8) & Bmask)
+		           | format->Amask;
+		alpha = 255 - alpha;
+
+		for (auto y = 0; y < rect.h; y++) {
+			for (auto x = 0; x < rect.w; x++) {
+				uint16_t& pixel = reinterpret_cast<uint16_t*>(edge)[x];
+				uint32_t R = ((pixel & Rmask) * alpha >> 8) & Rmask;
+				uint32_t G = ((pixel & Gmask) * alpha >> 8) & Gmask;
+				uint32_t B = ((pixel & Bmask) * alpha >> 8) & Bmask;
+				pixel = uint16_t(R | G | B) + f;
+			}
+			edge += raw->pitch;
+		}
+	} else if (format->BytesPerPixel == 4) {
+		// Assume the pixel format uses 8 bits per component; we don't care
+		// which component is where since they all blend the same.
+		uint32_t f = mult8x4(color, alpha); // pre-multiply the fill color
+		alpha = 255 - alpha;
+
+		for (auto y = 0; y < rect.h; y++) {
+			for (auto x = 0; x < rect.w; x++) {
+				uint32_t& pixel = reinterpret_cast<uint32_t*>(edge)[x];
+				pixel = mult8x4(pixel, alpha) + f;
+			}
+			edge += raw->pitch;
+		}
+	} else {
+		assert(false);
+	}
+
+	if (SDL_MUSTLOCK(raw)) {
+		SDL_UnlockSurface(raw);
+	}
 }
