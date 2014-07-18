@@ -66,17 +66,19 @@ void Font::write(Surface *surface, const string &text,
 		return;
 	}
 
-	if (text.find("\n", 0) == string::npos) {
+	size_t pos = text.find('\n', 0);
+	if (pos == string::npos) {
 		writeLine(surface, text, x, y, halign, valign);
-		return;
-	}
-
-	vector<string> v;
-	split(v, text, "\n");
-
-	for (vector<string>::const_iterator it = v.begin(); it != v.end(); it++) {
-		writeLine(surface, *it, x, y, halign, valign);
-		y += lineSpacing;
+	} else {
+		size_t prev = 0;
+		do {
+			writeLine(surface, text.substr(prev, pos - prev),
+					x, y, halign, valign);
+			y += lineSpacing;
+			prev = pos + 1;
+			pos = text.find('\n', prev);
+		} while (pos != string::npos);
+		writeLine(surface, text.substr(prev), x, y, halign, valign);
 	}
 }
 
