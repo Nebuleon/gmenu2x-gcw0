@@ -4,7 +4,7 @@ This version is maintained by the Qi-Hardware and OpenDingux crew. The credits, 
 http://projects.qi-hardware.com/index.php/p/gmenu2x
 
 Credits for the translations:
------
+----
 English & Italian by Massimiliano Torromeo
 French by Paul Cercueil
 Danish by claus
