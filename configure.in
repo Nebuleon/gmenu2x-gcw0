@@ -15,12 +15,6 @@ SDL_VERSION=1.2.8
 AM_PATH_SDL($SDL_VERSION, :,
             AC_MSG_ERROR([*** SDL version $SDL_VERSION not found!]))
 
-AC_ARG_WITH(sdl-gfx-prefix,
-            [  --with-sdl-gfx-prefix=DIR       specify where SDL_gfx library is installed],
-            [SDL_GFX_PREFIX="$withval"])
-
-AC_CHECK_LIB(SDL_gfx, rotozoomSurfaceXY,,check_sdl_gfx="no")
-
 AC_CHECK_LIB(SDL_ttf, TTF_OpenFont)
 
 # Check for libpng
