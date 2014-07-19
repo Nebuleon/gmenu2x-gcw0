@@ -24,8 +24,10 @@
 #include "font.h"
 
 #include <SDL.h>
-#include <string>
+
 #include <cstdint>
+#include <ostream>
+#include <string>
 
 struct RGBAColor {
 	uint8_t r, g, b, a;
@@ -33,10 +35,11 @@ struct RGBAColor {
 	RGBAColor() : r(0), g(0), b(0), a(0) {}
 	RGBAColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 255)
 		: r(r), g(g), b(b), a(a) {}
-	Uint32 pixelValue(SDL_PixelFormat *fmt) {
+	Uint32 pixelValue(SDL_PixelFormat *fmt) const {
 		return SDL_MapRGBA(fmt, r, g, b, a);
 	}
 };
+std::ostream& operator<<(std::ostream& os, RGBAColor const& color);
 
 /**
 	Wrapper around SDL_Surface

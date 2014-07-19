@@ -549,15 +549,8 @@ void GMenu2X::writeSkinConfig() {
 
 		int i;
 		for (i = 0; i < NUM_COLORS; ++i) {
-			inf << colorToString((enum color)i) << "=#";
-			inf.width(2); inf.fill('0');
-			inf << right << hex << skinConfColors[i].r;
-			inf.width(2); inf.fill('0');
-			inf << right << hex << skinConfColors[i].g;
-			inf.width(2); inf.fill('0');
-			inf << right << hex << skinConfColors[i].b;
-			inf.width(2); inf.fill('0');
-			inf << right << hex << skinConfColors[i].a << endl;
+			inf << colorToString((enum color)i) << "=#"
+			    << skinConfColors[i] << endl;
 		}
 
 		inf.close();

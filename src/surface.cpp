@@ -27,7 +27,7 @@
 
 #include <algorithm>
 #include <cassert>
-#include <iostream>
+#include <iomanip>
 
 using namespace std;
 
@@ -42,6 +42,19 @@ RGBAColor RGBAColor::fromString(const string &strColor) {
 		uint8_t(constrain(strtol(strColor.substr(6, 2).c_str(), nullptr, 16),
 		                  0, 255)),
 	};
+}
+
+ostream& operator<<(ostream& os, RGBAColor const& color) {
+	auto oldfill = os.fill('0');
+	auto oldflags = os.setf(ios::hex | ios::right,
+	                        ios::basefield | ios::adjustfield);
+	os << setw(2) << uint32_t(color.r)
+	   << setw(2) << uint32_t(color.g)
+	   << setw(2) << uint32_t(color.b)
+	   << setw(2) << uint32_t(color.a);
+	os.fill(oldfill);
+	os.setf(oldflags);
+	return os;
 }
 
 Surface *Surface::openOutputSurface(int width, int height, int bitsperpixel) {
