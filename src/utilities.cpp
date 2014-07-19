@@ -46,6 +46,16 @@ string trim(const string& s) {
   return b == string::npos ? "" : string(s, b, e + 1 - b);
 }
 
+string ltrim(const string& s) {
+  auto b = s.find_first_not_of(" \t\r");
+  return b == string::npos ? "" : string(s, b);
+}
+
+string rtrim(const string& s) {
+  auto e = s.find_last_not_of(" \t\r");
+  return e == string::npos ? "" : string(s, 0, e + 1);
+}
+
 bool fileExists(const string &file) {
 	fstream fin;
 	fin.open(file.c_str() ,ios::in);

@@ -35,8 +35,16 @@ public:
 	bool operator()(const std::string &left, const std::string &right) const;
 };
 
+inline bool isUTF8Starter(char c) {
+	return (c & 0xC0) != 0x80;
+}
+
 /** Returns the string with whitespace stripped from both ends. */
 std::string trim(const std::string& s);
+/** Returns the string with whitespace stripped from the start. */
+std::string ltrim(const std::string& s);
+/** Returns the string with whitespace stripped from the end. */
+std::string rtrim(const std::string& s);
 
 std::string strreplace(std::string orig, const std::string &search, const std::string &replace);
 std::string cmdclean(std::string cmdline);
