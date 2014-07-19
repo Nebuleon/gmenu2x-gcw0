@@ -35,7 +35,9 @@ public:
 	bool operator()(const std::string &left, const std::string &right) const;
 };
 
+/** Returns the string with whitespace stripped from both ends. */
 std::string trim(const std::string& s);
+
 std::string strreplace(std::string orig, const std::string &search, const std::string &replace);
 std::string cmdclean(std::string cmdline);
 
