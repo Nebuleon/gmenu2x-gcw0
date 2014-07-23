@@ -59,7 +59,30 @@ int Font::getTextWidth(const char *text)
 	else return 1;
 }
 
-void Font::write(Surface *surface, std::string const& text,
+void Font::write(Surface *surface, const string &text,
+			int x, int y, HAlign halign, VAlign valign)
+{
+	if (!font) {
+		return;
+	}
+
+	size_t pos = text.find('\n', 0);
+	if (pos == string::npos) {
+		writeLine(surface, text, x, y, halign, valign);
+	} else {
+		size_t prev = 0;
+		do {
+			writeLine(surface, text.substr(prev, pos - prev),
+					x, y, halign, valign);
+			y += lineSpacing;
+			prev = pos + 1;
+			pos = text.find('\n', prev);
+		} while (pos != string::npos);
+		writeLine(surface, text.substr(prev), x, y, halign, valign);
+	}
+}
+
+void Font::writeLine(Surface *surface, std::string const& text,
 				int x, int y, HAlign halign, VAlign valign)
 {
 	if (!font) {
