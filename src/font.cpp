@@ -74,6 +74,17 @@ int Font::getTextWidth(const string &text)
 	}
 }
 
+int Font::getTextHeight(const string &text)
+{
+	int nLines = 1;
+	size_t pos = 0;
+	while ((pos = text.find('\n', pos)) != string::npos) {
+		nLines++;
+		pos++;
+	}
+	return nLines * getLineSpacing();
+}
+
 void Font::write(Surface *surface, const string &text,
 			int x, int y, HAlign halign, VAlign valign)
 {

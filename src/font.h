@@ -29,6 +29,13 @@ public:
 
 	int getTextWidth(const std::string& text);
 
+	int getTextHeight(const char *text)
+	{
+		return getTextHeight(std::string(text));
+	}
+
+	int getTextHeight(const std::string& text);
+
 	int getLineSpacing()
 	{
 		return lineSpacing;
