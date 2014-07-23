@@ -49,14 +49,29 @@ Font::~Font()
 	}
 }
 
-int Font::getTextWidth(const char *text)
+int Font::getTextWidth(const string &text)
 {
-	if (font) {
-		int w, h;
-		TTF_SizeUTF8(font, text, &w, &h);
-		return w;
+	if (!font) {
+		return 1;
 	}
-	else return 1;
+
+	int w;
+	size_t pos = text.find('\n', 0);
+	if (pos == string::npos) {
+		TTF_SizeUTF8(font, text.c_str(), &w, nullptr);
+		return w;
+	} else {
+		int maxWidth = 1;
+		size_t prev = 0;
+		do {
+			TTF_SizeUTF8(font, text.substr(prev, pos - prev).c_str(), &w, nullptr);
+			maxWidth = max(w, maxWidth);
+			prev = pos + 1;
+			pos = text.find('\n', prev);
+		} while (pos != string::npos);
+		TTF_SizeUTF8(font, text.substr(prev).c_str(), &w, nullptr);
+		return max(w, maxWidth);
+	}
 }
 
 void Font::write(Surface *surface, const string &text,

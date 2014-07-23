@@ -22,12 +22,7 @@ public:
 	Font(const std::string &path, unsigned int size);
 	~Font();
 
-	int getTextWidth(const char *text);
-
-	int getTextWidth(const std::string& text)
-	{
-		return getTextWidth(text.c_str());
-	}
+	int getTextWidth(const std::string& text);
 
 	int getLineSpacing()
 	{
