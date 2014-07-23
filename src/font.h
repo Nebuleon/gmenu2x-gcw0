@@ -23,6 +23,7 @@ public:
 	~Font();
 
 	int getTextWidth(const std::string& text);
+	int getTextHeight(const std::string& text);
 
 	int getLineSpacing()
 	{
