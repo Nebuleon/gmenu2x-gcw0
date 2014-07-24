@@ -491,18 +491,9 @@ void LinkApp::showManual() {
 
 	// Txt manuals
 	if (manual.substr(manual.size()-8,8)==".man.txt") {
-		string str, line;
-		ifstream infile(manual.c_str(), ios_base::in);
-		if (infile.is_open()) {
-			while (getline(infile, line, '\n')) {
-				str.append(line).append("\n");
-			}
-			infile.close();
-
-			TextManualDialog tmd(gmenu2x, getTitle(), getIconPath(), str);
-			tmd.exec();
-		}
-
+		string text(readFileAsString(manual.c_str()));
+		TextManualDialog tmd(gmenu2x, getTitle(), getIconPath(), text);
+		tmd.exec();
 		return;
 	}
 

@@ -56,6 +56,31 @@ string rtrim(const string& s) {
   return e == string::npos ? "" : string(s, 0, e + 1);
 }
 
+// See this article for a performance comparison of different approaches:
+//   http://insanecoding.blogspot.com/2011/11/how-to-read-in-file-in-c.html
+string readFileAsString(const char *filename) {
+	ifstream in(filename, ios::in | ios::binary);
+	if (!in) {
+		return "<error opening " + string(filename) + ">";
+	}
+
+	// Get file size.
+	in.seekg(0, ios::end);
+	auto size = max(int(in.tellg()), 0); // tellg() returns -1 on errors
+	in.seekg(0, ios::beg);
+
+	string contents(size, '\0');
+	in.read(&contents[0], contents.size());
+	in.close();
+
+	if (in.fail()) {
+		return "<error reading " + string(filename) + ">";
+	} else {
+		contents.shrink_to_fit();
+		return contents;
+	}
+}
+
 bool fileExists(const string &file) {
 	fstream fin;
 	fin.open(file.c_str() ,ios::in);

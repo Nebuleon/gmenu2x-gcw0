@@ -409,45 +409,27 @@ void GMenu2X::initMenu() {
 }
 
 void GMenu2X::about() {
-	string str, line;
-	string fn(GMENU2X_SYSTEM_DIR);
-	string build_date("Build date: ");
-	fn.append("/about.txt");
-	build_date.append(__DATE__);
-
-	ifstream inf(fn.c_str(), ios_base::in);
-
-	while(getline(inf, line, '\n')) {
-		str.append(line).append("\n");
-	}
-	inf.close();
-
-	TextDialog td(this, "GMenu2X", build_date, "icons/about.png", str);
+	string text(readFileAsString(GMENU2X_SYSTEM_DIR "/about.txt"));
+	string build_date("Build date: " __DATE__);
+	TextDialog td(this, "GMenu2X", build_date, "icons/about.png", text);
 	td.exec();
 }
 
 void GMenu2X::viewLog() {
-	string logfile = LOG_FILE;
-	if (fileExists(logfile)) {
-		ifstream inf(logfile.c_str(), ios_base::in);
-		if (inf.is_open()) {
-			string str, line;
-			while (getline(inf, line, '\n')) {
-				str.append(line).append("\n");
-			}
-			inf.close();
+	string text(readFileAsString(LOG_FILE));
 
-			TextDialog td(this, tr["Log Viewer"], tr["Displays last launched program's output"], "icons/ebook.png", str);
-			td.exec();
+	TextDialog td(this, tr["Log Viewer"],
+			tr["Displays last launched program's output"],
+			"icons/ebook.png", text);
+	td.exec();
 
-			MessageBox mb(this, tr["Do you want to delete the log file?"], "icons/ebook.png");
-			mb.setButton(InputManager::ACCEPT, tr["Yes"]);
-			mb.setButton(InputManager::CANCEL, tr["No"]);
-			if (mb.exec() == InputManager::ACCEPT) {
-				unlink(logfile.c_str());
-				menu->deleteSelectedLink();
-			}
-		}
+	MessageBox mb(this, tr["Do you want to delete the log file?"],
+			 "icons/ebook.png");
+	mb.setButton(InputManager::ACCEPT, tr["Yes"]);
+	mb.setButton(InputManager::CANCEL, tr["No"]);
+	if (mb.exec() == InputManager::ACCEPT) {
+		unlink(LOG_FILE);
+		menu->deleteSelectedLink();
 	}
 }
 
