@@ -72,6 +72,11 @@ bool SettingsDialog::exec() {
 	uint rowHeight = gmenu2x->font->getLineSpacing() + 1; // gp2x=15+1 / pandora=19+1
 	uint numRows = (gmenu2x->resY - topBarHeight - 20) / rowHeight;
 
+	uint maxNameWidth = 0;
+	for (auto it = voices.begin(); it != voices.end(); it++) {
+		maxNameWidth = max(maxNameWidth, (uint) gmenu2x->font->getTextWidth((*it)->getName()));
+	}
+
 	while (!close) {
 		if (ts.available()) ts.poll();
 
@@ -89,19 +94,10 @@ bool SettingsDialog::exec() {
 
 		//selection
 		uint iY = topBarHeight + 2 + (sel - firstElement) * rowHeight;
-		gmenu2x->s->setClipRect(clipRect);
-		if (sel<voices.size()) {
-			gmenu2x->s->box(
-				1, iY, 148, rowHeight - 2,
-				gmenu2x->skinConfColors[COLOR_SELECTION_BG]
-			);
-		}
-		gmenu2x->s->clearClipRect();
 
 		//selected option
-		voices[sel]->drawSelected(iY);
+		voices[sel]->drawSelected(maxNameWidth + 15, iY, rowHeight);
 
-		gmenu2x->s->setClipRect(clipRect);
 		if (ts_pressed && !ts.pressed()) {
 			ts_pressed = false;
 		}
@@ -110,7 +106,7 @@ bool SettingsDialog::exec() {
 		}
 		for (i=firstElement; i<voices.size() && i<firstElement+numRows; i++) {
 			iY = i-firstElement;
-			voices[i]->draw(iY * rowHeight + topBarHeight + 2);
+			voices[i]->draw(maxNameWidth + 15, iY * rowHeight + topBarHeight + 2, rowHeight);
 			if (ts.available() && ts.pressed() && ts.inRect(
 					touchRect.x, touchRect.y + (iY * rowHeight),
 					touchRect.w, rowHeight
@@ -119,7 +115,6 @@ bool SettingsDialog::exec() {
 				sel = i;
 			}
 		}
-		gmenu2x->s->clearClipRect();
 
 		gmenu2x->drawScrollBar(numRows, voices.size(), firstElement);
 
@@ -127,7 +122,7 @@ bool SettingsDialog::exec() {
 		writeSubTitle(voices[sel]->getDescription());
 
 		gmenu2x->s->flip();
-		voices[sel]->handleTS();
+		voices[sel]->handleTS(maxNameWidth + 15, iY, rowHeight);
 
 		InputManager::Button button = inputMgr.waitForPressedButton();
 		if (!voices[sel]->handleButtonPress(button)) {
