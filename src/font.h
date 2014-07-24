@@ -29,6 +29,8 @@ public:
 
 	int getTextWidth(const std::string& text);
 
+	std::string wordWrap(const std::string &text, int width);
+
 	int getTextHeight(const char *text)
 	{
 		return getTextHeight(std::string(text));
@@ -47,6 +49,9 @@ public:
 
 private:
 	Font(TTF_Font *font);
+
+	std::string wordWrapSingleLine(const std::string &text,
+				size_t start, size_t end, int width);
 
 	void writeLine(Surface *surface, std::string const& text,
 				int x, int y, HAlign halign, VAlign valign);
