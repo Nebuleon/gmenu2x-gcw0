@@ -30,7 +30,7 @@
 using std::string;
 using std::stringstream;
 
-constexpr unsigned int COMPONENT_WIDTH = 36;
+constexpr unsigned int COMPONENT_WIDTH = 28;
 
 MenuSettingRGBA::MenuSettingRGBA(
 		GMenu2X *gmenu2x, Touchscreen &ts_,
@@ -58,10 +58,10 @@ void MenuSettingRGBA::draw(int valueX, int y, int h) {
 	s.rectangle(valueX, y + 1, h - 2, h - 2, 0,0,0,255);
 	s.rectangle(valueX + 1, y + 2, h - 4, h - 4, 255,255,255,255);
 	s.box(valueX + 2, y + 3, h - 6, h - 6, value());
-	gmenu2x->font->write(s, "R: "+strR, valueX + h + 3, y, Font::HAlignLeft, Font::VAlignTop);
-	gmenu2x->font->write(s, "G: "+strG, valueX + h + 3 + COMPONENT_WIDTH, y, Font::HAlignLeft, Font::VAlignTop);
-	gmenu2x->font->write(s, "B: "+strB, valueX + h + 3 + COMPONENT_WIDTH * 2, y, Font::HAlignLeft, Font::VAlignTop);
-	gmenu2x->font->write(s, "A: "+strA, valueX + h + 3 + COMPONENT_WIDTH * 3, y, Font::HAlignLeft, Font::VAlignTop);
+	gmenu2x->font->write(s, strR, valueX + h + COMPONENT_WIDTH - 2, y, Font::HAlignRight, Font::VAlignTop);
+	gmenu2x->font->write(s, strG, valueX + h + COMPONENT_WIDTH * 2 - 2, y, Font::HAlignRight, Font::VAlignTop);
+	gmenu2x->font->write(s, strB, valueX + h + COMPONENT_WIDTH * 3 - 2, y, Font::HAlignRight, Font::VAlignTop);
+	gmenu2x->font->write(s, strA, valueX + h + COMPONENT_WIDTH * 4 - 2, y, Font::HAlignRight, Font::VAlignTop);
 }
 
 void MenuSettingRGBA::handleTS(int valueX, int y, int h) {
@@ -206,7 +206,15 @@ unsigned short MenuSettingRGBA::getSelPart()
 void MenuSettingRGBA::drawSelected(int valueX, int y, int h)
 {
 	int x = valueX + selPart * COMPONENT_WIDTH;
-	gmenu2x->s->box( x + h, y, COMPONENT_WIDTH, h, gmenu2x->skinConfColors[COLOR_SELECTION_BG] );
+	RGBAColor color;
+	switch (selPart) {
+		default: /* fallthrough */
+		case 0: color = RGBAColor(255,   0,   0, 255); break;
+		case 1: color = RGBAColor(  0, 255,   0, 255); break;
+		case 2: color = RGBAColor(  0,   0, 255, 255); break;
+		case 3: color = RGBAColor(128, 128, 128, 255); break;
+	}
+	gmenu2x->s->box( x + h, y, COMPONENT_WIDTH, h, color );
 
 	MenuSetting::drawSelected(valueX, y, h);
 }
