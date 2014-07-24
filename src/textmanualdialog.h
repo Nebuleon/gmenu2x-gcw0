@@ -37,7 +37,7 @@ private:
 
 public:
 	TextManualDialog(GMenu2X *gmenu2x, const std::string &title,
-			const std::string &icon, std::vector<std::string> *text);
+			const std::string &icon, const std::string &text);
 	void exec();
 };
 

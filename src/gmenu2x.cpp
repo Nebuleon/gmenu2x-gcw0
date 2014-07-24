@@ -409,8 +409,7 @@ void GMenu2X::initMenu() {
 }
 
 void GMenu2X::about() {
-	vector<string> text;
-	string line;
+	string str, line;
 	string fn(GMENU2X_SYSTEM_DIR);
 	string build_date("Build date: ");
 	fn.append("/about.txt");
@@ -418,11 +417,12 @@ void GMenu2X::about() {
 
 	ifstream inf(fn.c_str(), ios_base::in);
 
-	while(getline(inf, line, '\n'))
-		text.push_back(line);
+	while(getline(inf, line, '\n')) {
+		str.append(line).append("\n");
+	}
 	inf.close();
 
-	TextDialog td(this, "GMenu2X", build_date, "icons/about.png", &text);
+	TextDialog td(this, "GMenu2X", build_date, "icons/about.png", str);
 	td.exec();
 }
 
@@ -431,14 +431,13 @@ void GMenu2X::viewLog() {
 	if (fileExists(logfile)) {
 		ifstream inf(logfile.c_str(), ios_base::in);
 		if (inf.is_open()) {
-			vector<string> log;
-
-			string line;
-			while (getline(inf, line, '\n'))
-				log.push_back(line);
+			string str, line;
+			while (getline(inf, line, '\n')) {
+				str.append(line).append("\n");
+			}
 			inf.close();
 
-			TextDialog td(this, tr["Log Viewer"], tr["Displays last launched program's output"], "icons/ebook.png", &log);
+			TextDialog td(this, tr["Log Viewer"], tr["Displays last launched program's output"], "icons/ebook.png", str);
 			td.exec();
 
 			MessageBox mb(this, tr["Do you want to delete the log file?"], "icons/ebook.png");

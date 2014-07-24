@@ -375,7 +375,7 @@ void LinkApp::showManual() {
 #ifdef HAVE_LIBOPK
 	if (isOPK) {
 		vector<string> readme;
-		char *token, *ptr;
+		char *ptr;
 		struct OPK *opk;
 		int err;
 		void *buf;
@@ -395,24 +395,14 @@ void LinkApp::showManual() {
 		opk_close(opk);
 
 		ptr = (char *) buf;
-		while((token = strchr(ptr, '\n'))) {
-			*token = '\0';
-
-			string str(ptr);
-			readme.push_back(str);
-			ptr = token + 1;
-		}
-
-		/* Add the last line */
-		string str(ptr);
-		readme.push_back(str);
+		string str(ptr, len);
 		free(buf);
 
 		if (manual.substr(manual.size()-8,8)==".man.txt") {
-			TextManualDialog tmd(gmenu2x, getTitle(), getIconPath(), &readme);
+			TextManualDialog tmd(gmenu2x, getTitle(), getIconPath(), str);
 			tmd.exec();
 		} else {
-			TextDialog td(gmenu2x, getTitle(), "ReadMe", getIconPath(), &readme);
+			TextDialog td(gmenu2x, getTitle(), "ReadMe", getIconPath(), str);
 			td.exec();
 		}
 		return;
@@ -501,15 +491,15 @@ void LinkApp::showManual() {
 
 	// Txt manuals
 	if (manual.substr(manual.size()-8,8)==".man.txt") {
-		vector<string> txtman;
-
-		string line;
+		string str, line;
 		ifstream infile(manual.c_str(), ios_base::in);
 		if (infile.is_open()) {
-			while (getline(infile, line, '\n')) txtman.push_back(line);
+			while (getline(infile, line, '\n')) {
+				str.append(line).append("\n");
+			}
 			infile.close();
 
-			TextManualDialog tmd(gmenu2x, getTitle(), getIconPath(), &txtman);
+			TextManualDialog tmd(gmenu2x, getTitle(), getIconPath(), str);
 			tmd.exec();
 		}
 
@@ -517,15 +507,15 @@ void LinkApp::showManual() {
 	}
 
 	//Readmes
-	vector<string> readme;
-
-	string line;
+	string str, line;
 	ifstream infile(manual.c_str(), ios_base::in);
 	if (infile.is_open()) {
-		while (getline(infile, line, '\n')) readme.push_back(line);
+		while (getline(infile, line, '\n')) {
+			str.append(line).append("\n");
+		}
 		infile.close();
 
-		TextDialog td(gmenu2x, getTitle(), "ReadMe", getIconPath(), &readme);
+		TextDialog td(gmenu2x, getTitle(), "ReadMe", getIconPath(), str);
 		td.exec();
 	}
 }

@@ -29,12 +29,12 @@
 
 using namespace std;
 
-TextManualDialog::TextManualDialog(GMenu2X *gmenu2x, const string &title, const string &icon, vector<string> *text)
+TextManualDialog::TextManualDialog(GMenu2X *gmenu2x, const string &title, const string &icon, const string &text)
 	: TextDialog(gmenu2x,title,"",icon,text) {
 
 	//split the text in multiple pages
-	for (uint i=0; i<text->size(); i++) {
-		string line = trim(text->at(i));
+	for (uint i=0; i<this->text.size(); i++) {
+		string line = trim(this->text.at(i));
 		if (line[0]=='[' && line[line.length()-1]==']') {
 			ManualPage mp;
 			mp.title = line.substr(1,line.length()-2);
@@ -45,7 +45,7 @@ TextManualDialog::TextManualDialog(GMenu2X *gmenu2x, const string &title, const 
 				mp.title = gmenu2x->tr["Untitled"];
 				pages.push_back(mp);
 			}
-			pages[pages.size()-1].text.push_back(text->at(i));
+			pages[pages.size()-1].text.push_back(this->text.at(i));
 		}
 	}
 	if (pages.size()==0) {
@@ -99,7 +99,7 @@ void TextManualDialog::exec() {
 	while (!close) {
 		bg.blit(gmenu2x->s,0,0);
 		writeSubTitle(pages[page].title);
-		drawText(&pages[page].text, 42 /* TODO */, firstRow, rowsPerPage);
+		drawText(pages[page].text, 42 /* TODO */, firstRow, rowsPerPage);
 
 		ss.clear();
 		ss << page+1;
