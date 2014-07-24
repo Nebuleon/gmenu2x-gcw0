@@ -31,14 +31,15 @@ void Dialog::writeTitle(const std::string &title, Surface *s)
 {
 	if (s==NULL)
 		s = gmenu2x->s;
-	s->write(gmenu2x->font, title, 40, gmenu2x->skinConfInt["topBarHeight"] / 4, Font::HAlignLeft, Font::VAlignMiddle);
+	s->write(gmenu2x->font, title, 40, 0, Font::HAlignLeft, Font::VAlignTop);
 }
 
 void Dialog::writeSubTitle(const std::string &subtitle, Surface *s)
 {
 	if (s==NULL)
 		s = gmenu2x->s;
-	s->write(gmenu2x->font, subtitle, 40, gmenu2x->skinConfInt["topBarHeight"] / 4 * 3, Font::HAlignLeft, Font::VAlignMiddle);
+	std::string wrapped = gmenu2x->font->wordWrap(subtitle, gmenu2x->resX - 48);
+	s->write(gmenu2x->font, wrapped, 40, gmenu2x->skinConfInt["topBarHeight"] - gmenu2x->font->getTextHeight(wrapped), Font::HAlignLeft, Font::VAlignTop);
 }
 
 
