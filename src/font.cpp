@@ -76,21 +76,19 @@ int Font::getTextWidth(const string &text)
 
 string Font::wordWrap(const string &text, int width)
 {
+	const size_t len = text.length();
 	string result;
-	result.reserve(text.length());
+	result.reserve(len);
 
-	size_t start = 0, end = text.find('\n');
-	while (end != string::npos) {
-		if (start != end) {
-			result.append(wordWrapSingleLine(text, start, end, width));
-		}
-		result.append("\n");
+	size_t start = 0;
+	while (true) {
+		size_t end = min(text.find('\n', start), len);
+		result.append(wordWrapSingleLine(text, start, end, width));
 		start = end + 1;
-		end = text.find('\n', start);
-	}
-
-	if (start < text.length()) {
-		result.append(wordWrapSingleLine(text, start, text.length(), width));
+		if (start >= len) {
+			break;
+		}
+		result.push_back('\n');
 	}
 
 	return result;
