@@ -28,17 +28,16 @@
 
 class TextDialog : protected Dialog {
 protected:
-	std::vector<std::string> *text;
+	std::vector<std::string> text;
 	std::string title, description, icon;
 
-	void preProcess();
-	void drawText(std::vector<std::string> *text, unsigned int y,
+	void drawText(const std::vector<std::string> &text, unsigned int y,
 			unsigned int firstRow, unsigned int rowsPerPage);
 
 public:
 	TextDialog(GMenu2X *gmenu2x, const std::string &title,
 			const std::string &description, const std::string &icon,
-			std::vector<std::string> *text);
+			const std::string &text);
 	void exec();
 };
 
