@@ -65,10 +65,10 @@ void MenuSettingBool::initButton()
 	buttonBox.add(btn);
 }
 
-void MenuSettingBool::draw(int y)
+void MenuSettingBool::draw(int valueX, int y, int h)
 {
-	MenuSetting::draw(y);
-	gmenu2x->s->write( gmenu2x->font, strvalue, 155, y, Font::HAlignLeft, Font::VAlignTop );
+	MenuSetting::draw(valueX, y, h);
+	gmenu2x->s->write( gmenu2x->font, strvalue, valueX, y, Font::HAlignLeft, Font::VAlignTop );
 }
 
 bool MenuSettingBool::handleButtonPress(InputManager::Button button)

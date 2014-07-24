@@ -37,10 +37,10 @@ MenuSettingStringBase::~MenuSettingStringBase()
 {
 }
 
-void MenuSettingStringBase::draw(int y)
+void MenuSettingStringBase::draw(int valueX, int y, int h)
 {
-	MenuSetting::draw(y);
-	gmenu2x->s->write(gmenu2x->font, value(), 155, y,
+	MenuSetting::draw(valueX, y, h);
+	gmenu2x->s->write(gmenu2x->font, value(), valueX, y,
 			Font::HAlignLeft, Font::VAlignTop);
 }
 

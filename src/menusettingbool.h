@@ -48,7 +48,7 @@ public:
 			int *value);
 	virtual ~MenuSettingBool() {}
 
-	virtual void draw(int y);
+	virtual void draw(int valueX, int y, int h);
 	virtual bool handleButtonPress(InputManager::Button button);
 	virtual bool edited();
 

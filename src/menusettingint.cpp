@@ -67,10 +67,10 @@ MenuSettingInt::MenuSettingInt(
 	buttonBox.add(btn);
 }
 
-void MenuSettingInt::draw(int y)
+void MenuSettingInt::draw(int valueX, int y, int h)
 {
-	MenuSetting::draw(y);
-	gmenu2x->s->write(gmenu2x->font, strvalue, 155, y, Font::HAlignLeft, Font::VAlignTop);
+	MenuSetting::draw(valueX, y, h);
+	gmenu2x->s->write(gmenu2x->font, strvalue, valueX, y, Font::HAlignLeft, Font::VAlignTop);
 }
 
 bool MenuSettingInt::handleButtonPress(InputManager::Button button)

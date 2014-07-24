@@ -32,7 +32,6 @@ class MenuSettingRGBA : public MenuSetting {
 private:
 	Touchscreen &ts;
 	unsigned short selPart;
-	int y;
 	std::string strR, strG, strB, strA;
 	RGBAColor originalValue;
 	RGBAColor *_value;
@@ -53,10 +52,10 @@ public:
 			RGBAColor *value);
 	virtual ~MenuSettingRGBA() {};
 
-	virtual void draw(int y);
-	virtual void handleTS();
+	virtual void draw(int valueX, int y, int h);
+	virtual void handleTS(int valueX, int y, int h);
 	virtual bool handleButtonPress(InputManager::Button button);
-	virtual void drawSelected(int y);
+	virtual void drawSelected(int valueX, int y, int h);
 	virtual bool edited();
 
 	void setSelPart(unsigned short value);

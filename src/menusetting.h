@@ -44,13 +44,14 @@ public:
 			const std::string &description);
 	virtual ~MenuSetting();
 
-	virtual void draw(int y);
-	virtual void handleTS();
+	virtual void draw(int valueX, int y, int h);
+	virtual void handleTS(int valueX, int y, int h);
 
 	virtual bool handleButtonPress(InputManager::Button button) = 0;
-	virtual void drawSelected(int y);
+	virtual void drawSelected(int valueX, int y, int h);
 	virtual bool edited() = 0;
 
+	const std::string &getName() { return name; }
 	const std::string &getDescription() { return description; }
 };
 

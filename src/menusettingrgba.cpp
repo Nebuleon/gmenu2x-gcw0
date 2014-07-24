@@ -30,6 +30,8 @@
 using std::string;
 using std::stringstream;
 
+const unsigned int COMPONENT_WIDTH = 36;
+
 MenuSettingRGBA::MenuSettingRGBA(
 		GMenu2X *gmenu2x, Touchscreen &ts_,
 		const string &name, const string &description, RGBAColor *value)
@@ -49,28 +51,28 @@ MenuSettingRGBA::MenuSettingRGBA(
 	updateButtonBox();
 }
 
-void MenuSettingRGBA::draw(int y) {
-	this->y = y;
-	MenuSetting::draw(y);
-	gmenu2x->s->rectangle( 153, y+1, 11, 11, 0,0,0,255 );
-	gmenu2x->s->box( 154, y+2, 9, 9, value() );
-	gmenu2x->s->write( gmenu2x->font, "R: "+strR, 169, y, Font::HAlignLeft, Font::VAlignTop );
-	gmenu2x->s->write( gmenu2x->font, "G: "+strG, 205, y, Font::HAlignLeft, Font::VAlignTop );
-	gmenu2x->s->write( gmenu2x->font, "B: "+strB, 241, y, Font::HAlignLeft, Font::VAlignTop );
-	gmenu2x->s->write( gmenu2x->font, "A: "+strA, 277, y, Font::HAlignLeft, Font::VAlignTop );
+void MenuSettingRGBA::draw(int valueX, int y, int h) {
+	MenuSetting::draw(valueX, y, h);
+	gmenu2x->s->rectangle( valueX, y + 1, h - 2, h - 2, 0,0,0,255 );
+	gmenu2x->s->rectangle( valueX + 1, y + 2, h - 4, h - 4, 255,255,255,255 );
+	gmenu2x->s->box( valueX + 2, y + 3, h - 6, h - 6, value() );
+	gmenu2x->s->write( gmenu2x->font, "R: "+strR, valueX + h + 3, y, Font::HAlignLeft, Font::VAlignTop );
+	gmenu2x->s->write( gmenu2x->font, "G: "+strG, valueX + h + 3 + COMPONENT_WIDTH, y, Font::HAlignLeft, Font::VAlignTop );
+	gmenu2x->s->write( gmenu2x->font, "B: "+strB, valueX + h + 3 + COMPONENT_WIDTH * 2, y, Font::HAlignLeft, Font::VAlignTop );
+	gmenu2x->s->write( gmenu2x->font, "A: "+strA, valueX + h + 3 + COMPONENT_WIDTH * 3, y, Font::HAlignLeft, Font::VAlignTop );
 }
 
-void MenuSettingRGBA::handleTS() {
+void MenuSettingRGBA::handleTS(int valueX, int y, int h) {
 	if (ts.pressed()) {
 		for (int i=0; i<4; i++) {
-			if (i!=selPart && ts.inRect(166+i*36,y,36,14)) {
+			if (i!=selPart && ts.inRect(valueX + h + i * COMPONENT_WIDTH,y,COMPONENT_WIDTH,h)) {
 				selPart = i;
-				i = 4;
+				break;
 			}
 		}
 	}
 
-	MenuSetting::handleTS();
+	MenuSetting::handleTS(valueX, y, h);
 }
 
 bool MenuSettingRGBA::handleButtonPress(InputManager::Button button)
@@ -199,12 +201,12 @@ unsigned short MenuSettingRGBA::getSelPart()
 	}
 }
 
-void MenuSettingRGBA::drawSelected(int y)
+void MenuSettingRGBA::drawSelected(int valueX, int y, int h)
 {
-	int x = 166+selPart*36;
-	gmenu2x->s->box( x, y, 36, 14, gmenu2x->skinConfColors[COLOR_SELECTION_BG] );
+	int x = valueX + selPart * COMPONENT_WIDTH;
+	gmenu2x->s->box( x + h, y, COMPONENT_WIDTH, h, gmenu2x->skinConfColors[COLOR_SELECTION_BG] );
 
-	MenuSetting::drawSelected(y);
+	MenuSetting::drawSelected(valueX, y, h);
 }
 
 bool MenuSettingRGBA::edited()
