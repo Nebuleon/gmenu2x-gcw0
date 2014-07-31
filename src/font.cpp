@@ -14,9 +14,9 @@
 
 using namespace std;
 
-Font *Font::defaultFont()
+unique_ptr<Font> Font::defaultFont()
 {
-	return new Font(TTF_FONT, TTF_FONT_SIZE);
+	return unique_ptr<Font>(new Font(TTF_FONT, TTF_FONT_SIZE));
 }
 
 Font::Font(const std::string &path, unsigned int size)

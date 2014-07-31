@@ -278,7 +278,6 @@ GMenu2X::~GMenu2X() {
 		delete PowerSaver::getInstance();
 	quit();
 
-	delete font;
 #ifdef ENABLE_INOTIFY
 	delete monitor;
 #endif
@@ -355,11 +354,6 @@ void GMenu2X::initBG() {
 }
 
 void GMenu2X::initFont() {
-	if (font) {
-		delete font;
-		font = NULL;
-	}
-
 	string path = skinConfStr["font"];
 	if (!path.empty()) {
 		unsigned int size = skinConfInt["fontsize"];
@@ -367,15 +361,9 @@ void GMenu2X::initFont() {
 			size = 12;
 		if (path.substr(0,5)=="skin:")
 			path = sc.getSkinFilePath(path.substr(5, path.length()));
-		font = new Font(path, size);
+		font.reset(new Font(path, size));
 	} else {
 		font = Font::defaultFont();
-	}
-
-	if (!font) {
-		ERROR("Cannot function without font; aborting...\n");
-		quit();
-		exit(-1);
 	}
 }
 

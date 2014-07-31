@@ -5,20 +5,26 @@
 #define FONT_H
 
 #include <SDL_ttf.h>
+#include <memory>
 #include <string>
 
 class Surface;
 
+/**
+ * Wrapper around a TrueType or other FreeType-supported font.
+ * The wrapper is valid even if the font couldn't be loaded, but in that case
+ * nothing will be drawn.
+ */
 class Font {
 public:
 	enum HAlign { HAlignLeft, HAlignRight,  HAlignCenter };
 	enum VAlign { VAlignTop,  VAlignBottom, VAlignMiddle };
 
 	/**
-	 * Returns a newly created Font object for the default font,
-	 * or nullptr if there was a problem creating it.
+	 * Returns a newly created Font object for the default font.
 	 */
-	static Font *defaultFont();
+	static std::unique_ptr<Font> defaultFont();
+
 	Font(const std::string &path, unsigned int size);
 	~Font();
 

@@ -159,7 +159,7 @@ public:
 	SurfaceCollection sc;
 	Translator tr;
 	Surface *s, *bg;
-	Font *font;
+	std::unique_ptr<Font> font;
 
 	//Status functions
 	void main();
