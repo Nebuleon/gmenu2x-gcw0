@@ -115,7 +115,7 @@ bool WallpaperDialog::exec()
 		for (i = firstElement; i < wallpapers.size()
 					&& i < firstElement + nb_elements; i++) {
 			iY = i-firstElement;
-			gmenu2x->s->write(gmenu2x->font, wallpapers[i], 5,
+			gmenu2x->font->write(gmenu2x->s, wallpapers[i], 5,
 						top + (iY * fontheight),
 						Font::HAlignLeft, Font::VAlignTop);
 		}

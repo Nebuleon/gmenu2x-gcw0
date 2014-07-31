@@ -272,7 +272,7 @@ void BrowseDialog::paint()
 			icon = iconFile;
 		}
 		icon->blit(gmenu2x->s, 5, offsetY);
-		gmenu2x->s->write(gmenu2x->font, (*fl)[i], 24, offsetY + rowHeight / 2,
+		gmenu2x->font->write(gmenu2x->s, (*fl)[i], 24, offsetY + rowHeight / 2,
 				Font::HAlignLeft, Font::VAlignMiddle);
 
 		if (ts.available() && ts.pressed()

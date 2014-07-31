@@ -75,12 +75,6 @@ public:
 	void blitCenter(Surface *destination, int x, int y, int w=0, int h=0, int a=-1) const;
 	void blitRight(Surface *destination, int x, int y, int w=0, int h=0, int a=-1) const;
 
-	void write(Font *font, const std::string &text, int x, int y,
-			Font::HAlign halign = Font::HAlignLeft,
-			Font::VAlign valign = Font::VAlignTop) {
-		font->write(this, text, x, y, halign, valign);
-	}
-
 	void box(SDL_Rect re, RGBAColor c);
 	void box(Sint16 x, Sint16 y, Uint16 w, Uint16 h, RGBAColor c) {
 		box((SDL_Rect){ x, y, w, h }, c);

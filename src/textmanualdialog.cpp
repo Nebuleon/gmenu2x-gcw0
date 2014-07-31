@@ -105,7 +105,7 @@ void TextManualDialog::exec() {
 		ss << page+1;
 		ss >> pageStatus;
 		pageStatus = gmenu2x->tr["Page"]+": "+pageStatus+"/"+spagecount;
-		gmenu2x->s->write(gmenu2x->font, pageStatus, 310, 230, Font::HAlignRight, Font::VAlignMiddle);
+		gmenu2x->font->write(gmenu2x->s, pageStatus, 310, 230, Font::HAlignRight, Font::VAlignMiddle);
 
 		gmenu2x->s->flip();
 

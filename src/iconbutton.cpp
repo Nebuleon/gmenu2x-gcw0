@@ -70,7 +70,7 @@ void IconButton::paint(Surface *s) {
 		iconSurface->blit(s, iconRect);
 	}
 	if (!label.empty()) {
-		s->write(gmenu2x->font, label, labelRect.x, labelRect.y,
+		gmenu2x->font->write(s, label, labelRect.x, labelRect.y,
 				Font::HAlignLeft, Font::VAlignMiddle);
 	}
 }

@@ -222,7 +222,7 @@ void Menu::paint(Surface &s) {
 			x += (((t * t) / linkWidth) * t) / linkWidth;
 		}
 		icon->blit(&s, x - 16, sectionLinkPadding, 32, 32);
-		s.write(&font, sections[j], x, topBarHeight - sectionLinkPadding,
+		font.write(&s, sections[j], x, topBarHeight - sectionLinkPadding,
 				Font::HAlignCenter, Font::VAlignBottom);
 	}
 	sc.skinRes("imgs/section-l.png")->blit(&s, 0, 0);
@@ -254,7 +254,7 @@ void Menu::paint(Surface &s) {
 	}
 
 	if (selLink()) {
-		s.write(&font, selLink()->getDescription(),
+		font.write(&s, selLink()->getDescription(),
 				width / 2, height - bottomBarHeight + 2,
 				Font::HAlignCenter, Font::VAlignBottom);
 	}

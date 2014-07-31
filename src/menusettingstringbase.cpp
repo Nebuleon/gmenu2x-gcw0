@@ -40,7 +40,7 @@ MenuSettingStringBase::~MenuSettingStringBase()
 void MenuSettingStringBase::draw(int valueX, int y, int h)
 {
 	MenuSetting::draw(valueX, y, h);
-	gmenu2x->s->write(gmenu2x->font, value(), valueX, y,
+	gmenu2x->font->write(gmenu2x->s, value(), valueX, y,
 			Font::HAlignLeft, Font::VAlignTop);
 }
 

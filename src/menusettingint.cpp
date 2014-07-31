@@ -70,7 +70,7 @@ MenuSettingInt::MenuSettingInt(
 void MenuSettingInt::draw(int valueX, int y, int h)
 {
 	MenuSetting::draw(valueX, y, h);
-	gmenu2x->s->write(gmenu2x->font, strvalue, valueX, y, Font::HAlignLeft, Font::VAlignTop);
+	gmenu2x->font->write(gmenu2x->s, strvalue, valueX, y, Font::HAlignLeft, Font::VAlignTop);
 }
 
 bool MenuSettingInt::handleButtonPress(InputManager::Button button)

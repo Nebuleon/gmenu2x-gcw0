@@ -70,7 +70,7 @@ void Link::paint() {
 	if (iconSurface) {
 		iconSurface->blit(gmenu2x->s, iconX, rect.y+padding, 32,32);
 	}
-	gmenu2x->s->write(gmenu2x->font, getTitle(), iconX+16, rect.y + gmenu2x->skinConfInt["linkHeight"]-padding, Font::HAlignCenter, Font::VAlignBottom);
+	gmenu2x->font->write(gmenu2x->s, getTitle(), iconX+16, rect.y + gmenu2x->skinConfInt["linkHeight"]-padding, Font::HAlignCenter, Font::VAlignBottom);
 }
 
 void Link::paintHover() {

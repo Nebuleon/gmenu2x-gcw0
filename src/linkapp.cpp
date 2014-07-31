@@ -357,7 +357,7 @@ void LinkApp::drawRun() {
 	else
 		gmenu2x->sc["icons/generic.png"]->blit(gmenu2x->s,x,104);*/
 	iconSurface->blit(gmenu2x->s,x,gmenu2x->halfY-16);
-	gmenu2x->s->write( gmenu2x->font, text, x+42, gmenu2x->halfY+1, Font::HAlignLeft, Font::VAlignMiddle );
+	gmenu2x->font->write(gmenu2x->s, text, x+42, gmenu2x->halfY+1, Font::HAlignLeft, Font::VAlignMiddle );
 	gmenu2x->s->flip();
 }
 
@@ -458,7 +458,7 @@ void LinkApp::showManual() {
 				ss << page+1;
 				ss >> pageStatus;
 				pageStatus = gmenu2x->tr["Page"]+": "+pageStatus+"/"+spagecount;
-				gmenu2x->s->write(gmenu2x->font, pageStatus, 310, 230, Font::HAlignRight, Font::VAlignMiddle);
+				gmenu2x->font->write(gmenu2x->s, pageStatus, 310, 230, Font::HAlignRight, Font::VAlignMiddle);
 
 				gmenu2x->s->flip();
 				repaint = false;

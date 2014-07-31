@@ -124,11 +124,11 @@ int Selector::exec(int startSelection) {
 			iY = i-firstElement;
 			if (fl.isDirectory(i)) {
 				gmenu2x->sc["imgs/folder.png"]->blit(gmenu2x->s, 4, top + (iY * fontheight));
-				gmenu2x->s->write(gmenu2x->font, fl[i], 21,
+				gmenu2x->font->write(gmenu2x->s, fl[i], 21,
 							top + (iY * fontheight) + (fontheight / 2),
 							Font::HAlignLeft, Font::VAlignMiddle);
 			} else
-				gmenu2x->s->write(gmenu2x->font, titles[i - fl.dirCount()], 4,
+				gmenu2x->font->write(gmenu2x->s, titles[i - fl.dirCount()], 4,
 							top + (iY * fontheight) + (fontheight / 2),
 							Font::HAlignLeft, Font::VAlignMiddle);
 		}

@@ -18,7 +18,7 @@ void Background::paint(Surface &s) {
 
 	sc["bgmain"]->blit(&s, 0, 0);
 
-	s.write(&font, clock.getTime(),
+	font.write(&s, clock.getTime(),
 			s.width() / 2, gmenu2x.bottomBarTextY,
 			Font::HAlignCenter, Font::VAlignMiddle);
 

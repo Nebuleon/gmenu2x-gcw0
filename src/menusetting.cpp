@@ -41,7 +41,7 @@ MenuSetting::~MenuSetting()
 
 void MenuSetting::draw(int /*valueX*/, int y, int /*h*/)
 {
-	gmenu2x->s->write( gmenu2x->font, name, 5, y, Font::HAlignLeft, Font::VAlignTop );
+	gmenu2x->font->write(gmenu2x->s, name, 5, y, Font::HAlignLeft, Font::VAlignTop);
 }
 
 void MenuSetting::handleTS(int /*valueX*/, int /*y*/, int /*h*/)

@@ -56,10 +56,10 @@ void MenuSettingRGBA::draw(int valueX, int y, int h) {
 	gmenu2x->s->rectangle( valueX, y + 1, h - 2, h - 2, 0,0,0,255 );
 	gmenu2x->s->rectangle( valueX + 1, y + 2, h - 4, h - 4, 255,255,255,255 );
 	gmenu2x->s->box( valueX + 2, y + 3, h - 6, h - 6, value() );
-	gmenu2x->s->write( gmenu2x->font, "R: "+strR, valueX + h + 3, y, Font::HAlignLeft, Font::VAlignTop );
-	gmenu2x->s->write( gmenu2x->font, "G: "+strG, valueX + h + 3 + COMPONENT_WIDTH, y, Font::HAlignLeft, Font::VAlignTop );
-	gmenu2x->s->write( gmenu2x->font, "B: "+strB, valueX + h + 3 + COMPONENT_WIDTH * 2, y, Font::HAlignLeft, Font::VAlignTop );
-	gmenu2x->s->write( gmenu2x->font, "A: "+strA, valueX + h + 3 + COMPONENT_WIDTH * 3, y, Font::HAlignLeft, Font::VAlignTop );
+	gmenu2x->font->write(gmenu2x->s, "R: "+strR, valueX + h + 3, y, Font::HAlignLeft, Font::VAlignTop);
+	gmenu2x->font->write(gmenu2x->s, "G: "+strG, valueX + h + 3 + COMPONENT_WIDTH, y, Font::HAlignLeft, Font::VAlignTop);
+	gmenu2x->font->write(gmenu2x->s, "B: "+strB, valueX + h + 3 + COMPONENT_WIDTH * 2, y, Font::HAlignLeft, Font::VAlignTop);
+	gmenu2x->font->write(gmenu2x->s, "A: "+strA, valueX + h + 3 + COMPONENT_WIDTH * 3, y, Font::HAlignLeft, Font::VAlignTop);
 }
 
 void MenuSettingRGBA::handleTS(int valueX, int y, int h) {

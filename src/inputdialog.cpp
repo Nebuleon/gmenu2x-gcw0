@@ -168,7 +168,7 @@ bool InputDialog::exec() {
 		gmenu2x->s->rectangle(box.x, box.y, box.w, box.h,
 				gmenu2x->skinConfColors[COLOR_SELECTION_BG]);
 
-		gmenu2x->s->write(gmenu2x->font, input, box.x + 5, box.y + box.h - 2,
+		gmenu2x->font->write(gmenu2x->s, input, box.x + 5, box.y + box.h - 2,
 				Font::HAlignLeft, Font::VAlignBottom);
 
 		curTick = SDL_GetTicks();
@@ -312,7 +312,7 @@ void InputDialog::drawVirtualKeyboard() {
 
 			gmenu2x->s->rectangle(re,
 					gmenu2x->skinConfColors[COLOR_SELECTION_BG]);
-			gmenu2x->s->write(gmenu2x->font, charX,
+			gmenu2x->font->write(gmenu2x->s, charX,
 					kbLeft + xc * KEY_WIDTH + KEY_WIDTH / 2 - 1,
 					KB_TOP + l * KEY_HEIGHT + KEY_HEIGHT / 2,
 					Font::HAlignCenter, Font::VAlignMiddle);
@@ -332,7 +332,7 @@ void InputDialog::drawVirtualKeyboard() {
 		selCol = 0;
 		selRow = kb->size();
 	}
-	gmenu2x->s->write(gmenu2x->font, gmenu2x->tr["Cancel"],
+	gmenu2x->font->write(gmenu2x->s, gmenu2x->tr["Cancel"],
 			(int)(160 - kbLength * KEY_WIDTH / 4),
 			KB_TOP + kb->size() * KEY_HEIGHT + KEY_HEIGHT / 2,
 			Font::HAlignCenter, Font::VAlignMiddle);
@@ -343,7 +343,7 @@ void InputDialog::drawVirtualKeyboard() {
 		selCol = 1;
 		selRow = kb->size();
 	}
-	gmenu2x->s->write(gmenu2x->font, gmenu2x->tr["OK"],
+	gmenu2x->font->write(gmenu2x->s, gmenu2x->tr["OK"],
 			(int)(160 + kbLength * KEY_WIDTH / 4),
 			KB_TOP + kb->size() * KEY_HEIGHT + KEY_HEIGHT / 2,
 			Font::HAlignCenter, Font::VAlignMiddle);

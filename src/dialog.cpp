@@ -31,7 +31,7 @@ void Dialog::writeTitle(const std::string &title, Surface *s)
 {
 	if (s==NULL)
 		s = gmenu2x->s;
-	s->write(gmenu2x->font, title, 40, 0, Font::HAlignLeft, Font::VAlignTop);
+	gmenu2x->font->write(s, title, 40, 0, Font::HAlignLeft, Font::VAlignTop);
 }
 
 void Dialog::writeSubTitle(const std::string &subtitle, Surface *s)
@@ -39,7 +39,5 @@ void Dialog::writeSubTitle(const std::string &subtitle, Surface *s)
 	if (s==NULL)
 		s = gmenu2x->s;
 	std::string wrapped = gmenu2x->font->wordWrap(subtitle, gmenu2x->resX - 48);
-	s->write(gmenu2x->font, wrapped, 40, gmenu2x->skinConfInt["topBarHeight"] - gmenu2x->font->getTextHeight(wrapped), Font::HAlignLeft, Font::VAlignTop);
+	gmenu2x->font->write(s, wrapped, 40, gmenu2x->skinConfInt["topBarHeight"] - gmenu2x->font->getTextHeight(wrapped), Font::HAlignLeft, Font::VAlignTop);
 }
-
-

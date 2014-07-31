@@ -85,7 +85,7 @@ int MessageBox::exec() {
 	if (gmenu2x->sc[icon]) {
 		gmenu2x->sc[icon]->blitCenter( &bg, box.x + ICON_PADDING + ICON_DIMENSION / 2, box.y + ICON_PADDING + ICON_DIMENSION / 2 );
 	}
-	bg.write( gmenu2x->font, text, box.x + TEXT_PADDING + (gmenu2x->sc[icon] ? ICON_PADDING + ICON_DIMENSION : 0), box.y + (box.h - textHeight) / 2, Font::HAlignLeft, Font::VAlignTop );
+	gmenu2x->font->write(&bg, text, box.x + TEXT_PADDING + (gmenu2x->sc[icon] ? ICON_PADDING + ICON_DIMENSION : 0), box.y + (box.h - textHeight) / 2, Font::HAlignLeft, Font::VAlignTop);
 
 	int btnX = gmenu2x->halfX+box.w/2-6;
 	for (uint i = 0; i < BUTTON_TYPE_SIZE; i++) {

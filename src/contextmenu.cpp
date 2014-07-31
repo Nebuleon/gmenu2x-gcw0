@@ -25,7 +25,7 @@ ContextMenu::ContextMenu(GMenu2X &gmenu2x, Menu &menu)
 	, selected(0)
 {
 	Translator &tr = gmenu2x.tr;
-	Font *font = gmenu2x.font;
+	Font& font = *gmenu2x.font;
 	LinkApp* app = menu.selLinkApp();
 
 	// Init menu options:
@@ -78,10 +78,10 @@ ContextMenu::ContextMenu(GMenu2X &gmenu2x, Menu &menu)
 	// Compute bounding box.
 	int w = 0;
 	for (auto option : options) {
-		w = std::max(w, font->getTextWidth(option->text));
+		w = std::max(w, font.getTextWidth(option->text));
 	}
 	w += 23;
-	const int h = (font->getLineSpacing() + 2) * options.size() + 8;
+	const int h = (font.getLineSpacing() + 2) * options.size() + 8;
 	box = {
 		static_cast<Sint16>((gmenu2x.resX - w) / 2),
 		static_cast<Sint16>((gmenu2x.resY - h) / 2),
@@ -105,7 +105,7 @@ bool ContextMenu::runAnimations()
 
 void ContextMenu::paint(Surface &s)
 {
-	Font *font = gmenu2x.font;
+	Font& font = *gmenu2x.font;
 
 	// Darken background.
 	s.box(0, 0, gmenu2x.resX, gmenu2x.resY, 0, 0, 0, fadeAlpha);
@@ -116,7 +116,7 @@ void ContextMenu::paint(Surface &s)
 			gmenu2x.skinConfColors[COLOR_MESSAGE_BOX_BORDER]);
 
 	// Draw selection background.
-	const int h = font->getLineSpacing();
+	const int h = font.getLineSpacing();
 	SDL_Rect selbox = {
 		static_cast<Sint16>(box.x + 4),
 		static_cast<Sint16>(box.y + 4 + (h + 2) * selected),
@@ -127,7 +127,7 @@ void ContextMenu::paint(Surface &s)
 
 	// List options.
 	for (uint i = 0; i < options.size(); i++) {
-		s.write(font, options[i]->text, box.x + 12, box.y + 5 + (h + 2) * i,
+		font.write(&s, options[i]->text, box.x + 12, box.y + 5 + (h + 2) * i,
 				Font::HAlignLeft, Font::VAlignTop);
 	}
 }
