@@ -30,6 +30,7 @@
 #include "helppopup.h"
 #include "iconbutton.h"
 #include "inputdialog.h"
+#include "launcher.h"
 #include "linkapp.h"
 #include "mediamonitor.h"
 #include "menu.h"
@@ -648,7 +649,9 @@ void GMenu2X::explorer() {
 #ifdef ENABLE_CPUFREQ
 		setClock(cpuFreqAppDefault);
 #endif
-		execlp("/bin/sh","/bin/sh","-c",command.c_str(),NULL);
+
+		Launcher launcher(vector<string> { "/bin/sh", "-c", command });
+		launcher.exec();
 
 		//if execution continues then something went wrong and as we already called SDL_Quit we cannot continue
 		//try relaunching gmenu2x

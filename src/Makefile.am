@@ -2,7 +2,7 @@ bin_PROGRAMS = gmenu2x
 
 gmenu2x_SOURCES = font.cpp cpu.cpp dirdialog.cpp filedialog.cpp \
 	filelister.cpp gmenu2x.cpp iconbutton.cpp imagedialog.cpp inputdialog.cpp \
-	inputmanager.cpp linkapp.cpp link.cpp \
+	inputmanager.cpp linkapp.cpp link.cpp launcher.cpp \
 	menu.cpp menusettingbool.cpp menusetting.cpp menusettingdir.cpp \
 	menusettingfile.cpp menusettingimage.cpp menusettingint.cpp \
 	menusettingmultistring.cpp menusettingrgba.cpp menusettingstring.cpp \

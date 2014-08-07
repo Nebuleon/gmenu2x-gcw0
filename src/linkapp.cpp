@@ -23,6 +23,7 @@
 #include "debug.h"
 #include "delegate.h"
 #include "gmenu2x.h"
+#include "launcher.h"
 #include "menu.h"
 #include "selector.h"
 #include "surface.h"
@@ -40,6 +41,7 @@
 #include <array>
 #include <fstream>
 #include <sstream>
+#include <utility>
 
 #if defined(PLATFORM_A320) || defined(PLATFORM_GCW0)
 #include <linux/vt.h>
@@ -608,16 +610,20 @@ void LinkApp::launch(const string &selectedFile) {
 	}
 #endif
 
+	vector<string> commandLine;
 	if (isOpk()) {
 #ifdef HAVE_LIBOPK
-		execlp("opkrun", "opkrun", "-m", metadata.c_str(), opkFile.c_str(),
-					!params.empty() ? params.c_str() : NULL,
-					NULL);
+		commandLine = { "opkrun", "-m", metadata, opkFile };
+		if (!params.empty()) {
+			commandLine.push_back(params);
+		}
 #endif
 	} else {
-		std::string command = exec + " " + params;
-		execlp("/bin/sh", "/bin/sh", "-c", command.c_str(), NULL);
+		commandLine = { "/bin/sh", "-c", exec + " " + params };
 	}
+
+	Launcher launcher(move(commandLine));
+	launcher.exec();
 
 	//if execution continues then something went wrong and as we already called SDL_Quit we cannot continue
 	//try relaunching gmenu2x
