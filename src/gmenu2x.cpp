@@ -894,9 +894,7 @@ void GMenu2X::editLink() {
 #endif
 	if (!linkApp->isOpk()) {
 		sd.addSetting(new MenuSettingString(this, ts, tr["Selector Filter"], tr["Selector filter (Separate values with a comma)"], &linkSelFilter, diagTitle, diagIcon));
-#if defined(PLATFORM_A320) || defined(PLATFORM_GCW0)
 		sd.addSetting(new MenuSettingBool(this, ts, tr["Display Console"], tr["Must be enabled for console-based applications"], &linkApp->consoleApp));
-#endif
 	}
 
 	if (sd.exec() && sd.edited()) {

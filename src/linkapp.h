@@ -67,9 +67,7 @@ public:
 
 	virtual void loadIcon();
 
-#if defined(PLATFORM_A320) || defined(PLATFORM_GCW0)
-	bool consoleApp;
-#endif
+	bool consoleApp = false;
 
 	const std::string &getExec();
 	void setExec(const std::string &exec);

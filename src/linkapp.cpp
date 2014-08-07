@@ -43,7 +43,11 @@
 #include <sstream>
 #include <utility>
 
-#if defined(PLATFORM_A320) || defined(PLATFORM_GCW0)
+// Bind and activate the framebuffer console on selected platforms.
+#define BIND_CONSOLE \
+		defined(PLATFORM_A320) || defined(PLATFORM_GCW0)
+
+#if BIND_CONSOLE
 #include <linux/vt.h>
 #endif
 
@@ -78,9 +82,6 @@ LinkApp::LinkApp(GMenu2X *gmenu2x_, const char* linkfile)
 	selectorbrowser = true;
 	editable = true;
 	edited = false;
-#if defined(PLATFORM_A320) || defined(PLATFORM_GCW0)
-	consoleApp = false;
-#endif
 
 #ifdef HAVE_LIBOPK
 	isOPK = !!opk;
@@ -127,10 +128,8 @@ LinkApp::LinkApp(GMenu2X *gmenu2x_, const char* linkfile)
 								gmenu2x->tr["Lng"] + "]").c_str(), lkey)) {
 				description = buf;
 
-#if defined(PLATFORM_A320) || defined(PLATFORM_GCW0)
 			} else if (!strncmp(key, "Terminal", lkey)) {
 				consoleApp = !strncmp(val, "true", lval);
-#endif
 
 			} else if (!strncmp(key, "X-OD-Manual", lkey)) {
 				manual = buf;
@@ -225,10 +224,8 @@ LinkApp::LinkApp(GMenu2X *gmenu2x_, const char* linkfile)
 				params = value;
 			} else if (name == "manual") {
 				manual = value;
-#if defined(PLATFORM_A320) || defined(PLATFORM_GCW0)
 			} else if (name == "consoleapp") {
 				if (value == "true") consoleApp = true;
-#endif
 			} else if (name == "selectorfilter") {
 				setSelectorFilter( value );
 			} else if (name == "editable") {
@@ -320,9 +317,7 @@ bool LinkApp::save() {
 			if (!exec.empty()        ) f << "exec="            << exec            << endl;
 			if (!params.empty()      ) f << "params="          << params          << endl;
 			if (!manual.empty()      ) f << "manual="          << manual          << endl;
-#if defined(PLATFORM_A320) || defined(PLATFORM_GCW0)
 			if (consoleApp           ) f << "consoleapp=true"                     << endl;
-#endif
 			if (selectorfilter != "*") f << "selectorfilter="  << selectorfilter  << endl;
 		}
 		if (iclock != 0              ) f << "clock="           << iclock          << endl;
@@ -559,11 +554,7 @@ void LinkApp::launch(const string &selectedFile) {
 		}
 	}
 
-	if (gmenu2x->confInt["outputLogs"]
-#if defined(PLATFORM_A320) || defined(PLATFORM_GCW0)
-				&& !consoleApp
-#endif
-	) {
+	if (gmenu2x->confInt["outputLogs"] && !consoleApp) {
 		int fd = open(LOG_FILE, O_WRONLY | O_TRUNC | O_CREAT, 0644);
 		if (fd < 0) {
 			ERROR("Unable to open log file for write: %s\n", LOG_FILE);
@@ -587,8 +578,8 @@ void LinkApp::launch(const string &selectedFile) {
 #endif
 	gmenu2x->quit();
 
-#if defined(PLATFORM_A320) || defined(PLATFORM_GCW0)
 	if (consoleApp) {
+#if BIND_CONSOLE
 		/* Enable the framebuffer console */
 		char c = '1';
 		int fd = open("/sys/devices/virtual/vtconsole/vtcon1/bind", O_WRONLY);
@@ -607,8 +598,8 @@ void LinkApp::launch(const string &selectedFile) {
 				WARNING("Unable to activate tty1\n");
 			close(fd);
 		}
-	}
 #endif
+	}
 
 	vector<string> commandLine;
 	if (isOpk()) {
