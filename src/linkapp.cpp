@@ -43,14 +43,6 @@
 #include <sstream>
 #include <utility>
 
-// Bind and activate the framebuffer console on selected platforms.
-#define BIND_CONSOLE \
-		defined(PLATFORM_A320) || defined(PLATFORM_GCW0)
-
-#if BIND_CONSOLE
-#include <linux/vt.h>
-#endif
-
 #ifdef HAVE_LIBOPK
 #include <opk.h>
 #endif
@@ -578,29 +570,6 @@ void LinkApp::launch(const string &selectedFile) {
 #endif
 	gmenu2x->quit();
 
-	if (consoleApp) {
-#if BIND_CONSOLE
-		/* Enable the framebuffer console */
-		char c = '1';
-		int fd = open("/sys/devices/virtual/vtconsole/vtcon1/bind", O_WRONLY);
-		if (fd < 0) {
-			WARNING("Unable to open fbcon handle\n");
-		} else {
-			write(fd, &c, 1);
-			close(fd);
-		}
-
-		fd = open("/dev/tty1", O_RDWR);
-		if (fd < 0) {
-			WARNING("Unable to open tty1 handle\n");
-		} else {
-			if (ioctl(fd, VT_ACTIVATE, 1) < 0)
-				WARNING("Unable to activate tty1\n");
-			close(fd);
-		}
-#endif
-	}
-
 	vector<string> commandLine;
 	if (isOpk()) {
 #ifdef HAVE_LIBOPK
@@ -613,7 +582,7 @@ void LinkApp::launch(const string &selectedFile) {
 		commandLine = { "/bin/sh", "-c", exec + " " + params };
 	}
 
-	Launcher launcher(move(commandLine));
+	Launcher launcher(move(commandLine), consoleApp);
 	launcher.exec();
 
 	//if execution continues then something went wrong and as we already called SDL_Quit we cannot continue
