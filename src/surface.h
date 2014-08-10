@@ -108,7 +108,6 @@ private:
 
 	SDL_Surface *raw;
 	bool freeWhenDone;
-	int halfW, halfH;
 
 	// For direct access to "raw".
 	friend class Font;

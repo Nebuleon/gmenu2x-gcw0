@@ -92,8 +92,6 @@ Surface::Surface(SDL_Surface *raw_, bool freeWhenDone_)
 	: raw(raw_)
 	, freeWhenDone(freeWhenDone_)
 {
-	halfW = raw->w/2;
-	halfH = raw->h/2;
 }
 
 Surface::Surface(Surface *s) {
@@ -104,8 +102,6 @@ Surface::Surface(Surface *s) {
 	//       an alpha channel, such as the display format.
 	raw->format->alpha = s->raw->format->alpha;
 	freeWhenDone = true;
-	halfW = raw->w/2;
-	halfH = raw->h/2;
 }
 
 Surface::~Surface() {
@@ -145,10 +141,9 @@ void Surface::blit(Surface *destination, int x, int y, int w, int h, int a) cons
 }
 
 void Surface::blitCenter(SDL_Surface *destination, int x, int y, int w, int h, int a) const {
-	int oh, ow;
-	if (w==0) ow = halfW; else ow = min(halfW,w/2);
-	if (h==0) oh = halfH; else oh = min(halfH,h/2);
-	blit(destination,x-ow,y-oh,w,h,a);
+	int ow = raw->w / 2; if (w != 0) ow = min(ow, w / 2);
+	int oh = raw->h / 2; if (h != 0) oh = min(oh, h / 2);
+	blit(destination, x - ow, y - oh, w, h, a);
 }
 void Surface::blitCenter(Surface *destination, int x, int y, int w, int h, int a) const {
 	blitCenter(destination->raw,x,y,w,h,a);
@@ -239,7 +234,7 @@ void Surface::blit(Surface *destination, SDL_Rect container, Font::HAlign halign
 	case Font::HAlignLeft:
 		break;
 	case Font::HAlignCenter:
-		container.x += container.w/2-halfW;
+		container.x += container.w / 2 - raw->w / 2;
 		break;
 	case Font::HAlignRight:
 		container.x += container.w-raw->w;
@@ -250,7 +245,7 @@ void Surface::blit(Surface *destination, SDL_Rect container, Font::HAlign halign
 	case Font::VAlignTop:
 		break;
 	case Font::VAlignMiddle:
-		container.y += container.h/2-halfH;
+		container.y += container.h / 2 - raw->h / 2;
 		break;
 	case Font::VAlignBottom:
 		container.y += container.h-raw->h;
