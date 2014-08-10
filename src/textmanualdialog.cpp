@@ -89,7 +89,14 @@ void TextManualDialog::exec() {
 
 	bg.convertToDisplayFormat();
 
-	uint firstRow = 0, rowsPerPage = 180/gmenu2x->font->getLineSpacing();
+	unsigned firstRow = 0;
+
+	const int fontHeight = gmenu2x->font->getLineSpacing();
+	unsigned int contentY, contentHeight;
+	tie(contentY, contentHeight) = gmenu2x->getContentArea();
+	const unsigned rowsPerPage = contentHeight / fontHeight;
+	contentY += (contentHeight % fontHeight) / 2;
+
 	stringstream ss;
 	ss << pages.size();
 	string spagecount;
@@ -101,7 +108,7 @@ void TextManualDialog::exec() {
 
 		bg.blit(s,0,0);
 		writeSubTitle(s, pages[page].title);
-		drawText(pages[page].text, 42 /* TODO */, firstRow, rowsPerPage);
+		drawText(pages[page].text, contentY, firstRow, rowsPerPage);
 
 		ss.clear();
 		ss << page+1;
