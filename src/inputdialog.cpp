@@ -149,7 +149,7 @@ bool InputDialog::exec() {
 	Uint32 caretTick = 0, curTick;
 	bool caretOn = true;
 
-	Surface bg(gmenu2x->bg);
+	OffscreenSurface bg(gmenu2x->bg);
 	drawTitleIcon(bg, icon, false);
 	writeTitle(bg, title);
 	writeSubTitle(bg, text);
@@ -159,7 +159,7 @@ bool InputDialog::exec() {
 	close = false;
 	ok = true;
 	while (!close) {
-		Surface& s = *gmenu2x->s;
+		OutputSurface& s = *gmenu2x->s;
 
 		bg.blit(s, 0, 0);
 

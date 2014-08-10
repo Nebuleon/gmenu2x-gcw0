@@ -68,7 +68,7 @@ TextManualDialog::TextManualDialog(GMenu2X *gmenu2x, const string &title, const 
 }
 
 void TextManualDialog::exec() {
-	Surface bg(gmenu2x->bg);
+	OffscreenSurface bg(gmenu2x->bg);
 
 	//link icon
 	if (!fileExists(icon))
@@ -102,7 +102,7 @@ void TextManualDialog::exec() {
 	bool close = false;
 
 	while (!close) {
-		Surface& s = *gmenu2x->s;
+		OutputSurface& s = *gmenu2x->s;
 
 		bg.blit(s,0,0);
 		writeSubTitle(s, pages[page].title);

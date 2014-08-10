@@ -3,7 +3,7 @@
 
 #include <string>
 
-class Surface;
+class OffscreenSurface;
 class SurfaceCollection;
 
 
@@ -12,17 +12,17 @@ class SurfaceCollection;
  */
 class Battery {
 public:
-	Battery(SurfaceCollection &sc);
+	Battery(SurfaceCollection& sc);
 
 	/**
 	 * Gets the icon that reflects the current battery status.
 	 */
-	const Surface &getIcon();
+	OffscreenSurface const& getIcon();
 
 private:
 	void update();
 
-	SurfaceCollection &sc;
+	SurfaceCollection& sc;
 	std::string iconPath;
 	unsigned int lastUpdate;
 };

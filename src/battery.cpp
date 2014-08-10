@@ -46,14 +46,14 @@ static unsigned short getBatteryLevel()
 	return 0;
 }
 
-Battery::Battery(SurfaceCollection &sc_)
+Battery::Battery(SurfaceCollection& sc_)
 	: sc(sc_)
 {
 	lastUpdate = SDL_GetTicks();
 	update();
 }
 
-const Surface &Battery::getIcon()
+OffscreenSurface const& Battery::getIcon()
 {
 	// Check battery status every 60 seconds.
 	unsigned int now = SDL_GetTicks();

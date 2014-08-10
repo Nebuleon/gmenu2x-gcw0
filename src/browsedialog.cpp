@@ -224,13 +224,13 @@ void BrowseDialog::quit()
 
 void BrowseDialog::paint()
 {
-	Surface& s = *gmenu2x->s;
+	OutputSurface& s = *gmenu2x->s;
 
 	unsigned int i, iY;
 	unsigned int firstElement, lastElement;
 	unsigned int offsetY;
 
-	Surface bg(gmenu2x->bg);
+	OffscreenSurface bg(gmenu2x->bg);
 	drawTitleIcon(bg, "icons/explorer.png", true);
 	writeTitle(bg, title);
 	writeSubTitle(bg, subtitle);

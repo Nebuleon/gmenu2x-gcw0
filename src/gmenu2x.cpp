@@ -259,7 +259,7 @@ GMenu2X::GMenu2X()
 		exit(EXIT_FAILURE);
 	}
 
-	s = Surface::openOutputSurface(resX, resY, confInt["videoBpp"]);
+	s = OutputSurface::open(resX, resY, confInt["videoBpp"]);
 
 	if (!fileExists(confStr["wallpaper"])) {
 		DEBUG("No wallpaper defined; we will take the default one.\n");
@@ -305,7 +305,6 @@ GMenu2X::~GMenu2X() {
 
 	fflush(NULL);
 	sc.clear();
-	delete s;
 
 #ifdef ENABLE_INOTIFY
 	delete monitor;
@@ -317,17 +316,17 @@ void GMenu2X::initBG() {
 
 	// Load wallpaper.
 	delete bg;
-	bg = Surface::loadImage(confStr["wallpaper"]);
+	bg = OffscreenSurface::loadImage(confStr["wallpaper"]);
 	if (!bg) {
-		bg = Surface::emptySurface(resX, resY);
+		bg = OffscreenSurface::emptySurface(resX, resY);
 	}
 
 	drawTopBar(*bg);
 	drawBottomBar(*bg);
 
-	Surface *bgmain = sc.add(bg, "bgmain");
+	OffscreenSurface *bgmain = sc.add(*bg, "bgmain");
 
-	Surface *sd = Surface::loadImage("imgs/sd.png", confStr["skin"]);
+	Surface *sd = OffscreenSurface::loadImage("imgs/sd.png", confStr["skin"]);
 	if (sd) sd->blit(*bgmain, 3, bottomBarIconY);
 
 	string df = getDiskFree(getHome().c_str());
@@ -336,7 +335,7 @@ void GMenu2X::initBG() {
 
 	cpuX = font->getTextWidth(df)+32;
 #ifdef ENABLE_CPUFREQ
-	Surface *cpu = Surface::loadImage("imgs/cpu.png", confStr["skin"]);
+	Surface *cpu = OffscreenSurface::loadImage("imgs/cpu.png", confStr["skin"]);
 	if (cpu) cpu->blit(bgmain, cpuX, bottomBarIconY);
 	cpuX += 19;
 	manualX = cpuX+font->getTextWidth("300MHz")+5;
@@ -348,21 +347,21 @@ void GMenu2X::initBG() {
 	int serviceX = resX-38;
 	if (usbnet) {
 		if (web) {
-			Surface *webserver = Surface::loadImage(
+			Surface *webserver = OffscreenSurface::loadImage(
 				"imgs/webserver.png", confStr["skin"]);
 			if (webserver) webserver->blit(*bgmain, serviceX, bottomBarIconY);
 			serviceX -= 19;
 			delete webserver;
 		}
 		if (samba) {
-			Surface *sambaS = Surface::loadImage(
+			Surface *sambaS = OffscreenSurface::loadImage(
 				"imgs/samba.png", confStr["skin"]);
 			if (sambaS) sambaS->blit(*bgmain, serviceX, bottomBarIconY);
 			serviceX -= 19;
 			delete sambaS;
 		}
 		if (inet) {
-			Surface *inetS = Surface::loadImage("imgs/inet.png", confStr["skin"]);
+			Surface *inetS = OffscreenSurface::loadImage("imgs/inet.png", confStr["skin"]);
 			if (inetS) inetS->blit(*bgmain, serviceX, bottomBarIconY);
 			serviceX -= 19;
 			delete inetS;

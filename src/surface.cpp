@@ -32,6 +32,9 @@
 
 using namespace std;
 
+
+// RGBAColor:
+
 RGBAColor RGBAColor::fromString(const string &strColor) {
 	return {
 		uint8_t(constrain(strtol(strColor.substr(0, 2).c_str(), nullptr, 16),
@@ -58,94 +61,17 @@ ostream& operator<<(ostream& os, RGBAColor const& color) {
 	return os;
 }
 
-Surface *Surface::openOutputSurface(int width, int height, int bitsperpixel) {
-	SDL_ShowCursor(SDL_DISABLE);
-	SDL_Surface *raw = SDL_SetVideoMode(
-		width, height, bitsperpixel, SDL_HWSURFACE | SDL_DOUBLEBUF);
-	return raw ? new Surface(raw, false) : NULL;
-}
 
-Surface *Surface::emptySurface(int width, int height) {
-	SDL_Surface *raw = SDL_CreateRGBSurface(
-		SDL_SWSURFACE, width, height, 32, 0, 0, 0, 0);
-	if (!raw) return NULL;
-	SDL_FillRect(raw, NULL, SDL_MapRGB(raw->format, 0, 0, 0));
-	return new Surface(raw, true);
-}
-
-Surface *Surface::loadImage(const string &img, const string &skin, bool loadAlpha) {
-	string skinpath;
-	if (!skin.empty() && !img.empty() && img[0]!='/')
-	  skinpath = SurfaceCollection::getSkinFilePath(skin, img);
-	else
-	  skinpath = img;
-
-	SDL_Surface *raw = loadPNG(skinpath, loadAlpha);
-	if (!raw) {
-		ERROR("Couldn't load surface '%s'\n", img.c_str());
-		return NULL;
-	}
-
-	return new Surface(raw, true);
-}
-
-Surface::Surface(SDL_Surface *raw_, bool freeWhenDone_)
-	: raw(raw_)
-	, freeWhenDone(freeWhenDone_)
-{
-}
+// Surface:
 
 Surface::Surface(Surface const& other)
-	: Surface(SDL_ConvertSurface(
-			other.raw, other.raw->format, SDL_SWSURFACE), true)
+	: Surface(SDL_ConvertSurface(other.raw, other.raw->format, SDL_SWSURFACE))
 {
 	// Note: A bug in SDL_ConvertSurface() leaves the per-surface alpha
 	//       undefined when converting from RGBA to RGBA. This can cause
 	//       problems if the surface is later converted to a format without
 	//       an alpha channel, such as the display format.
 	raw->format->alpha = other.raw->format->alpha;
-}
-
-Surface::Surface(Surface&& other)
-	: raw(other.raw)
-	, freeWhenDone(other.freeWhenDone)
-{
-	other.raw = nullptr;
-	other.freeWhenDone = false;
-}
-
-Surface::~Surface()
-{
-	if (freeWhenDone) {
-		SDL_FreeSurface(raw);
-	}
-}
-
-Surface& Surface::operator=(Surface other)
-{
-	swap(other);
-	return *this;
-}
-
-void Surface::swap(Surface& other)
-{
-	std::swap(raw, other.raw);
-	std::swap(freeWhenDone, other.freeWhenDone);
-}
-
-void Surface::convertToDisplayFormat() {
-	SDL_Surface *newSurface = SDL_DisplayFormat(raw);
-	if (newSurface) {
-		if (freeWhenDone) {
-			SDL_FreeSurface(raw);
-		}
-		raw = newSurface;
-		freeWhenDone = true;
-	}
-}
-
-void Surface::flip() {
-	SDL_Flip(raw);
 }
 
 void Surface::blit(SDL_Surface *destination, int x, int y, int w, int h, int a) const {
@@ -350,4 +276,80 @@ void Surface::fillRectAlpha(SDL_Rect rect, RGBAColor c) {
 	if (SDL_MUSTLOCK(raw)) {
 		SDL_UnlockSurface(raw);
 	}
+}
+
+
+// OffscreenSurface:
+
+OffscreenSurface *OffscreenSurface::emptySurface(int width, int height)
+{
+	SDL_Surface *raw = SDL_CreateRGBSurface(
+			SDL_SWSURFACE, width, height, 32, 0, 0, 0, 0);
+	if (!raw) return nullptr;
+	SDL_FillRect(raw, nullptr, SDL_MapRGB(raw->format, 0, 0, 0));
+	return new OffscreenSurface(raw);
+}
+
+OffscreenSurface *OffscreenSurface::loadImage(
+		const string &img, const string &skin, bool loadAlpha)
+{
+	string skinpath;
+	if (!skin.empty() && !img.empty() && img[0]!='/')
+	  skinpath = SurfaceCollection::getSkinFilePath(skin, img);
+	else
+	  skinpath = img;
+
+	SDL_Surface *raw = loadPNG(skinpath, loadAlpha);
+	if (!raw) {
+		ERROR("Couldn't load surface '%s'\n", img.c_str());
+		return nullptr;
+	}
+
+	return new OffscreenSurface(raw);
+}
+
+OffscreenSurface::OffscreenSurface(OffscreenSurface&& other)
+	: Surface(other.raw)
+{
+	other.raw = nullptr;
+}
+
+OffscreenSurface::~OffscreenSurface()
+{
+	SDL_FreeSurface(raw);
+}
+
+OffscreenSurface& OffscreenSurface::operator=(OffscreenSurface other)
+{
+	swap(other);
+	return *this;
+}
+
+void OffscreenSurface::swap(OffscreenSurface& other)
+{
+	std::swap(raw, other.raw);
+}
+
+void OffscreenSurface::convertToDisplayFormat() {
+	SDL_Surface *newSurface = SDL_DisplayFormat(raw);
+	if (newSurface) {
+		SDL_FreeSurface(raw);
+		raw = newSurface;
+	}
+}
+
+
+// OutputSurface:
+
+unique_ptr<OutputSurface> OutputSurface::open(
+		int width, int height, int bitsPerPixel)
+{
+	SDL_ShowCursor(SDL_DISABLE);
+	SDL_Surface *raw = SDL_SetVideoMode(
+		width, height, bitsPerPixel, SDL_HWSURFACE | SDL_DOUBLEBUF);
+	return unique_ptr<OutputSurface>(raw ? new OutputSurface(raw) : nullptr);
+}
+
+void OutputSurface::flip() {
+	SDL_Flip(raw);
 }

@@ -23,9 +23,10 @@
 #include <string>
 #include <unordered_map>
 
+class OffscreenSurface;
 class Surface;
 
-typedef std::unordered_map<std::string, Surface *> SurfaceHash;
+typedef std::unordered_map<std::string, OffscreenSurface *> SurfaceHash;
 
 /**
 Hash Map of surfaces that loads surfaces not already loaded and reuses already loaded ones.
@@ -49,17 +50,17 @@ public:
 	 * Adds a copy of the given surface to this collection under the given
 	 * path. Returns the copy.
 	 */
-	Surface *add(Surface const& s, std::string const& path);
+	OffscreenSurface *add(Surface const& s, std::string const& path);
 
-	Surface *add(const std::string &path);
-	Surface *addSkinRes(const std::string &path, bool useDefault = true);
+	OffscreenSurface *add(const std::string &path);
+	OffscreenSurface *addSkinRes(const std::string &path, bool useDefault = true);
 	void     del(const std::string &path);
 	void     clear();
 	void     move(const std::string &from, const std::string &to);
 	bool     exists(const std::string &path);
 
-	Surface *operator[](const std::string &);
-	Surface *skinRes(const std::string &key, bool useDefault = true);
+	OffscreenSurface *operator[](const std::string &);
+	OffscreenSurface *skinRes(const std::string &key, bool useDefault = true);
 
 private:
 	SurfaceHash surfaces;

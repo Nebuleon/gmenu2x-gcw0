@@ -98,14 +98,14 @@ bool SurfaceCollection::exists(const string &path) {
 	return surfaces.find(path) != surfaces.end();
 }
 
-Surface *SurfaceCollection::add(Surface const& s, std::string const& path) {
+OffscreenSurface *SurfaceCollection::add(Surface const& s, std::string const& path) {
 	if (exists(path)) del(path);
-	Surface *copy = new Surface(s);
+	auto copy = new OffscreenSurface(s);
 	surfaces[path] = copy;
 	return copy;
 }
 
-Surface *SurfaceCollection::add(const string &path) {
+OffscreenSurface *SurfaceCollection::add(const string &path) {
 	if (path.empty()) return NULL;
 	if (exists(path)) del(path);
 	string filePath = path;
@@ -120,14 +120,14 @@ Surface *SurfaceCollection::add(const string &path) {
 	}
 
 	DEBUG("Adding surface: '%s'\n", path.c_str());
-	Surface *s = Surface::loadImage(filePath, "", defaultAlpha);
-	if (s != NULL) {
+	auto s = OffscreenSurface::loadImage(filePath, "", defaultAlpha);
+	if (s) {
 		surfaces[path] = s;
 	}
 	return s;
 }
 
-Surface *SurfaceCollection::addSkinRes(const string &path, bool useDefault) {
+OffscreenSurface *SurfaceCollection::addSkinRes(const string &path, bool useDefault) {
 	if (path.empty()) return NULL;
 	if (exists(path)) del(path);
 
@@ -136,8 +136,8 @@ Surface *SurfaceCollection::addSkinRes(const string &path, bool useDefault) {
 		return NULL;
 
 	DEBUG("Adding skin surface: '%s'\n", path.c_str());
-	Surface *s = Surface::loadImage(skinpath);
-	if (s != NULL) {
+	auto s = OffscreenSurface::loadImage(skinpath);
+	if (s) {
 		surfaces[path] = s;
 	}
 	return s;
@@ -163,7 +163,7 @@ void SurfaceCollection::move(const string &from, const string &to) {
 	surfaces.erase(from);
 }
 
-Surface *SurfaceCollection::operator[](const string &key) {
+OffscreenSurface *SurfaceCollection::operator[](const string &key) {
 	SurfaceHash::iterator i = surfaces.find(key);
 	if (i == surfaces.end())
 		return add(key);
@@ -171,7 +171,7 @@ Surface *SurfaceCollection::operator[](const string &key) {
 		return i->second;
 }
 
-Surface *SurfaceCollection::skinRes(const string &key, bool useDefault) {
+OffscreenSurface *SurfaceCollection::skinRes(const string &key, bool useDefault) {
 	if (key.empty()) return NULL;
 
 	SurfaceHash::iterator i = surfaces.find(key);

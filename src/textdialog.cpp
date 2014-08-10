@@ -60,7 +60,7 @@ void TextDialog::drawText(const vector<string> &text, unsigned int y,
 void TextDialog::exec() {
 	bool close = false;
 
-	Surface bg(gmenu2x->bg);
+	OffscreenSurface bg(gmenu2x->bg);
 
 	//link icon
 	if (!fileExists(icon))
@@ -87,7 +87,7 @@ void TextDialog::exec() {
 
 	unsigned firstRow = 0;
 	while (!close) {
-		Surface& s = *gmenu2x->s;
+		OutputSurface& s = *gmenu2x->s;
 
 		bg.blit(s, 0, 0);
 		drawText(text, contentY, firstRow, rowsPerPage);

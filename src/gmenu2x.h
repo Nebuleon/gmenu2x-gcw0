@@ -42,6 +42,7 @@ class Launcher;
 class Layer;
 class MediaMonitor;
 class Menu;
+class OutputSurface;
 class Surface;
 
 #ifndef GMENU2X_SYSTEM_DIR
@@ -158,7 +159,8 @@ public:
 
 	SurfaceCollection sc;
 	Translator tr;
-	Surface *s, *bg;
+	std::unique_ptr<OutputSurface> s;
+	Surface *bg;
 	std::unique_ptr<Font> font;
 
 	//Status functions

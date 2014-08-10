@@ -88,7 +88,7 @@ bool WallpaperDialog::exec()
 	unsigned int nb_elements = height / fontheight;
 
 	while (!close) {
-		Surface& s = *gmenu2x->s;
+		OutputSurface& s = *gmenu2x->s;
 
 		if (selected > firstElement + nb_elements - 1)
 			firstElement = selected - nb_elements + 1;

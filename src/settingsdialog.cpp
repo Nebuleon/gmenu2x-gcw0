@@ -50,7 +50,7 @@ SettingsDialog::~SettingsDialog() {
 }
 
 bool SettingsDialog::exec() {
-	Surface bg(gmenu2x->bg);
+	OffscreenSurface bg(gmenu2x->bg);
 	bg.convertToDisplayFormat();
 
 	bool close = false, ts_pressed = false;
@@ -78,7 +78,7 @@ bool SettingsDialog::exec() {
 	}
 
 	while (!close) {
-		Surface& s = *gmenu2x->s;
+		OutputSurface& s = *gmenu2x->s;
 
 		if (ts.available()) ts.poll();
 

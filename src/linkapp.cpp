@@ -433,13 +433,13 @@ void LinkApp::showManual() {
 		gmenu2x->setSafeMaxClock();
 #endif
 
-		Surface *pngman = Surface::loadImage(manual);
+		OffscreenSurface *pngman = OffscreenSurface::loadImage(manual);
 		if (!pngman) {
 			return;
 		}
-		Surface *bg = Surface::loadImage(gmenu2x->confStr["wallpaper"]);
+		OffscreenSurface *bg = OffscreenSurface::loadImage(gmenu2x->confStr["wallpaper"]);
 		if (!bg) {
-			bg = Surface::emptySurface(gmenu2x->s->width(), gmenu2x->s->height());
+			bg = OffscreenSurface::emptySurface(gmenu2x->s->width(), gmenu2x->s->height());
 		}
 		bg->convertToDisplayFormat();
 
@@ -459,7 +459,7 @@ void LinkApp::showManual() {
 #endif
 
 		while (!close) {
-			Surface& s = *gmenu2x->s;
+			OutputSurface& s = *gmenu2x->s;
 
 			if (repaint) {
 				bg->blit(s, 0, 0);

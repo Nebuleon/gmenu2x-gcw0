@@ -62,8 +62,8 @@ void MessageBox::setButton(InputManager::Button button, const string &label) {
 }
 
 int MessageBox::exec() {
-	Surface& s = *gmenu2x->s;
-	Surface bg(s);
+	OutputSurface& s = *gmenu2x->s;
+	OffscreenSurface bg(s);
 	//Darken background
 	bg.box(0, 0, gmenu2x->resX, gmenu2x->resY, 0,0,0,200);
 

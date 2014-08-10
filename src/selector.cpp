@@ -59,7 +59,7 @@ int Selector::exec(int startSelection) {
 	fl.setFilter(link->getSelectorFilter());
 	fl.browse();
 
-	Surface bg(gmenu2x->bg);
+	OffscreenSurface bg(gmenu2x->bg);
 	drawTitleIcon(bg, link->getIconPath(), true);
 	writeTitle(bg, link->getTitle());
 	writeSubTitle(bg, link->getDescription());
@@ -95,7 +95,7 @@ int Selector::exec(int startSelection) {
 		gmenu2x->sc.addSkinRes("imgs/folder.png");
 	gmenu2x->sc.defaultAlpha = false;
 	while (!close) {
-		Surface& s = *gmenu2x->s;
+		OutputSurface& s = *gmenu2x->s;
 
 		bg.blit(s, 0, 0);
 

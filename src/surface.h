@@ -1,6 +1,7 @@
 /***************************************************************************
  *   Copyright (C) 2006 by Massimiliano Torromeo                           *
- *   massimiliano.torromeo@gmail.com                                       *
+ *                         massimiliano.torromeo@gmail.com                 *
+ *   Copyright (C) 2010-2014 by various authors; see Git log               *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -26,6 +27,7 @@
 #include <SDL.h>
 
 #include <cstdint>
+#include <memory>
 #include <ostream>
 #include <string>
 
@@ -42,35 +44,14 @@ struct RGBAColor {
 std::ostream& operator<<(std::ostream& os, RGBAColor const& color);
 
 /**
-	Wrapper around SDL_Surface
-	@author Massimiliano Torromeo <massimiliano.torromeo@gmail.com>
-*/
+ * Abstract base class for surfaces; wraps SDL_Surface.
+ */
 class Surface {
 public:
-	static Surface *openOutputSurface(int width, int height, int bitsperpixel);
-	static Surface *emptySurface(int width, int height);
-	static Surface *loadImage(const std::string &img,
-			const std::string &skin="", bool loadAlpha=true);
-
-	// TODO: Remove this once naked Surface pointers are no longer in use.
-	Surface(Surface *other) : Surface(*other) {}
-
-	Surface(Surface const& other);
-	Surface(Surface&& other);
-	~Surface();
-	Surface& operator=(Surface other);
-	void swap(Surface& other);
-
-	/** Converts the underlying surface to the same pixel format as the frame
-	  * buffer, for faster blitting. This removes the alpha channel if the
-	  * image has done.
-	  */
-	void convertToDisplayFormat();
+	Surface& operator=(Surface const& other) = delete;
 
 	int width() const { return raw->w; }
 	int height() const { return raw->h; }
-
-	void flip();
 
 	void clearClipRect();
 	void setClipRect(int x, int y, int w, int h);
@@ -96,8 +77,16 @@ public:
 		rectangle((SDL_Rect){ x, y, w, h }, RGBAColor(r, g, b, a));
 	}
 
+protected:
+	Surface(SDL_Surface *raw) : raw(raw) {}
+	Surface(Surface const& other);
+
+	SDL_Surface *raw;
+
+	// For direct access to "raw".
+	friend class Font;
+
 private:
-	Surface(SDL_Surface *raw, bool freeWhenDone);
 	void blit(SDL_Surface *destination, int x, int y, int w=0, int h=0, int a=-1) const;
 	void blitCenter(SDL_Surface *destination, int x, int y, int w=0, int h=0, int a=-1) const;
 	void blitRight(SDL_Surface *destination, int x, int y, int w=0, int h=0, int a=-1) const;
@@ -111,12 +100,53 @@ private:
 	  * rectangle.
 	  */
 	void applyClipRect(SDL_Rect& rect);
+};
 
-	SDL_Surface *raw;
-	bool freeWhenDone;
+/**
+ * A surface that is off-screen: not visible.
+ */
+class OffscreenSurface: public Surface {
+public:
+	static OffscreenSurface *emptySurface(int width, int height);
+	static OffscreenSurface *loadImage(const std::string &img,
+			const std::string &skin="", bool loadAlpha=true);
 
-	// For direct access to "raw".
-	friend class Font;
+	// TODO: Remove this once naked Surface pointers are no longer in use.
+	OffscreenSurface(Surface *other) : Surface(*other) {}
+
+	OffscreenSurface(Surface const& other) : Surface(other) {}
+	OffscreenSurface(OffscreenSurface&& other);
+	~OffscreenSurface();
+	OffscreenSurface& operator=(OffscreenSurface other);
+	void swap(OffscreenSurface& other);
+
+	/**
+	 * Converts the underlying surface to the same pixel format as the frame
+	 * buffer, for faster blitting. This removes the alpha channel if the
+	 * image has one.
+	 */
+	void convertToDisplayFormat();
+
+private:
+	OffscreenSurface(SDL_Surface *raw) : Surface(raw) {}
+};
+
+/**
+ * A surface that is used for writing to a video output device.
+ */
+class OutputSurface: public Surface {
+public:
+	static std::unique_ptr<OutputSurface> open(
+			int width, int height, int bitsPerPixel);
+
+	/**
+	 * Offers the current buffer to the video system to be presented and
+	 * acquires a new buffer to draw into.
+	 */
+	void flip();
+
+private:
+	OutputSurface(SDL_Surface *raw) : Surface(raw) {}
 };
 
 #endif
