@@ -154,6 +154,7 @@ public:
 	//Configuration settings
 	bool useSelectionPng;
 	void setSkin(const std::string &skin, bool setWallpaper = true);
+	bool readSkinConfig(const std::string& conffile);
 
 	SurfaceCollection sc;
 	Translator tr;

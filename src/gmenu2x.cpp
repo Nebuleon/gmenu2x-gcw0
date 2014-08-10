@@ -783,41 +783,16 @@ void GMenu2X::setSkin(const string &skin, bool setWallpaper) {
 
 	/* Load skin settings from user directory if present,
 	 * or from the system directory. */
-	string skinconfname = getHome() + "/skins/" + skin + "/skin.conf";
-	if (!fileExists(skinconfname))
-	  skinconfname = GMENU2X_SYSTEM_DIR "/skins/" + skin + "/skin.conf";
+	if (!readSkinConfig(getHome() + "/skins/" + skin + "/skin.conf")) {
+		readSkinConfig(GMENU2X_SYSTEM_DIR "/skins/" + skin + "/skin.conf");
+	}
 
-	if (fileExists(skinconfname)) {
-		ifstream skinconf(skinconfname.c_str(), ios_base::in);
-		if (skinconf.is_open()) {
-			string line;
-			while (getline(skinconf, line, '\n')) {
-				line = trim(line);
-				DEBUG("skinconf: '%s'\n", line.c_str());
-				string::size_type pos = line.find("=");
-				string name = trim(line.substr(0,pos));
-				string value = trim(line.substr(pos+1,line.length()));
-
-				if (value.length()>0) {
-					if (value.length()>1 && value.at(0)=='"' && value.at(value.length()-1)=='"')
-						skinConfStr[name] = value.substr(1,value.length()-2);
-					else if (value.at(0) == '#')
-						skinConfColors[stringToColor(name)] =
-							RGBAColor::fromString(value.substr(1, value.length()));
-					else
-						skinConfInt[name] = atoi(value.c_str());
-				}
-			}
-			skinconf.close();
-
-			if (setWallpaper && !skinConfStr["wallpaper"].empty()) {
-				string fp = sc.getSkinFilePath("wallpapers/" + skinConfStr["wallpaper"]);
-				if (!fp.empty())
-					confStr["wallpaper"] = fp;
-				else
-					WARNING("Unable to find wallpaper defined on skin %s\n", skin.c_str());
-			}
-		}
+	if (setWallpaper && !skinConfStr["wallpaper"].empty()) {
+		string fp = sc.getSkinFilePath("wallpapers/" + skinConfStr["wallpaper"]);
+		if (!fp.empty())
+			confStr["wallpaper"] = fp;
+		else
+			WARNING("Unable to find wallpaper defined on skin %s\n", skin.c_str());
 	}
 
 	evalIntConf(skinConfInt, "topBarHeight", 50, 32, 120);
@@ -832,6 +807,35 @@ void GMenu2X::setSkin(const string &skin, bool setWallpaper) {
 
 	//font
 	initFont();
+}
+
+bool GMenu2X::readSkinConfig(const string& conffile)
+{
+	ifstream skinconf(conffile.c_str(), ios_base::in);
+	if (skinconf.is_open()) {
+		string line;
+		while (getline(skinconf, line, '\n')) {
+			line = trim(line);
+			DEBUG("skinconf: '%s'\n", line.c_str());
+			string::size_type pos = line.find("=");
+			string name = trim(line.substr(0,pos));
+			string value = trim(line.substr(pos+1,line.length()));
+
+			if (value.length()>0) {
+				if (value.length()>1 && value.at(0)=='"' && value.at(value.length()-1)=='"')
+					skinConfStr[name] = value.substr(1,value.length()-2);
+				else if (value.at(0) == '#')
+					skinConfColors[stringToColor(name)] =
+						RGBAColor::fromString(value.substr(1, value.length()));
+				else
+					skinConfInt[name] = atoi(value.c_str());
+			}
+		}
+		skinconf.close();
+		return true;
+	} else {
+		return false;
+	}
 }
 
 void GMenu2X::showManual() {
