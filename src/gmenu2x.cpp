@@ -448,23 +448,22 @@ void GMenu2X::readConfig() {
 }
 
 void GMenu2X::readConfig(string conffile) {
-	if (fileExists(conffile)) {
-		ifstream inf(conffile.c_str(), ios_base::in);
-		if (inf.is_open()) {
-			string line;
-			while (getline(inf, line, '\n')) {
-				string::size_type pos = line.find("=");
-				string name = trim(line.substr(0,pos));
-				string value = trim(line.substr(pos+1,line.length()));
+	ifstream inf(conffile.c_str(), ios_base::in);
+	if (inf.is_open()) {
+		string line;
+		while (getline(inf, line, '\n')) {
+			string::size_type pos = line.find("=");
+			string name = trim(line.substr(0,pos));
+			string value = trim(line.substr(pos+1,line.length()));
 
-				if (value.length()>1 && value.at(0)=='"' && value.at(value.length()-1)=='"')
-					confStr[name] = value.substr(1,value.length()-2);
-				else
-					confInt[name] = atoi(value.c_str());
-			}
-			inf.close();
+			if (value.length()>1 && value.at(0)=='"' && value.at(value.length()-1)=='"')
+				confStr[name] = value.substr(1,value.length()-2);
+			else
+				confInt[name] = atoi(value.c_str());
 		}
+		inf.close();
 	}
+
 	if (!confStr["lang"].empty())
 		tr.setLang(confStr["lang"]);
 
