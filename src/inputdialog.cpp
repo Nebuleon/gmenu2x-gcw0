@@ -150,9 +150,9 @@ bool InputDialog::exec() {
 	bool caretOn = true;
 
 	Surface bg(gmenu2x->bg);
-	drawTitleIcon(icon, false, &bg);
-	writeTitle(title, &bg);
-	writeSubTitle(text, &bg);
+	drawTitleIcon(&bg, icon, false);
+	writeTitle(&bg, title);
+	writeSubTitle(&bg, text);
 	buttonbox->paint(&bg, 5);
 	bg.convertToDisplayFormat();
 

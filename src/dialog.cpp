@@ -8,11 +8,8 @@ Dialog::Dialog(GMenu2X *gmenu2x) : gmenu2x(gmenu2x)
 {
 }
 
-void Dialog::drawTitleIcon(const std::string &icon, bool skinRes, Surface *s)
+void Dialog::drawTitleIcon(Surface *s, const std::string &icon, bool skinRes)
 {
-	if (s==NULL)
-		s = gmenu2x->s;
-
 	Surface *i = NULL;
 	if (!icon.empty()) {
 		if (skinRes)
@@ -27,17 +24,13 @@ void Dialog::drawTitleIcon(const std::string &icon, bool skinRes, Surface *s)
 	i->blit(s,4,(gmenu2x->skinConfInt["topBarHeight"]-32)/2);
 }
 
-void Dialog::writeTitle(const std::string &title, Surface *s)
+void Dialog::writeTitle(Surface *s, const std::string &title)
 {
-	if (s==NULL)
-		s = gmenu2x->s;
 	gmenu2x->font->write(s, title, 40, 0, Font::HAlignLeft, Font::VAlignTop);
 }
 
-void Dialog::writeSubTitle(const std::string &subtitle, Surface *s)
+void Dialog::writeSubTitle(Surface *s, const std::string &subtitle)
 {
-	if (s==NULL)
-		s = gmenu2x->s;
 	std::string wrapped = gmenu2x->font->wordWrap(subtitle, gmenu2x->resX - 48);
 	gmenu2x->font->write(s, wrapped, 40, gmenu2x->skinConfInt["topBarHeight"] - gmenu2x->font->getTextHeight(wrapped), Font::HAlignLeft, Font::VAlignTop);
 }

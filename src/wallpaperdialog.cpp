@@ -99,9 +99,9 @@ bool WallpaperDialog::exec()
 		gmenu2x->drawTopBar(gmenu2x->s);
 		gmenu2x->drawBottomBar(gmenu2x->s);
 
-		drawTitleIcon("icons/wallpaper.png",true);
-		writeTitle(gmenu2x->tr["Wallpaper selection"]);
-		writeSubTitle(gmenu2x->tr["Select a wallpaper from the list"]);
+		drawTitleIcon(gmenu2x->s, "icons/wallpaper.png", true);
+		writeTitle(gmenu2x->s, gmenu2x->tr["Wallpaper selection"]);
+		writeSubTitle(gmenu2x->s, gmenu2x->tr["Select a wallpaper from the list"]);
 
 		buttonbox.paint(gmenu2x->s, 5);
 

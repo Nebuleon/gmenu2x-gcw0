@@ -60,9 +60,9 @@ int Selector::exec(int startSelection) {
 	fl.browse();
 
 	Surface bg(gmenu2x->bg);
-	drawTitleIcon(link->getIconPath(), true, &bg);
-	writeTitle(link->getTitle(), &bg);
-	writeSubTitle(link->getDescription(), &bg);
+	drawTitleIcon(&bg, link->getIconPath(), true);
+	writeTitle(&bg, link->getTitle());
+	writeSubTitle(&bg, link->getDescription());
 
 	if (link->getSelectorBrowser()) {
 		gmenu2x->drawButton(&bg, "start", gmenu2x->tr["Exit"],

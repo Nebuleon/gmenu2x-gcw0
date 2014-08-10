@@ -61,11 +61,11 @@ void TextDialog::exec() {
 
 	//link icon
 	if (!fileExists(icon))
-		drawTitleIcon("icons/ebook.png",true,&bg);
+		drawTitleIcon(&bg, "icons/ebook.png", true);
 	else
-		drawTitleIcon(icon,false,&bg);
-	writeTitle(title,&bg);
-	writeSubTitle(description,&bg);
+		drawTitleIcon(&bg, icon, false);
+	writeTitle(&bg, title);
+	writeSubTitle(&bg, description);
 
 	gmenu2x->drawButton(&bg, "start", gmenu2x->tr["Exit"],
 	gmenu2x->drawButton(&bg, "cancel", "",

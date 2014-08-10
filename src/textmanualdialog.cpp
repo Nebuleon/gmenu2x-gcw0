@@ -75,10 +75,10 @@ void TextManualDialog::exec() {
 
 	//link icon
 	if (!fileExists(icon))
-		drawTitleIcon("icons/ebook.png",true,&bg);
+		drawTitleIcon(&bg, "icons/ebook.png", true);
 	else
-		drawTitleIcon(icon,false,&bg);
-	writeTitle(title+(description.empty() ? "" : ": "+description),&bg);
+		drawTitleIcon(&bg, icon, false);
+	writeTitle(&bg, title+(description.empty() ? "" : ": "+description));
 
 	gmenu2x->drawButton(&bg, "start", gmenu2x->tr["Exit"],
 	gmenu2x->drawButton(&bg, "cancel", "",
@@ -98,7 +98,7 @@ void TextManualDialog::exec() {
 
 	while (!close) {
 		bg.blit(gmenu2x->s,0,0);
-		writeSubTitle(pages[page].title);
+		writeSubTitle(gmenu2x->s, pages[page].title);
 		drawText(pages[page].text, 42 /* TODO */, firstRow, rowsPerPage);
 
 		ss.clear();

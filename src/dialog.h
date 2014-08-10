@@ -12,9 +12,9 @@ public:
 	Dialog(GMenu2X *gmenu2x);
 
 protected:
-	void drawTitleIcon(const std::string &icon, bool skinRes = false, Surface *s = NULL);
-	void writeTitle(const std::string &title, Surface *s = NULL);
-	void writeSubTitle(const std::string &subtitle, Surface *s = NULL);
+	void drawTitleIcon(Surface *s, const std::string &icon, bool skinRes = false);
+	void writeTitle(Surface *s, const std::string &title);
+	void writeSubTitle(Surface *s, const std::string &subtitle);
 
 	GMenu2X *gmenu2x;
 };

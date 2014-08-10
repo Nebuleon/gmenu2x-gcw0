@@ -229,9 +229,9 @@ void BrowseDialog::paint()
 	unsigned int offsetY;
 
 	Surface bg(gmenu2x->bg);
-	drawTitleIcon("icons/explorer.png", true, &bg);
-	writeTitle(title, &bg);
-	writeSubTitle(subtitle, &bg);
+	drawTitleIcon(&bg, "icons/explorer.png", true);
+	writeTitle(&bg, title);
+	writeSubTitle(&bg, subtitle);
 	buttonBox.paint(&bg, 5);
 
 	bg.convertToDisplayFormat();

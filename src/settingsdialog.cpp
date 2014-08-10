@@ -84,8 +84,8 @@ bool SettingsDialog::exec() {
 
 		gmenu2x->drawTopBar(gmenu2x->s);
 		//link icon
-		drawTitleIcon(icon);
-		writeTitle(text);
+		drawTitleIcon(gmenu2x->s, icon);
+		writeTitle(gmenu2x->s, text);
 
 		gmenu2x->drawBottomBar(gmenu2x->s);
 
@@ -119,7 +119,7 @@ bool SettingsDialog::exec() {
 		gmenu2x->drawScrollBar(numRows, voices.size(), firstElement);
 
 		//description
-		writeSubTitle(voices[sel]->getDescription());
+		writeSubTitle(gmenu2x->s, voices[sel]->getDescription());
 
 		gmenu2x->s->flip();
 		voices[sel]->handleTS(maxNameWidth + 15, iY, rowHeight);
