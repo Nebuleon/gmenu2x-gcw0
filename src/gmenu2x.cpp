@@ -125,8 +125,9 @@ static const char *colorToString(enum color c)
 }
 
 static void quit_all(int err) {
-    delete app;
-    exit(err);
+	delete app;
+	SDL_Quit();
+	exit(err);
 }
 
 const string GMenu2X::getHome(void)
@@ -163,11 +164,31 @@ int main(int /*argc*/, char * /*argv*/[]) {
 
 	DEBUG("Home path: %s.\n", gmenu2x_home.c_str());
 
-	app = new GMenu2X();
-	DEBUG("Starting main()\n");
-	app->main();
+	GMenu2X::run();
 
-	return 0;
+	return EXIT_FAILURE;
+}
+
+void GMenu2X::run() {
+	auto menu = new GMenu2X();
+	app = menu;
+	DEBUG("Starting main()\n");
+	menu->mainLoop();
+
+	app = nullptr;
+	Launcher *toLaunch = menu->toLaunch.release();
+	delete menu;
+
+	SDL_Quit();
+	unsetenv("SDL_FBCON_DONT_CLEAR");
+
+	if (toLaunch) {
+		toLaunch->exec();
+		// If control gets here, execution failed. Since we already destructed
+		// everything, the easiest solution is to exit and let the system
+		// respawn the menu.
+		delete toLaunch;
+	}
 }
 
 #ifdef ENABLE_CPUFREQ
@@ -194,7 +215,6 @@ void GMenu2X::initCPULimits() {
 #endif
 
 GMenu2X::GMenu2X()
-	: appToLaunch(nullptr)
 {
 	usbnet = samba = inet = web = false;
 	useSelectionPng = false;
@@ -219,7 +239,9 @@ GMenu2X::GMenu2X()
 
 	if( SDL_Init(SDL_INIT_TIMER) < 0) {
 		ERROR("Could not initialize SDL: %s\n", SDL_GetError());
-		quit();
+		// TODO: We don't use exceptions, so don't put things that can fail
+		//       in a constructor.
+		exit(EXIT_FAILURE);
 	}
 
 	bg = NULL;
@@ -232,7 +254,9 @@ GMenu2X::GMenu2X()
 	 * a black screen for a couple of seconds. */
 	if( SDL_InitSubSystem(SDL_INIT_VIDEO) < 0) {
 		ERROR("Could not initialize SDL: %s\n", SDL_GetError());
-		quit();
+		// TODO: We don't use exceptions, so don't put things that can fail
+		//       in a constructor.
+		exit(EXIT_FAILURE);
 	}
 
 	s = Surface::openOutputSurface(resX, resY, confInt["videoBpp"]);
@@ -275,22 +299,17 @@ GMenu2X::GMenu2X()
 }
 
 GMenu2X::~GMenu2X() {
-	if (PowerSaver::isRunning())
+	if (PowerSaver::isRunning()) {
 		delete PowerSaver::getInstance();
-	quit();
+	}
 
-#ifdef ENABLE_INOTIFY
-	delete monitor;
-#endif
-}
-
-void GMenu2X::quit() {
 	fflush(NULL);
 	sc.clear();
 	delete s;
 
-	SDL_Quit();
-	unsetenv("SDL_FBCON_DONT_CLEAR");
+#ifdef ENABLE_INOTIFY
+	delete monitor;
+#endif
 }
 
 void GMenu2X::initBG() {
@@ -567,11 +586,9 @@ void GMenu2X::writeTmp(int selelem, const string &selectordir) {
 	}
 }
 
-void GMenu2X::main() {
+void GMenu2X::mainLoop() {
 	if (!fileExists(CARD_ROOT))
 		CARD_ROOT = "";
-
-	appToLaunch = nullptr;
 
 	// Recover last session
 	readTmp();
@@ -600,10 +617,12 @@ void GMenu2X::main() {
 		for (auto layer : layers) {
 			layer->paint(*s);
 		}
-		if (appToLaunch) {
+		s->flip();
+
+		// Exit main loop once we have something to launch.
+		if (toLaunch) {
 			break;
 		}
-		s->flip();
 
 		// Handle touchscreen events.
 		if (ts.available()) {
@@ -630,11 +649,6 @@ void GMenu2X::main() {
 			}
 		}
 	}
-
-	if (appToLaunch) {
-		appToLaunch->drawRun();
-		appToLaunch->launch(fileToLaunch);
-	}
 }
 
 void GMenu2X::explorer() {
@@ -645,24 +659,20 @@ void GMenu2X::explorer() {
 
 		string command = cmdclean(fd.getPath()+"/"+fd.getFile());
 		chdir(fd.getPath().c_str());
-		quit();
 #ifdef ENABLE_CPUFREQ
 		setClock(cpuFreqAppDefault);
 #endif
 
-		Launcher launcher(vector<string> { "/bin/sh", "-c", command });
-		launcher.exec();
-
-		//if execution continues then something went wrong and as we already called SDL_Quit we cannot continue
-		//try relaunching gmenu2x
-		ERROR("Error executing selected application, re-launching gmenu2x\n");
-		main();
+		toLaunch.reset(new Launcher(
+				vector<string> { "/bin/sh", "-c", command }));
 	}
 }
 
-void GMenu2X::queueLaunch(LinkApp *app, const std::string &file) {
-	appToLaunch = app;
-	fileToLaunch = file;
+void GMenu2X::queueLaunch(
+	unique_ptr<Launcher>&& launcher, shared_ptr<Layer> launchLayer
+) {
+	toLaunch = move(launcher);
+	layers.push_back(launchLayer);
 }
 
 void GMenu2X::showHelpPopup() {

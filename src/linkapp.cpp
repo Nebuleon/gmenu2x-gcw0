@@ -24,6 +24,7 @@
 #include "delegate.h"
 #include "gmenu2x.h"
 #include "launcher.h"
+#include "layer.h"
 #include "menu.h"
 #include "selector.h"
 #include "surface.h"
@@ -54,6 +55,31 @@
 using namespace std;
 
 static array<const char *, 4> tokens = { "%f", "%F", "%u", "%U", };
+
+
+/**
+ * Displays the launch message (loading screen).
+ */
+class LaunchLayer: public Layer {
+public:
+	LaunchLayer(LinkApp& app) : app(app) {}
+
+	void paint(Surface &s) override {
+		app.drawLaunch(s);
+	}
+
+	bool handleButtonPress(InputManager::Button) override {
+		return true;
+	}
+
+	bool handleTouchscreen(Touchscreen&) override {
+		return true;
+	}
+
+private:
+	LinkApp& app;
+};
+
 
 #ifdef HAVE_LIBOPK
 LinkApp::LinkApp(GMenu2X *gmenu2x_, const char* linkfile,
@@ -323,9 +349,9 @@ bool LinkApp::save() {
 	return false;
 }
 
-void LinkApp::drawRun() {
+void LinkApp::drawLaunch(Surface& s) {
 	//Darkened background
-	gmenu2x->s->box(0, 0, gmenu2x->resX, gmenu2x->resY, 0,0,0,150);
+	s.box(0, 0, gmenu2x->resX, gmenu2x->resY, 0,0,0,150);
 
 	string text = getLaunchMsg().empty()
 		? gmenu2x->tr.translate("Launching $1", getTitle().c_str(), nullptr)
@@ -336,25 +362,25 @@ void LinkApp::drawRun() {
 	int halfBoxW = boxW/2;
 
 	//outer box
-	gmenu2x->s->box(gmenu2x->halfX-2-halfBoxW, gmenu2x->halfY-23, halfBoxW*2+5, 47, gmenu2x->skinConfColors[COLOR_MESSAGE_BOX_BG]);
+	s.box(gmenu2x->halfX-2-halfBoxW, gmenu2x->halfY-23, halfBoxW*2+5, 47, gmenu2x->skinConfColors[COLOR_MESSAGE_BOX_BG]);
 	//inner rectangle
-	gmenu2x->s->rectangle(gmenu2x->halfX-halfBoxW, gmenu2x->halfY-21, boxW, 42, gmenu2x->skinConfColors[COLOR_MESSAGE_BOX_BORDER]);
+	s.rectangle(gmenu2x->halfX-halfBoxW, gmenu2x->halfY-21, boxW, 42, gmenu2x->skinConfColors[COLOR_MESSAGE_BOX_BORDER]);
 
 	int x = gmenu2x->halfX+10-halfBoxW;
 	/*if (!getIcon().empty())
 		gmenu2x->sc[getIcon()]->blit(gmenu2x->s,x,104);
 	else
 		gmenu2x->sc["icons/generic.png"]->blit(gmenu2x->s,x,104);*/
-	iconSurface->blit(gmenu2x->s,x,gmenu2x->halfY-16);
-	gmenu2x->font->write(gmenu2x->s, text, x+42, gmenu2x->halfY+1, Font::HAlignLeft, Font::VAlignMiddle );
-	gmenu2x->s->flip();
+	iconSurface->blit(&s, x, gmenu2x->halfY - 16);
+	gmenu2x->font->write(&s, text, x + 42, gmenu2x->halfY + 1, Font::HAlignLeft, Font::VAlignMiddle);
 }
 
 void LinkApp::start() {
-	if (!selectordir.empty())
+	if (selectordir.empty()) {
+		gmenu2x->queueLaunch(prepareLaunch(""), make_shared<LaunchLayer>(*this));
+	} else {
 		selector();
-	else
-		gmenu2x->queueLaunch(this, "");
+	}
 }
 
 void LinkApp::showManual() {
@@ -510,11 +536,13 @@ void LinkApp::selector(int startSelection, const string &selectorDir) {
 			selectordir = selectedDir;
 		}
 		gmenu2x->writeTmp(selection, selectedDir);
-		gmenu2x->queueLaunch(this, selectedDir + sel.getFile());
+		gmenu2x->queueLaunch(
+				prepareLaunch(selectedDir + sel.getFile()),
+				make_shared<LaunchLayer>(*this));
 	}
 }
 
-void LinkApp::launch(const string &selectedFile) {
+unique_ptr<Launcher> LinkApp::prepareLaunch(const string &selectedFile) {
 	save();
 
 	if (!isOpk()) {
@@ -568,7 +596,6 @@ void LinkApp::launch(const string &selectedFile) {
 		gmenu2x->setClock(clock());
 	}
 #endif
-	gmenu2x->quit();
 
 	vector<string> commandLine;
 	if (isOpk()) {
@@ -582,12 +609,8 @@ void LinkApp::launch(const string &selectedFile) {
 		commandLine = { "/bin/sh", "-c", exec + " " + params };
 	}
 
-	Launcher launcher(move(commandLine), consoleApp);
-	launcher.exec();
-
-	//if execution continues then something went wrong and as we already called SDL_Quit we cannot continue
-	//try relaunching gmenu2x
-	gmenu2x->main();
+	return std::unique_ptr<Launcher>(new Launcher(
+			move(commandLine), consoleApp));
 }
 
 const string &LinkApp::getExec() {

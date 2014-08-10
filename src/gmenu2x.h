@@ -38,8 +38,8 @@ class Button;
 class Font;
 class HelpPopup;
 class IconButton;
+class Launcher;
 class Layer;
-class LinkApp;
 class MediaMonitor;
 class Menu;
 class Surface;
@@ -76,8 +76,7 @@ private:
 	MediaMonitor *monitor;
 #endif
 
-	LinkApp *appToLaunch;
-	std::string fileToLaunch;
+	std::unique_ptr<Launcher> toLaunch;
 
 	std::vector<std::shared_ptr<Layer>> layers;
 
@@ -120,9 +119,10 @@ private:
 	void initBG();
 
 public:
+	static void run();
+
 	GMenu2X();
 	~GMenu2X();
-	void quit();
 
 	/* Returns the home directory of gmenu2x, usually
 	 * ~/.gmenu2x */
@@ -162,7 +162,7 @@ public:
 	std::unique_ptr<Font> font;
 
 	//Status functions
-	void main();
+	void mainLoop();
 	void showContextMenu();
 	void showHelpPopup();
 	void showManual();
@@ -184,7 +184,9 @@ public:
 	 * The launch won't happen immediately; it will happen after control
 	 * returns to the main loop.
 	 */
-	void queueLaunch(LinkApp *app, const std::string &file);
+	void queueLaunch(std::unique_ptr<Launcher>&& launcher,
+					 std::shared_ptr<Layer> launchLayer);
+
 	void saveSelection();
 	void writeConfig();
 	void writeSkinConfig();

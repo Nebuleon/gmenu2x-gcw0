@@ -23,9 +23,11 @@
 
 #include "link.h"
 
+#include <memory>
 #include <string>
 
 class GMenu2X;
+class Launcher;
 
 /**
 Parses links files.
@@ -95,8 +97,11 @@ public:
 	const std::string &getFile() { return file; }
 	void renameFile(const std::string &name);
 
-	void drawRun();
-	void launch(const std::string &selectedFile);
+private:
+	void drawLaunch(Surface& s);
+	std::unique_ptr<Launcher> prepareLaunch(const std::string &selectedFile);
+
+	friend class LaunchLayer;
 };
 
 #endif
