@@ -41,7 +41,8 @@ MenuSetting::~MenuSetting()
 
 void MenuSetting::draw(int /*valueX*/, int y, int /*h*/)
 {
-	gmenu2x->font->write(gmenu2x->s, name, 5, y, Font::HAlignLeft, Font::VAlignTop);
+	Surface& s = *gmenu2x->s;
+	gmenu2x->font->write(s, name, 5, y, Font::HAlignLeft, Font::VAlignTop);
 }
 
 void MenuSetting::handleTS(int /*valueX*/, int /*y*/, int /*h*/)
@@ -51,9 +52,11 @@ void MenuSetting::handleTS(int /*valueX*/, int /*y*/, int /*h*/)
 
 void MenuSetting::drawSelected(int valueX, int y, int h)
 {
+	Surface& s = *gmenu2x->s;
+
 	// The selection rectangle
-	gmenu2x->s->box(0, y, valueX - 5, h,
+	s.box(0, y, valueX - 5, h,
 		gmenu2x->skinConfColors[COLOR_SELECTION_BG]);
 
-	buttonBox.paint(gmenu2x->s, 5);
+	buttonBox.paint(s, 5);
 }

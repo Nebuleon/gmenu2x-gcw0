@@ -60,19 +60,19 @@ int Selector::exec(int startSelection) {
 	fl.browse();
 
 	Surface bg(gmenu2x->bg);
-	drawTitleIcon(&bg, link->getIconPath(), true);
-	writeTitle(&bg, link->getTitle());
-	writeSubTitle(&bg, link->getDescription());
+	drawTitleIcon(bg, link->getIconPath(), true);
+	writeTitle(bg, link->getTitle());
+	writeSubTitle(bg, link->getDescription());
 
 	if (link->getSelectorBrowser()) {
-		gmenu2x->drawButton(&bg, "start", gmenu2x->tr["Exit"],
-		gmenu2x->drawButton(&bg, "accept", gmenu2x->tr["Select"],
-		gmenu2x->drawButton(&bg, "cancel", gmenu2x->tr["Up one folder"],
-		gmenu2x->drawButton(&bg, "left", "", 5)-10)));
+		gmenu2x->drawButton(bg, "start", gmenu2x->tr["Exit"],
+		gmenu2x->drawButton(bg, "accept", gmenu2x->tr["Select"],
+		gmenu2x->drawButton(bg, "cancel", gmenu2x->tr["Up one folder"],
+		gmenu2x->drawButton(bg, "left", "", 5)-10)));
 	} else {
-		gmenu2x->drawButton(&bg, "start", gmenu2x->tr["Exit"],
-		gmenu2x->drawButton(&bg, "cancel", "",
-		gmenu2x->drawButton(&bg, "accept", gmenu2x->tr["Select"], 5)) - 10);
+		gmenu2x->drawButton(bg, "start", gmenu2x->tr["Exit"],
+		gmenu2x->drawButton(bg, "cancel", "",
+		gmenu2x->drawButton(bg, "accept", gmenu2x->tr["Select"], 5)) - 10);
 	}
 
 	unsigned int top, height;
@@ -95,7 +95,9 @@ int Selector::exec(int startSelection) {
 		gmenu2x->sc.addSkinRes("imgs/folder.png");
 	gmenu2x->sc.defaultAlpha = false;
 	while (!close) {
-		bg.blit(gmenu2x->s,0,0);
+		Surface& s = *gmenu2x->s;
+
+		bg.blit(s, 0, 0);
 
 		if (selected >= firstElement + nb_elements)
 			firstElement = selected - nb_elements + 1;
@@ -106,36 +108,35 @@ int Selector::exec(int startSelection) {
 		if (selected-fl.dirCount()<screens.size()
 				&& !screens[selected-fl.dirCount()].empty()) {
 			Surface *screenshot = gmenu2x->sc[screens[selected-fl.dirCount()]];
-			if (screenshot)
-				screenshot->blitRight(
-						gmenu2x->s, 320, 0, 320, 240,
-						128u);
+			if (screenshot) {
+				screenshot->blitRight(s, 320, 0, 320, 240, 128u);
+			}
 		}
 
 		//Selection
 		iY = top + (selected - firstElement) * fontheight;
 		if (selected<fl.size())
-			gmenu2x->s->box(1, iY, 309, fontheight, gmenu2x->skinConfColors[COLOR_SELECTION_BG]);
+			s.box(1, iY, 309, fontheight, gmenu2x->skinConfColors[COLOR_SELECTION_BG]);
 
 		//Files & Dirs
-		gmenu2x->s->setClipRect(0, top, 311, height);
+		s.setClipRect(0, top, 311, height);
 		for (i = firstElement; i < fl.size()
 					&& i < firstElement + nb_elements; i++) {
 			iY = i-firstElement;
 			if (fl.isDirectory(i)) {
-				gmenu2x->sc["imgs/folder.png"]->blit(gmenu2x->s, 4, top + (iY * fontheight));
-				gmenu2x->font->write(gmenu2x->s, fl[i], 21,
+				gmenu2x->sc["imgs/folder.png"]->blit(s, 4, top + (iY * fontheight));
+				gmenu2x->font->write(s, fl[i], 21,
 							top + (iY * fontheight) + (fontheight / 2),
 							Font::HAlignLeft, Font::VAlignMiddle);
 			} else
-				gmenu2x->font->write(gmenu2x->s, titles[i - fl.dirCount()], 4,
+				gmenu2x->font->write(s, titles[i - fl.dirCount()], 4,
 							top + (iY * fontheight) + (fontheight / 2),
 							Font::HAlignLeft, Font::VAlignMiddle);
 		}
-		gmenu2x->s->clearClipRect();
+		s.clearClipRect();
 
 		gmenu2x->drawScrollBar(nb_elements, fl.size(), firstElement);
-		gmenu2x->s->flip();
+		s.flip();
 
 		switch (gmenu2x->input.waitForPressedButton()) {
 			case InputManager::SETTINGS:

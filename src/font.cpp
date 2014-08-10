@@ -197,7 +197,7 @@ int Font::getTextHeight(const string &text)
 	return nLines * getLineSpacing();
 }
 
-void Font::write(Surface *surface, const string &text,
+void Font::write(Surface& surface, const string &text,
 			int x, int y, HAlign halign, VAlign valign)
 {
 	if (!font) {
@@ -220,7 +220,7 @@ void Font::write(Surface *surface, const string &text,
 	}
 }
 
-void Font::writeLine(Surface *surface, std::string const& text,
+void Font::writeLine(Surface& surface, std::string const& text,
 				int x, int y, HAlign halign, VAlign valign)
 {
 	if (!font) {
@@ -261,21 +261,21 @@ void Font::writeLine(Surface *surface, std::string const& text,
 	}
 
 	SDL_Rect rect = { (Sint16) x, (Sint16) (y - 1), 0, 0 };
-	SDL_BlitSurface(s, NULL, surface->raw, &rect);
+	SDL_BlitSurface(s, NULL, surface.raw, &rect);
 
 	/* Note: rect.x / rect.y are reset everytime because SDL_BlitSurface
 	 * will modify them if negative */
 	rect.x = x;
 	rect.y = y + 1;
-	SDL_BlitSurface(s, NULL, surface->raw, &rect);
+	SDL_BlitSurface(s, NULL, surface.raw, &rect);
 
 	rect.x = x - 1;
 	rect.y = y;
-	SDL_BlitSurface(s, NULL, surface->raw, &rect);
+	SDL_BlitSurface(s, NULL, surface.raw, &rect);
 
 	rect.x = x + 1;
 	rect.y = y;
-	SDL_BlitSurface(s, NULL, surface->raw, &rect);
+	SDL_BlitSurface(s, NULL, surface.raw, &rect);
 	SDL_FreeSurface(s);
 
 	rect.x = x;
@@ -289,6 +289,6 @@ void Font::writeLine(Surface *surface, std::string const& text,
 		ERROR("Font rendering failed for text \"%s\"\n", text.c_str());
 		return;
 	}
-	SDL_BlitSurface(s, NULL, surface->raw, &rect);
+	SDL_BlitSurface(s, NULL, surface.raw, &rect);
 	SDL_FreeSurface(s);
 }

@@ -52,14 +52,16 @@ MenuSettingRGBA::MenuSettingRGBA(
 }
 
 void MenuSettingRGBA::draw(int valueX, int y, int h) {
+	Surface& s = *gmenu2x->s;
+
 	MenuSetting::draw(valueX, y, h);
-	gmenu2x->s->rectangle( valueX, y + 1, h - 2, h - 2, 0,0,0,255 );
-	gmenu2x->s->rectangle( valueX + 1, y + 2, h - 4, h - 4, 255,255,255,255 );
-	gmenu2x->s->box( valueX + 2, y + 3, h - 6, h - 6, value() );
-	gmenu2x->font->write(gmenu2x->s, "R: "+strR, valueX + h + 3, y, Font::HAlignLeft, Font::VAlignTop);
-	gmenu2x->font->write(gmenu2x->s, "G: "+strG, valueX + h + 3 + COMPONENT_WIDTH, y, Font::HAlignLeft, Font::VAlignTop);
-	gmenu2x->font->write(gmenu2x->s, "B: "+strB, valueX + h + 3 + COMPONENT_WIDTH * 2, y, Font::HAlignLeft, Font::VAlignTop);
-	gmenu2x->font->write(gmenu2x->s, "A: "+strA, valueX + h + 3 + COMPONENT_WIDTH * 3, y, Font::HAlignLeft, Font::VAlignTop);
+	s.rectangle(valueX, y + 1, h - 2, h - 2, 0,0,0,255);
+	s.rectangle(valueX + 1, y + 2, h - 4, h - 4, 255,255,255,255);
+	s.box(valueX + 2, y + 3, h - 6, h - 6, value());
+	gmenu2x->font->write(s, "R: "+strR, valueX + h + 3, y, Font::HAlignLeft, Font::VAlignTop);
+	gmenu2x->font->write(s, "G: "+strG, valueX + h + 3 + COMPONENT_WIDTH, y, Font::HAlignLeft, Font::VAlignTop);
+	gmenu2x->font->write(s, "B: "+strB, valueX + h + 3 + COMPONENT_WIDTH * 2, y, Font::HAlignLeft, Font::VAlignTop);
+	gmenu2x->font->write(s, "A: "+strA, valueX + h + 3 + COMPONENT_WIDTH * 3, y, Font::HAlignLeft, Font::VAlignTop);
 }
 
 void MenuSettingRGBA::handleTS(int valueX, int y, int h) {

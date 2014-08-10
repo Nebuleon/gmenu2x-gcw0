@@ -75,17 +75,17 @@ void TextManualDialog::exec() {
 
 	//link icon
 	if (!fileExists(icon))
-		drawTitleIcon(&bg, "icons/ebook.png", true);
+		drawTitleIcon(bg, "icons/ebook.png", true);
 	else
-		drawTitleIcon(&bg, icon, false);
-	writeTitle(&bg, title+(description.empty() ? "" : ": "+description));
+		drawTitleIcon(bg, icon, false);
+	writeTitle(bg, title+(description.empty() ? "" : ": "+description));
 
-	gmenu2x->drawButton(&bg, "start", gmenu2x->tr["Exit"],
-	gmenu2x->drawButton(&bg, "cancel", "",
-	gmenu2x->drawButton(&bg, "right", gmenu2x->tr["Change page"],
-	gmenu2x->drawButton(&bg, "left", "",
-	gmenu2x->drawButton(&bg, "down", gmenu2x->tr["Scroll"],
-	gmenu2x->drawButton(&bg, "up", "", 5)-10))-10))-10);
+	gmenu2x->drawButton(bg, "start", gmenu2x->tr["Exit"],
+	gmenu2x->drawButton(bg, "cancel", "",
+	gmenu2x->drawButton(bg, "right", gmenu2x->tr["Change page"],
+	gmenu2x->drawButton(bg, "left", "",
+	gmenu2x->drawButton(bg, "down", gmenu2x->tr["Scroll"],
+	gmenu2x->drawButton(bg, "up", "", 5)-10))-10))-10);
 
 	bg.convertToDisplayFormat();
 
@@ -97,17 +97,19 @@ void TextManualDialog::exec() {
 	string pageStatus;
 
 	while (!close) {
-		bg.blit(gmenu2x->s,0,0);
-		writeSubTitle(gmenu2x->s, pages[page].title);
+		Surface& s = *gmenu2x->s;
+
+		bg.blit(s,0,0);
+		writeSubTitle(s, pages[page].title);
 		drawText(pages[page].text, 42 /* TODO */, firstRow, rowsPerPage);
 
 		ss.clear();
 		ss << page+1;
 		ss >> pageStatus;
 		pageStatus = gmenu2x->tr["Page"]+": "+pageStatus+"/"+spagecount;
-		gmenu2x->font->write(gmenu2x->s, pageStatus, 310, 230, Font::HAlignRight, Font::VAlignMiddle);
+		gmenu2x->font->write(s, pageStatus, 310, 230, Font::HAlignRight, Font::VAlignMiddle);
 
-		gmenu2x->s->flip();
+		s.flip();
 
 		switch(gmenu2x->input.waitForPressedButton()) {
 			case InputManager::UP:

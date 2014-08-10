@@ -78,16 +78,18 @@ bool SettingsDialog::exec() {
 	}
 
 	while (!close) {
+		Surface& s = *gmenu2x->s;
+
 		if (ts.available()) ts.poll();
 
-		bg.blit(gmenu2x->s,0,0);
+		bg.blit(s, 0, 0);
 
-		gmenu2x->drawTopBar(gmenu2x->s);
+		gmenu2x->drawTopBar(s);
 		//link icon
-		drawTitleIcon(gmenu2x->s, icon);
-		writeTitle(gmenu2x->s, text);
+		drawTitleIcon(s, icon);
+		writeTitle(s, text);
 
-		gmenu2x->drawBottomBar(gmenu2x->s);
+		gmenu2x->drawBottomBar(s);
 
 		if (sel>firstElement+numRows-1) firstElement=sel-numRows+1;
 		if (sel<firstElement) firstElement=sel;
@@ -119,9 +121,9 @@ bool SettingsDialog::exec() {
 		gmenu2x->drawScrollBar(numRows, voices.size(), firstElement);
 
 		//description
-		writeSubTitle(gmenu2x->s, voices[sel]->getDescription());
+		writeSubTitle(s, voices[sel]->getDescription());
 
-		gmenu2x->s->flip();
+		s.flip();
 		voices[sel]->handleTS(maxNameWidth + 15, iY, rowHeight);
 
 		InputManager::Button button = inputMgr.waitForPressedButton();

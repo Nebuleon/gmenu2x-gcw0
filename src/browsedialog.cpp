@@ -224,18 +224,20 @@ void BrowseDialog::quit()
 
 void BrowseDialog::paint()
 {
+	Surface& s = *gmenu2x->s;
+
 	unsigned int i, iY;
 	unsigned int firstElement, lastElement;
 	unsigned int offsetY;
 
 	Surface bg(gmenu2x->bg);
-	drawTitleIcon(&bg, "icons/explorer.png", true);
-	writeTitle(&bg, title);
-	writeSubTitle(&bg, subtitle);
-	buttonBox.paint(&bg, 5);
+	drawTitleIcon(bg, "icons/explorer.png", true);
+	writeTitle(bg, title);
+	writeSubTitle(bg, subtitle);
+	buttonBox.paint(bg, 5);
 
 	bg.convertToDisplayFormat();
-	bg.blit(gmenu2x->s,0,0);
+	bg.blit(s, 0, 0);
 
 	// TODO(MtH): I have no idea what the right value of firstElement would be,
 	//            but originally it was undefined and that is never a good idea.
@@ -249,7 +251,7 @@ void BrowseDialog::paint()
 	//Selection
 	const int topBarHeight = gmenu2x->skinConfInt["topBarHeight"];
 	iY = topBarHeight + 1 + (selected - firstElement) * rowHeight;
-	gmenu2x->s->box(2, iY, gmenu2x->resX - 12, rowHeight - 1,
+	s.box(2, iY, gmenu2x->resX - 12, rowHeight - 1,
 			gmenu2x->skinConfColors[COLOR_SELECTION_BG]);
 
 	lastElement = firstElement + numRows;
@@ -259,7 +261,7 @@ void BrowseDialog::paint()
 	offsetY = topBarHeight + 1;
 
 	//Files & Directories
-	gmenu2x->s->setClipRect(clipRect);
+	s.setClipRect(clipRect);
 	for (i = firstElement; i < lastElement; i++) {
 		Surface *icon;
 		if (fl->isDirectory(i)) {
@@ -271,8 +273,8 @@ void BrowseDialog::paint()
 		} else {
 			icon = iconFile;
 		}
-		icon->blit(gmenu2x->s, 5, offsetY);
-		gmenu2x->font->write(gmenu2x->s, (*fl)[i], 24, offsetY + rowHeight / 2,
+		icon->blit(s, 5, offsetY);
+		gmenu2x->font->write(s, (*fl)[i], 24, offsetY + rowHeight / 2,
 				Font::HAlignLeft, Font::VAlignMiddle);
 
 		if (ts.available() && ts.pressed()
@@ -283,8 +285,8 @@ void BrowseDialog::paint()
 
 		offsetY += rowHeight;
 	}
-	gmenu2x->s->clearClipRect();
+	s.clearClipRect();
 
 	gmenu2x->drawScrollBar(numRows,fl->size(), firstElement);
-	gmenu2x->s->flip();
+	s.flip();
 }

@@ -62,7 +62,8 @@ void MessageBox::setButton(InputManager::Button button, const string &label) {
 }
 
 int MessageBox::exec() {
-	Surface bg(gmenu2x->s);
+	Surface& s = *gmenu2x->s;
+	Surface bg(s);
 	//Darken background
 	bg.box(0, 0, gmenu2x->resX, gmenu2x->resY, 0,0,0,200);
 
@@ -83,9 +84,9 @@ int MessageBox::exec() {
 	bg.rectangle(box, gmenu2x->skinConfColors[COLOR_MESSAGE_BOX_BORDER]);
 	//icon+text
 	if (gmenu2x->sc[icon]) {
-		gmenu2x->sc[icon]->blitCenter( &bg, box.x + ICON_PADDING + ICON_DIMENSION / 2, box.y + ICON_PADDING + ICON_DIMENSION / 2 );
+		gmenu2x->sc[icon]->blitCenter(bg, box.x + ICON_PADDING + ICON_DIMENSION / 2, box.y + ICON_PADDING + ICON_DIMENSION / 2);
 	}
-	gmenu2x->font->write(&bg, text, box.x + TEXT_PADDING + (gmenu2x->sc[icon] ? ICON_PADDING + ICON_DIMENSION : 0), box.y + (box.h - textHeight) / 2, Font::HAlignLeft, Font::VAlignTop);
+	gmenu2x->font->write(bg, text, box.x + TEXT_PADDING + (gmenu2x->sc[icon] ? ICON_PADDING + ICON_DIMENSION : 0), box.y + (box.h - textHeight) / 2, Font::HAlignLeft, Font::VAlignTop);
 
 	int btnX = gmenu2x->halfX+box.w/2-6;
 	for (uint i = 0; i < BUTTON_TYPE_SIZE; i++) {
@@ -93,7 +94,7 @@ int MessageBox::exec() {
 			buttonPositions[i].y = box.y+box.h+8;
 			buttonPositions[i].w = btnX;
 
-			btnX = gmenu2x->drawButtonRight(&bg, buttonLabels[i], buttons[i], btnX, buttonPositions[i].y);
+			btnX = gmenu2x->drawButtonRight(bg, buttonLabels[i], buttons[i], btnX, buttonPositions[i].y);
 
 			buttonPositions[i].x = btnX;
 			buttonPositions[i].w = buttonPositions[i].x-btnX-6;
@@ -101,8 +102,8 @@ int MessageBox::exec() {
 	}
 
 	bg.convertToDisplayFormat();
-	bg.blit(gmenu2x->s,0,0);
-	gmenu2x->s->flip();
+	bg.blit(s, 0, 0);
+	s.flip();
 
 	int result = -1;
 	while (result < 0) {

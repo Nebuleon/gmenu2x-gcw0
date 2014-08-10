@@ -322,17 +322,17 @@ void GMenu2X::initBG() {
 		bg = Surface::emptySurface(resX, resY);
 	}
 
-	drawTopBar(bg);
-	drawBottomBar(bg);
+	drawTopBar(*bg);
+	drawBottomBar(*bg);
 
 	Surface *bgmain = new Surface(bg);
 	sc.add(bgmain,"bgmain");
 
 	Surface *sd = Surface::loadImage("imgs/sd.png", confStr["skin"]);
-	if (sd) sd->blit(bgmain, 3, bottomBarIconY);
+	if (sd) sd->blit(*bgmain, 3, bottomBarIconY);
 
 	string df = getDiskFree(getHome().c_str());
-	font->write(bgmain, df, 22, bottomBarTextY, Font::HAlignLeft, Font::VAlignMiddle);
+	font->write(*bgmain, df, 22, bottomBarTextY, Font::HAlignLeft, Font::VAlignMiddle);
 	delete sd;
 
 	cpuX = font->getTextWidth(df)+32;
@@ -351,20 +351,20 @@ void GMenu2X::initBG() {
 		if (web) {
 			Surface *webserver = Surface::loadImage(
 				"imgs/webserver.png", confStr["skin"]);
-			if (webserver) webserver->blit(bgmain, serviceX, bottomBarIconY);
+			if (webserver) webserver->blit(*bgmain, serviceX, bottomBarIconY);
 			serviceX -= 19;
 			delete webserver;
 		}
 		if (samba) {
 			Surface *sambaS = Surface::loadImage(
 				"imgs/samba.png", confStr["skin"]);
-			if (sambaS) sambaS->blit(bgmain, serviceX, bottomBarIconY);
+			if (sambaS) sambaS->blit(*bgmain, serviceX, bottomBarIconY);
 			serviceX -= 19;
 			delete sambaS;
 		}
 		if (inet) {
 			Surface *inetS = Surface::loadImage("imgs/inet.png", confStr["skin"]);
-			if (inetS) inetS->blit(bgmain, serviceX, bottomBarIconY);
+			if (inetS) inetS->blit(*bgmain, serviceX, bottomBarIconY);
 			serviceX -= 19;
 			delete inetS;
 		}
@@ -1044,14 +1044,14 @@ string GMenu2X::getDiskFree(const char *path) {
 	return df;
 }
 
-int GMenu2X::drawButton(Surface *s, IconButton *btn, int x, int y) {
+int GMenu2X::drawButton(Surface& s, IconButton *btn, int x, int y) {
 	if (y<0) y = resY+y;
 	btn->setPosition(x, y-7);
 	btn->paint(s);
 	return x+btn->getRect().w+6;
 }
 
-int GMenu2X::drawButton(Surface *s, const string &btn, const string &text, int x, int y) {
+int GMenu2X::drawButton(Surface& s, const string &btn, const string &text, int x, int y) {
 	if (y<0) y = resY+y;
 	SDL_Rect re = { static_cast<Sint16>(x), static_cast<Sint16>(y - 7), 0, 16 };
 	if (sc.skinRes("imgs/buttons/"+btn+".png") != NULL) {
@@ -1063,7 +1063,7 @@ int GMenu2X::drawButton(Surface *s, const string &btn, const string &text, int x
 	return x+re.w+6;
 }
 
-int GMenu2X::drawButtonRight(Surface *s, const string &btn, const string &text, int x, int y) {
+int GMenu2X::drawButtonRight(Surface& s, const string &btn, const string &text, int x, int y) {
 	if (y<0) y = resY+y;
 	if (sc.skinRes("imgs/buttons/"+btn+".png") != NULL) {
 		x -= 16;
@@ -1097,22 +1097,22 @@ void GMenu2X::drawScrollBar(uint pageSize, uint totalSize, uint pagePos) {
 			skinConfColors[COLOR_SELECTION_BG]);
 }
 
-void GMenu2X::drawTopBar(Surface *s) {
+void GMenu2X::drawTopBar(Surface& s) {
 	Surface *bar = sc.skinRes("imgs/topbar.png", false);
 	if (bar) {
 		bar->blit(s, 0, 0);
 	} else {
 		const int h = skinConfInt["topBarHeight"];
-		s->box(0, 0, resX, h, skinConfColors[COLOR_TOP_BAR_BG]);
+		s.box(0, 0, resX, h, skinConfColors[COLOR_TOP_BAR_BG]);
 	}
 }
 
-void GMenu2X::drawBottomBar(Surface *s) {
+void GMenu2X::drawBottomBar(Surface& s) {
 	Surface *bar = sc.skinRes("imgs/bottombar.png", false);
 	if (bar) {
 		bar->blit(s, 0, resY-bar->height());
 	} else {
 		const int h = skinConfInt["bottomBarHeight"];
-		s->box(0, resY - h, resX, h, skinConfColors[COLOR_BOTTOM_BAR_BG]);
+		s.box(0, resY - h, resX, h, skinConfColors[COLOR_BOTTOM_BAR_BG]);
 	}
 }

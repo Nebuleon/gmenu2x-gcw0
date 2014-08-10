@@ -67,8 +67,9 @@ void MenuSettingBool::initButton()
 
 void MenuSettingBool::draw(int valueX, int y, int h)
 {
+	Surface& s = *gmenu2x->s;
 	MenuSetting::draw(valueX, y, h);
-	gmenu2x->font->write(gmenu2x->s, strvalue, valueX, y, Font::HAlignLeft, Font::VAlignTop);
+	gmenu2x->font->write(s, strvalue, valueX, y, Font::HAlignLeft, Font::VAlignTop);
 }
 
 bool MenuSettingBool::handleButtonPress(InputManager::Button button)

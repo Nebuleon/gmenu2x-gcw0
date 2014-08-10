@@ -127,7 +127,7 @@ void ContextMenu::paint(Surface &s)
 
 	// List options.
 	for (uint i = 0; i < options.size(); i++) {
-		font.write(&s, options[i]->text, box.x + 12, box.y + 5 + (h + 2) * i,
+		font.write(s, options[i]->text, box.x + 12, box.y + 5 + (h + 2) * i,
 				Font::HAlignLeft, Font::VAlignTop);
 	}
 }

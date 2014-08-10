@@ -16,15 +16,15 @@ class GMenu2X;
  */
 class Background : public Layer {
 public:
-	Background(GMenu2X &gmenu2x);
+	Background(GMenu2X& gmenu2x);
 
 	// Layer implementation:
-	virtual void paint(Surface &s);
+	virtual void paint(Surface& s);
 	virtual bool handleButtonPress(InputManager::Button button);
-	virtual bool handleTouchscreen(Touchscreen &ts);
+	virtual bool handleTouchscreen(Touchscreen& ts);
 
 private:
-	GMenu2X &gmenu2x;
+	GMenu2X& gmenu2x;
 	Battery battery;
 	Clock clock;
 };

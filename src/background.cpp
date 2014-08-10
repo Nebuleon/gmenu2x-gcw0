@@ -6,23 +6,23 @@
 #include "gmenu2x.h"
 
 
-Background::Background(GMenu2X &gmenu2x)
+Background::Background(GMenu2X& gmenu2x)
 	: gmenu2x(gmenu2x)
 	, battery(gmenu2x.sc)
 {
 }
 
-void Background::paint(Surface &s) {
+void Background::paint(Surface& s) {
 	Font &font = *gmenu2x.font;
 	SurfaceCollection &sc = gmenu2x.sc;
 
-	sc["bgmain"]->blit(&s, 0, 0);
+	sc["bgmain"]->blit(s, 0, 0);
 
-	font.write(&s, clock.getTime(),
+	font.write(s, clock.getTime(),
 			s.width() / 2, gmenu2x.bottomBarTextY,
 			Font::HAlignCenter, Font::VAlignMiddle);
 
-	battery.getIcon().blit(&s, s.width() - 19, gmenu2x.bottomBarIconY);
+	battery.getIcon().blit(s, s.width() - 19, gmenu2x.bottomBarIconY);
 }
 
 bool Background::handleButtonPress(InputManager::Button button) {
@@ -38,6 +38,6 @@ bool Background::handleButtonPress(InputManager::Button button) {
 	}
 }
 
-bool Background::handleTouchscreen(Touchscreen &/*ts*/) {
+bool Background::handleTouchscreen(Touchscreen&) {
 	return false;
 }

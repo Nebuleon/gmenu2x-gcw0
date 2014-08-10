@@ -39,8 +39,9 @@ MenuSettingStringBase::~MenuSettingStringBase()
 
 void MenuSettingStringBase::draw(int valueX, int y, int h)
 {
+	Surface& s = *gmenu2x->s;
 	MenuSetting::draw(valueX, y, h);
-	gmenu2x->font->write(gmenu2x->s, value(), valueX, y,
+	gmenu2x->font->write(s, value(), valueX, y,
 			Font::HAlignLeft, Font::VAlignTop);
 }
 

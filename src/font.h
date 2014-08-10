@@ -38,7 +38,7 @@ public:
 		return lineSpacing;
 	}
 
-	void write(Surface *surface,
+	void write(Surface& surface,
 				const std::string &text, int x, int y,
 				HAlign halign = HAlignLeft, VAlign valign = VAlignTop);
 
@@ -48,7 +48,7 @@ private:
 	std::string wordWrapSingleLine(const std::string &text,
 				size_t start, size_t end, int width);
 
-	void writeLine(Surface *surface, std::string const& text,
+	void writeLine(Surface& surface, std::string const& text,
 				int x, int y, HAlign halign, VAlign valign);
 
 	TTF_Font *font;

@@ -221,12 +221,12 @@ void Menu::paint(Surface &s) {
 			int t = sectionDelta < 0 ? sectionDelta + linkWidth : sectionDelta;
 			x += (((t * t) / linkWidth) * t) / linkWidth;
 		}
-		icon->blit(&s, x - 16, sectionLinkPadding, 32, 32);
-		font.write(&s, sections[j], x, topBarHeight - sectionLinkPadding,
+		icon->blit(s, x - 16, sectionLinkPadding, 32, 32);
+		font.write(s, sections[j], x, topBarHeight - sectionLinkPadding,
 				Font::HAlignCenter, Font::VAlignBottom);
 	}
-	sc.skinRes("imgs/section-l.png")->blit(&s, 0, 0);
-	sc.skinRes("imgs/section-r.png")->blit(&s, width - 10, 0);
+	sc.skinRes("imgs/section-l.png")->blit(s, 0, 0);
+	sc.skinRes("imgs/section-r.png")->blit(s, width - 10, 0);
 
 	vector<Link*> &sectionLinks = links[iSection];
 	const uint numLinks = sectionLinks.size();
@@ -254,7 +254,7 @@ void Menu::paint(Surface &s) {
 	}
 
 	if (selLink()) {
-		font.write(&s, selLink()->getDescription(),
+		font.write(s, selLink()->getDescription(),
 				width / 2, height - bottomBarHeight + 2,
 				Font::HAlignCenter, Font::VAlignBottom);
 	}
@@ -269,11 +269,11 @@ void Menu::paint(Surface &s) {
 		//Manual indicator
 		if (!linkApp->getManual().empty())
 			sc.skinRes("imgs/manual.png")->blit(
-					&s, gmenu2x->manualX, gmenu2x->bottomBarIconY);
+					s, gmenu2x->manualX, gmenu2x->bottomBarIconY);
 	}
 
 	if (ts.available()) {
-		btnContextMenu->paint();
+		btnContextMenu->paint(s);
 	}
 }
 

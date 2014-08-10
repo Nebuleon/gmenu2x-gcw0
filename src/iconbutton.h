@@ -23,8 +23,7 @@ public:
 
 	bool handleTS();
 
-	void paint(Surface *s);
-	void paint() { paint(gmenu2x->s); }
+	void paint(Surface& s);
 
 private:
 	void recalcRects();

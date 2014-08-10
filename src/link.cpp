@@ -67,17 +67,21 @@ bool Link::handleTS() {
 }
 
 void Link::paint() {
+	Surface& s = *gmenu2x->s;
+
 	if (iconSurface) {
-		iconSurface->blit(gmenu2x->s, iconX, rect.y+padding, 32,32);
+		iconSurface->blit(s, iconX, rect.y+padding, 32,32);
 	}
-	gmenu2x->font->write(gmenu2x->s, getTitle(), iconX+16, rect.y + gmenu2x->skinConfInt["linkHeight"]-padding, Font::HAlignCenter, Font::VAlignBottom);
+	gmenu2x->font->write(s, getTitle(), iconX+16, rect.y + gmenu2x->skinConfInt["linkHeight"]-padding, Font::HAlignCenter, Font::VAlignBottom);
 }
 
 void Link::paintHover() {
+	Surface& s = *gmenu2x->s;
+
 	if (gmenu2x->useSelectionPng)
-		gmenu2x->sc["imgs/selection.png"]->blit(gmenu2x->s, rect, Font::HAlignCenter, Font::VAlignMiddle);
+		gmenu2x->sc["imgs/selection.png"]->blit(s, rect, Font::HAlignCenter, Font::VAlignMiddle);
 	else
-		gmenu2x->s->box(rect.x, rect.y, rect.w, rect.h, gmenu2x->skinConfColors[COLOR_SELECTION_BG]);
+		s.box(rect.x, rect.y, rect.w, rect.h, gmenu2x->skinConfColors[COLOR_SELECTION_BG]);
 }
 
 void Link::updateSurfaces()

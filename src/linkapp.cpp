@@ -371,8 +371,8 @@ void LinkApp::drawLaunch(Surface& s) {
 		gmenu2x->sc[getIcon()]->blit(gmenu2x->s,x,104);
 	else
 		gmenu2x->sc["icons/generic.png"]->blit(gmenu2x->s,x,104);*/
-	iconSurface->blit(&s, x, gmenu2x->halfY - 16);
-	gmenu2x->font->write(&s, text, x + 42, gmenu2x->halfY + 1, Font::HAlignLeft, Font::VAlignMiddle);
+	iconSurface->blit(s, x, gmenu2x->halfY - 16);
+	gmenu2x->font->write(s, text, x + 42, gmenu2x->halfY + 1, Font::HAlignLeft, Font::VAlignMiddle);
 }
 
 void LinkApp::start() {
@@ -459,23 +459,25 @@ void LinkApp::showManual() {
 #endif
 
 		while (!close) {
-			if (repaint) {
-				bg->blit(gmenu2x->s, 0, 0);
-				pngman->blit(gmenu2x->s, -page*320, 0);
+			Surface& s = *gmenu2x->s;
 
-				gmenu2x->drawBottomBar(gmenu2x->s);
-				gmenu2x->drawButton(gmenu2x->s, "start", gmenu2x->tr["Exit"],
-				gmenu2x->drawButton(gmenu2x->s, "cancel", "",
-				gmenu2x->drawButton(gmenu2x->s, "right", gmenu2x->tr["Change page"],
-				gmenu2x->drawButton(gmenu2x->s, "left", "", 5)-10))-10);
+			if (repaint) {
+				bg->blit(s, 0, 0);
+				pngman->blit(s, -page*320, 0);
+
+				gmenu2x->drawBottomBar(s);
+				gmenu2x->drawButton(s, "start", gmenu2x->tr["Exit"],
+				gmenu2x->drawButton(s, "cancel", "",
+				gmenu2x->drawButton(s, "right", gmenu2x->tr["Change page"],
+				gmenu2x->drawButton(s, "left", "", 5)-10))-10);
 
 				ss.clear();
 				ss << page+1;
 				ss >> pageStatus;
 				pageStatus = gmenu2x->tr["Page"]+": "+pageStatus+"/"+spagecount;
-				gmenu2x->font->write(gmenu2x->s, pageStatus, 310, 230, Font::HAlignRight, Font::VAlignMiddle);
+				gmenu2x->font->write(s, pageStatus, 310, 230, Font::HAlignRight, Font::VAlignMiddle);
 
-				gmenu2x->s->flip();
+				s.flip();
 				repaint = false;
 			}
 

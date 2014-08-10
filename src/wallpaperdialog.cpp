@@ -88,41 +88,43 @@ bool WallpaperDialog::exec()
 	unsigned int nb_elements = height / fontheight;
 
 	while (!close) {
+		Surface& s = *gmenu2x->s;
+
 		if (selected > firstElement + nb_elements - 1)
 			firstElement = selected - nb_elements + 1;
 		if (selected < firstElement)
 			firstElement = selected;
 
 		//Wallpaper
-		gmenu2x->sc[((string)"skin:wallpapers/" + wallpapers[selected]).c_str()]->blit(gmenu2x->s, 0, 0);
+		gmenu2x->sc[((string)"skin:wallpapers/" + wallpapers[selected]).c_str()]->blit(s, 0, 0);
 
-		gmenu2x->drawTopBar(gmenu2x->s);
-		gmenu2x->drawBottomBar(gmenu2x->s);
+		gmenu2x->drawTopBar(s);
+		gmenu2x->drawBottomBar(s);
 
-		drawTitleIcon(gmenu2x->s, "icons/wallpaper.png", true);
-		writeTitle(gmenu2x->s, gmenu2x->tr["Wallpaper selection"]);
-		writeSubTitle(gmenu2x->s, gmenu2x->tr["Select a wallpaper from the list"]);
+		drawTitleIcon(s, "icons/wallpaper.png", true);
+		writeTitle(s, gmenu2x->tr["Wallpaper selection"]);
+		writeSubTitle(s, gmenu2x->tr["Select a wallpaper from the list"]);
 
-		buttonbox.paint(gmenu2x->s, 5);
+		buttonbox.paint(s, 5);
 
 		//Selection
 		iY = selected - firstElement;
 		iY = top + (iY * fontheight);
-		gmenu2x->s->box(2, iY, 308, fontheight, gmenu2x->skinConfColors[COLOR_SELECTION_BG]);
+		s.box(2, iY, 308, fontheight, gmenu2x->skinConfColors[COLOR_SELECTION_BG]);
 
 		//Files & Directories
-		gmenu2x->s->setClipRect(0, top, 311, height);
+		s.setClipRect(0, top, 311, height);
 		for (i = firstElement; i < wallpapers.size()
 					&& i < firstElement + nb_elements; i++) {
 			iY = i-firstElement;
-			gmenu2x->font->write(gmenu2x->s, wallpapers[i], 5,
+			gmenu2x->font->write(s, wallpapers[i], 5,
 						top + (iY * fontheight),
 						Font::HAlignLeft, Font::VAlignTop);
 		}
-		gmenu2x->s->clearClipRect();
+		s.clearClipRect();
 
 		gmenu2x->drawScrollBar(nb_elements, wallpapers.size(), firstElement);
-		gmenu2x->s->flip();
+		s.flip();
 
         switch(gmenu2x->input.waitForPressedButton()) {
             case InputManager::CANCEL:

@@ -37,6 +37,7 @@ TextDialog::TextDialog(GMenu2X *gmenu2x, const string &title, const string &desc
 void TextDialog::drawText(const vector<string> &text, unsigned int y,
 		unsigned int firstRow, unsigned int rowsPerPage)
 {
+	Surface& s = *gmenu2x->s;
 	const int fontHeight = gmenu2x->font->getLineSpacing();
 
 	for (unsigned i = firstRow; i < firstRow + rowsPerPage && i < text.size(); i++) {
@@ -44,10 +45,10 @@ void TextDialog::drawText(const vector<string> &text, unsigned int y,
 		int rowY = y + (i - firstRow) * fontHeight;
 		if (line == "----") { // horizontal ruler
 			rowY += fontHeight / 2;
-			gmenu2x->s->box(5, rowY, gmenu2x->resX - 16, 1, 255, 255, 255, 130);
-			gmenu2x->s->box(5, rowY+1, gmenu2x->resX - 16, 1, 0, 0, 0, 130);
+			s.box(5, rowY, gmenu2x->resX - 16, 1, 255, 255, 255, 130);
+			s.box(5, rowY+1, gmenu2x->resX - 16, 1, 0, 0, 0, 130);
 		} else {
-			gmenu2x->font->write(gmenu2x->s, line, 5, rowY);
+			gmenu2x->font->write(s, line, 5, rowY);
 		}
 	}
 
@@ -61,16 +62,16 @@ void TextDialog::exec() {
 
 	//link icon
 	if (!fileExists(icon))
-		drawTitleIcon(&bg, "icons/ebook.png", true);
+		drawTitleIcon(bg, "icons/ebook.png", true);
 	else
-		drawTitleIcon(&bg, icon, false);
-	writeTitle(&bg, title);
-	writeSubTitle(&bg, description);
+		drawTitleIcon(bg, icon, false);
+	writeTitle(bg, title);
+	writeSubTitle(bg, description);
 
-	gmenu2x->drawButton(&bg, "start", gmenu2x->tr["Exit"],
-	gmenu2x->drawButton(&bg, "cancel", "",
-	gmenu2x->drawButton(&bg, "down", gmenu2x->tr["Scroll"],
-	gmenu2x->drawButton(&bg, "up", "", 5)-10))-10);
+	gmenu2x->drawButton(bg, "start", gmenu2x->tr["Exit"],
+	gmenu2x->drawButton(bg, "cancel", "",
+	gmenu2x->drawButton(bg, "down", gmenu2x->tr["Scroll"],
+	gmenu2x->drawButton(bg, "up", "", 5)-10))-10);
 
 	bg.convertToDisplayFormat();
 
@@ -82,9 +83,11 @@ void TextDialog::exec() {
 
 	unsigned firstRow = 0;
 	while (!close) {
-		bg.blit(gmenu2x->s, 0, 0);
+		Surface& s = *gmenu2x->s;
+
+		bg.blit(s, 0, 0);
 		drawText(text, contentY, firstRow, rowsPerPage);
-		gmenu2x->s->flip();
+		s.flip();
 
 		switch(gmenu2x->input.waitForPressedButton()) {
 			case InputManager::UP:

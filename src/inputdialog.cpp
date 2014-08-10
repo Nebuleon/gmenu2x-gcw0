@@ -150,25 +150,27 @@ bool InputDialog::exec() {
 	bool caretOn = true;
 
 	Surface bg(gmenu2x->bg);
-	drawTitleIcon(&bg, icon, false);
-	writeTitle(&bg, title);
-	writeSubTitle(&bg, text);
-	buttonbox->paint(&bg, 5);
+	drawTitleIcon(bg, icon, false);
+	writeTitle(bg, title);
+	writeSubTitle(bg, text);
+	buttonbox->paint(bg, 5);
 	bg.convertToDisplayFormat();
 
 	close = false;
 	ok = true;
 	while (!close) {
-		bg.blit(gmenu2x->s,0,0);
+		Surface& s = *gmenu2x->s;
+
+		bg.blit(s, 0, 0);
 
 		box.w = gmenu2x->font->getTextWidth(input) + 18;
 		box.x = 160 - box.w / 2;
-		gmenu2x->s->box(box.x, box.y, box.w, box.h,
+		s.box(box.x, box.y, box.w, box.h,
 		gmenu2x->skinConfColors[COLOR_SELECTION_BG]);
-		gmenu2x->s->rectangle(box.x, box.y, box.w, box.h,
+		s.rectangle(box.x, box.y, box.w, box.h,
 				gmenu2x->skinConfColors[COLOR_SELECTION_BG]);
 
-		gmenu2x->font->write(gmenu2x->s, input, box.x + 5, box.y + box.h - 2,
+		gmenu2x->font->write(s, input, box.x + 5, box.y + box.h - 2,
 				Font::HAlignLeft, Font::VAlignBottom);
 
 		curTick = SDL_GetTicks();
@@ -178,13 +180,13 @@ bool InputDialog::exec() {
 		}
 
 		if (caretOn) {
-			gmenu2x->s->box(box.x + box.w - 12, box.y + 3, 8, box.h - 6,
+			s.box(box.x + box.w - 12, box.y + 3, 8, box.h - 6,
 					gmenu2x->skinConfColors[COLOR_SELECTION_BG]);
 		}
 
 		if (ts.available()) ts.poll();
 		drawVirtualKeyboard();
-		gmenu2x->s->flip();
+		s.flip();
 
 		switch (inputMgr.waitForPressedButton()) {
 			case InputManager::SETTINGS:
@@ -264,8 +266,10 @@ void InputDialog::changeKeys() {
 }
 
 void InputDialog::drawVirtualKeyboard() {
+	Surface& s = *gmenu2x->s;
+
 	//keyboard border
-	gmenu2x->s->rectangle(kbRect, gmenu2x->skinConfColors[COLOR_SELECTION_BG]);
+	s.rectangle(kbRect, gmenu2x->skinConfColors[COLOR_SELECTION_BG]);
 
 	if (selCol<0) selCol = selRow==(int)kb->size() ? 1 : kbLength-1;
 	if (selCol>=(int)kbLength) selCol = 0;
@@ -274,13 +278,13 @@ void InputDialog::drawVirtualKeyboard() {
 
 	//selection
 	if (selRow<(int)kb->size())
-		gmenu2x->s->box(kbLeft + selCol * KEY_WIDTH - 1,
+		s.box(kbLeft + selCol * KEY_WIDTH - 1,
 				KB_TOP + selRow * KEY_HEIGHT, KEY_WIDTH - 1, KEY_HEIGHT - 2,
 				gmenu2x->skinConfColors[COLOR_SELECTION_BG]);
 	else {
 		if (selCol > 1) selCol = 0;
 		if (selCol < 0) selCol = 1;
-		gmenu2x->s->box(kbLeft + selCol * kbLength * KEY_WIDTH / 2 - 1,
+		s.box(kbLeft + selCol * kbLength * KEY_WIDTH / 2 - 1,
 				KB_TOP + kb->size() * KEY_HEIGHT, kbLength * KEY_WIDTH / 2 - 1,
 				KEY_HEIGHT - 1, gmenu2x->skinConfColors[COLOR_SELECTION_BG]);
 	}
@@ -310,9 +314,9 @@ void InputDialog::drawVirtualKeyboard() {
 				selRow = l;
 			}
 
-			gmenu2x->s->rectangle(re,
+			s.rectangle(re,
 					gmenu2x->skinConfColors[COLOR_SELECTION_BG]);
-			gmenu2x->font->write(gmenu2x->s, charX,
+			gmenu2x->font->write(s, charX,
 					kbLeft + xc * KEY_WIDTH + KEY_WIDTH / 2 - 1,
 					KB_TOP + l * KEY_HEIGHT + KEY_HEIGHT / 2,
 					Font::HAlignCenter, Font::VAlignMiddle);
@@ -327,23 +331,23 @@ void InputDialog::drawVirtualKeyboard() {
 		static_cast<Uint16>(kbLength * KEY_WIDTH / 2 - 1),
 		KEY_HEIGHT - 1
 	};
-	gmenu2x->s->rectangle(re, gmenu2x->skinConfColors[COLOR_SELECTION_BG]);
+	s.rectangle(re, gmenu2x->skinConfColors[COLOR_SELECTION_BG]);
 	if (ts.available() && ts.pressed() && ts.inRect(re)) {
 		selCol = 0;
 		selRow = kb->size();
 	}
-	gmenu2x->font->write(gmenu2x->s, gmenu2x->tr["Cancel"],
+	gmenu2x->font->write(s, gmenu2x->tr["Cancel"],
 			(int)(160 - kbLength * KEY_WIDTH / 4),
 			KB_TOP + kb->size() * KEY_HEIGHT + KEY_HEIGHT / 2,
 			Font::HAlignCenter, Font::VAlignMiddle);
 
 	re.x = kbLeft + kbLength * KEY_WIDTH / 2 - 1;
-	gmenu2x->s->rectangle(re, gmenu2x->skinConfColors[COLOR_SELECTION_BG]);
+	s.rectangle(re, gmenu2x->skinConfColors[COLOR_SELECTION_BG]);
 	if (ts.available() && ts.pressed() && ts.inRect(re)) {
 		selCol = 1;
 		selRow = kb->size();
 	}
-	gmenu2x->font->write(gmenu2x->s, gmenu2x->tr["OK"],
+	gmenu2x->font->write(s, gmenu2x->tr["OK"],
 			(int)(160 + kbLength * KEY_WIDTH / 4),
 			KB_TOP + kb->size() * KEY_HEIGHT + KEY_HEIGHT / 2,
 			Font::HAlignCenter, Font::VAlignMiddle);

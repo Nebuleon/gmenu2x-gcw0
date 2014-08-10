@@ -159,8 +159,8 @@ void Surface::blit(SDL_Surface *destination, int x, int y, int w, int h, int a) 
 		SDL_SetAlpha(raw, SDL_SRCALPHA|SDL_RLEACCEL, a);
 	SDL_BlitSurface(raw, (w==0 || h==0) ? NULL : &src, destination, &dest);
 }
-void Surface::blit(Surface *destination, int x, int y, int w, int h, int a) const {
-	blit(destination->raw,x,y,w,h,a);
+void Surface::blit(Surface& destination, int x, int y, int w, int h, int a) const {
+	blit(destination.raw, x, y, w, h, a);
 }
 
 void Surface::blitCenter(SDL_Surface *destination, int x, int y, int w, int h, int a) const {
@@ -168,17 +168,17 @@ void Surface::blitCenter(SDL_Surface *destination, int x, int y, int w, int h, i
 	int oh = raw->h / 2; if (h != 0) oh = min(oh, h / 2);
 	blit(destination, x - ow, y - oh, w, h, a);
 }
-void Surface::blitCenter(Surface *destination, int x, int y, int w, int h, int a) const {
-	blitCenter(destination->raw,x,y,w,h,a);
+void Surface::blitCenter(Surface& destination, int x, int y, int w, int h, int a) const {
+	blitCenter(destination.raw, x, y, w, h, a);
 }
 
 void Surface::blitRight(SDL_Surface *destination, int x, int y, int w, int h, int a) const {
 	if (!w) w = raw->w;
-	blit(destination,x-min(raw->w,w),y,w,h,a);
+	blit(destination, x - min(raw->w, w), y, w, h, a);
 }
-void Surface::blitRight(Surface *destination, int x, int y, int w, int h, int a) const {
+void Surface::blitRight(Surface& destination, int x, int y, int w, int h, int a) const {
 	if (!w) w = raw->w;
-	blitRight(destination->raw,x,y,w,h,a);
+	blitRight(destination.raw, x, y, w, h, a);
 }
 
 void Surface::box(SDL_Rect re, RGBAColor c) {
@@ -252,7 +252,7 @@ void Surface::applyClipRect(SDL_Rect& rect) {
 	}
 }
 
-void Surface::blit(Surface *destination, SDL_Rect container, Font::HAlign halign, Font::VAlign valign) const {
+void Surface::blit(Surface& destination, SDL_Rect container, Font::HAlign halign, Font::VAlign valign) const {
 	switch (halign) {
 	case Font::HAlignLeft:
 		break;
@@ -275,7 +275,7 @@ void Surface::blit(Surface *destination, SDL_Rect container, Font::HAlign halign
 		break;
 	}
 
-	blit(destination,container.x,container.y);
+	blit(destination, container.x, container.y);
 }
 
 static inline uint32_t mult8x4(uint32_t c, uint8_t a) {

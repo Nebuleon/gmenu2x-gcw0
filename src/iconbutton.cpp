@@ -65,7 +65,7 @@ bool IconButton::handleTS() {
 	return false;
 }
 
-void IconButton::paint(Surface *s) {
+void IconButton::paint(Surface& s) {
 	if (iconSurface) {
 		iconSurface->blit(s, iconRect);
 	}
