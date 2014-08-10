@@ -30,7 +30,7 @@
 
 using namespace std;
 
-void InputManager::init(GMenu2X *gmenu2x, const string &conffile, Menu *menu) {
+bool InputManager::init(GMenu2X *gmenu2x, Menu *menu) {
 	this->gmenu2x = gmenu2x;
 	this->menu = menu;
 
@@ -40,7 +40,21 @@ void InputManager::init(GMenu2X *gmenu2x, const string &conffile, Menu *menu) {
 		buttonMap[i].js_mapped = false;
 		buttonMap[i].kb_mapped = false;
 	}
-	readConfFile(conffile);
+
+	/* If a user-specified input.conf file exists, we load it;
+	 * otherwise, we load the default one. */
+	string input_file = gmenu2x->getHome() + "/input.conf";
+	DEBUG("Loading user-specific input.conf file: %s.\n", input_file.c_str());
+	if (!readConfFile(input_file)) {
+		input_file = GMENU2X_SYSTEM_DIR "/input.conf";
+		DEBUG("Loading system input.conf file: %s.\n", input_file.c_str());
+		if (!readConfFile(input_file)) {
+			ERROR("InputManager: failed to open config file\n");
+			return false;
+		}
+	}
+
+	return true;
 }
 
 InputManager::InputManager()
@@ -73,56 +87,56 @@ InputManager::~InputManager()
 #endif
 }
 
-void InputManager::readConfFile(const string &conffile) {
+bool InputManager::readConfFile(const string &conffile) {
 	ifstream inf(conffile.c_str(), ios_base::in);
-	if (inf.fail()) {
-		ERROR("InputManager: failed to open config file\n");
-		return;
-	}
+	if (inf.is_open()) {
+		string line;
+		while (getline(inf, line, '\n')) {
+			string::size_type pos = line.find("=");
+			string name = trim(line.substr(0,pos));
+			line = trim(line.substr(pos+1,line.length()));
 
-	string line;
-	while (getline(inf, line, '\n')) {
-		string::size_type pos = line.find("=");
-		string name = trim(line.substr(0,pos));
-		line = trim(line.substr(pos+1,line.length()));
+			Button button;
+			if (name == "up")            button = UP;
+			else if (name == "down")     button = DOWN;
+			else if (name == "left")     button = LEFT;
+			else if (name == "right")    button = RIGHT;
+			else if (name == "accept")   button = ACCEPT;
+			else if (name == "cancel")   button = CANCEL;
+			else if (name == "altleft")  button = ALTLEFT;
+			else if (name == "altright") button = ALTRIGHT;
+			else if (name == "menu")     button = MENU;
+			else if (name == "settings") button = SETTINGS;
+			else {
+				WARNING("InputManager: Ignoring unknown button name \"%s\"\n",
+						name.c_str());
+				continue;
+			}
 
-		Button button;
-		if (name == "up")            button = UP;
-		else if (name == "down")     button = DOWN;
-		else if (name == "left")     button = LEFT;
-		else if (name == "right")    button = RIGHT;
-		else if (name == "accept")   button = ACCEPT;
-		else if (name == "cancel")   button = CANCEL;
-		else if (name == "altleft")  button = ALTLEFT;
-		else if (name == "altright") button = ALTRIGHT;
-		else if (name == "menu")     button = MENU;
-		else if (name == "settings") button = SETTINGS;
-		else {
-			WARNING("InputManager: Ignoring unknown button name \"%s\"\n",
-					name.c_str());
-			continue;
+			pos = line.find(",");
+			string sourceStr = trim(line.substr(0,pos));
+			line = trim(line.substr(pos+1, line.length()));
+
+			if (sourceStr == "keyboard") {
+				buttonMap[button].kb_mapped = true;
+				buttonMap[button].kb_code = atoi(line.c_str());
+	#ifndef SDL_JOYSTICK_DISABLED
+			} else if (sourceStr == "joystick") {
+				buttonMap[button].js_mapped = true;
+				buttonMap[button].js_code = atoi(line.c_str());
+	#endif
+			} else {
+				WARNING("InputManager: Ignoring unknown button source \"%s\"\n",
+						sourceStr.c_str());
+				continue;
+			}
 		}
 
-		pos = line.find(",");
-		string sourceStr = trim(line.substr(0,pos));
-		line = trim(line.substr(pos+1, line.length()));
-
-		if (sourceStr == "keyboard") {
-			buttonMap[button].kb_mapped = true;
-			buttonMap[button].kb_code = atoi(line.c_str());
-#ifndef SDL_JOYSTICK_DISABLED
-		} else if (sourceStr == "joystick") {
-			buttonMap[button].js_mapped = true;
-			buttonMap[button].js_code = atoi(line.c_str());
-#endif
-		} else {
-			WARNING("InputManager: Ignoring unknown button source \"%s\"\n",
-					sourceStr.c_str());
-			continue;
-		}
+		inf.close();
+		return true;
+	} else {
+		return false;
 	}
-
-	inf.close();
 }
 
 InputManager::Button InputManager::waitForPressedButton() {

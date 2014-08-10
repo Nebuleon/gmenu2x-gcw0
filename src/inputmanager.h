@@ -64,7 +64,7 @@ public:
 	InputManager();
 	~InputManager();
 
-	void init(GMenu2X *gmenu2x, const std::string &conffile, Menu *menu);
+	bool init(GMenu2X *gmenu2x, Menu *menu);
 	Button waitForPressedButton();
 	void repeatRateChanged();
 	Uint32 joystickRepeatCallback(Uint32 timeout, struct Joystick *joystick);
@@ -72,7 +72,7 @@ public:
 	bool getButton(Button *button, bool wait);
 
 private:
-	void readConfFile(const std::string &conffile);
+	bool readConfFile(const std::string &conffile);
 
 	struct ButtonMapEntry {
 		bool kb_mapped, js_mapped;

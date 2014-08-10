@@ -279,17 +279,9 @@ GMenu2X::GMenu2X()
 	monitor = new MediaMonitor(CARD_ROOT);
 #endif
 
-	/* If a user-specified input.conf file exists, we load it;
-	 * otherwise, we load the default one. */
-	string input_file = getHome() + "/input.conf";
-	if (fileExists(input_file.c_str())) {
-		DEBUG("Loading user-specific input.conf file: %s.\n", input_file.c_str());
-	} else {
-		input_file = GMENU2X_SYSTEM_DIR "/input.conf";
-		DEBUG("Loading system input.conf file: %s.\n", input_file.c_str());
+	if (!input.init(this, menu.get())) {
+		exit(EXIT_FAILURE);
 	}
-
-	input.init(this, input_file, menu.get());
 
 	if (confInt["backlightTimeout"] > 0)
         PowerSaver::getInstance()->setScreenTimeout( confInt["backlightTimeout"] );
