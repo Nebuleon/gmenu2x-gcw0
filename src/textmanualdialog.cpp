@@ -135,8 +135,12 @@ void TextManualDialog::exec() {
 				else firstRow = 0;
 				break;
 			case InputManager::ALTRIGHT:
-				if (firstRow + rowsPerPage*2 -1 < pages[page].text.size()) firstRow += rowsPerPage-1;
-				else firstRow = max(0ul, (unsigned long) (pages[page].text.size() - rowsPerPage));
+				if (firstRow + rowsPerPage*2 -1 < pages[page].text.size()) {
+					firstRow += rowsPerPage-1;
+				} else {
+					firstRow = pages[page].text.size() < rowsPerPage ?
+						0 : pages[page].text.size() - rowsPerPage;
+				}
 				break;
 			case InputManager::CANCEL:
 			case InputManager::SETTINGS:
