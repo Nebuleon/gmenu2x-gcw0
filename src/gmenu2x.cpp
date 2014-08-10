@@ -313,9 +313,9 @@ GMenu2X::~GMenu2X() {
 
 void GMenu2X::initBG() {
 	sc.del("bgmain");
+	bg.reset();
 
 	// Load wallpaper.
-	delete bg;
 	bg = OffscreenSurface::loadImage(confStr["wallpaper"]);
 	if (!bg) {
 		bg = OffscreenSurface::emptySurface(resX, resY);
@@ -326,20 +326,22 @@ void GMenu2X::initBG() {
 
 	OffscreenSurface *bgmain = sc.add(*bg, "bgmain");
 
-	Surface *sd = OffscreenSurface::loadImage("imgs/sd.png", confStr["skin"]);
-	if (sd) sd->blit(*bgmain, 3, bottomBarIconY);
+	{
+		auto sd = OffscreenSurface::loadImage("imgs/sd.png", confStr["skin"]);
+		if (sd) sd->blit(*bgmain, 3, bottomBarIconY);
+	}
 
 	string df = getDiskFree(getHome().c_str());
 	font->write(*bgmain, df, 22, bottomBarTextY, Font::HAlignLeft, Font::VAlignMiddle);
-	delete sd;
 
-	cpuX = font->getTextWidth(df)+32;
+	cpuX = font->getTextWidth(df) + 32;
 #ifdef ENABLE_CPUFREQ
-	Surface *cpu = OffscreenSurface::loadImage("imgs/cpu.png", confStr["skin"]);
-	if (cpu) cpu->blit(bgmain, cpuX, bottomBarIconY);
+	{
+		auto cpu = OffscreenSurface::loadImage("imgs/cpu.png", confStr["skin"]);
+		if (cpu) cpu->blit(bgmain, cpuX, bottomBarIconY);
+	}
 	cpuX += 19;
-	manualX = cpuX+font->getTextWidth("300MHz")+5;
-	delete cpu;
+	manualX = cpuX + font->getTextWidth("300MHz") + 5;
 #else
 	manualX = cpuX;
 #endif
@@ -347,24 +349,22 @@ void GMenu2X::initBG() {
 	int serviceX = resX-38;
 	if (usbnet) {
 		if (web) {
-			Surface *webserver = OffscreenSurface::loadImage(
-				"imgs/webserver.png", confStr["skin"]);
+			auto webserver = OffscreenSurface::loadImage(
+					"imgs/webserver.png", confStr["skin"]);
 			if (webserver) webserver->blit(*bgmain, serviceX, bottomBarIconY);
 			serviceX -= 19;
-			delete webserver;
 		}
 		if (samba) {
-			Surface *sambaS = OffscreenSurface::loadImage(
-				"imgs/samba.png", confStr["skin"]);
+			auto sambaS = OffscreenSurface::loadImage(
+					"imgs/samba.png", confStr["skin"]);
 			if (sambaS) sambaS->blit(*bgmain, serviceX, bottomBarIconY);
 			serviceX -= 19;
-			delete sambaS;
 		}
 		if (inet) {
-			Surface *inetS = OffscreenSurface::loadImage("imgs/inet.png", confStr["skin"]);
+			auto inetS = OffscreenSurface::loadImage(
+					"imgs/inet.png", confStr["skin"]);
 			if (inetS) inetS->blit(*bgmain, serviceX, bottomBarIconY);
 			serviceX -= 19;
-			delete inetS;
 		}
 	}
 

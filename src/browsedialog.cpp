@@ -230,7 +230,7 @@ void BrowseDialog::paint()
 	unsigned int firstElement, lastElement;
 	unsigned int offsetY;
 
-	OffscreenSurface bg(gmenu2x->bg);
+	OffscreenSurface bg(*gmenu2x->bg);
 	drawTitleIcon(bg, "icons/explorer.png", true);
 	writeTitle(bg, title);
 	writeSubTitle(bg, subtitle);

@@ -68,7 +68,7 @@ TextManualDialog::TextManualDialog(GMenu2X *gmenu2x, const string &title, const 
 }
 
 void TextManualDialog::exec() {
-	OffscreenSurface bg(gmenu2x->bg);
+	OffscreenSurface bg(*gmenu2x->bg);
 
 	//link icon
 	if (!fileExists(icon))

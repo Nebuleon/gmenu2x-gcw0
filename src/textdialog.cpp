@@ -60,7 +60,7 @@ void TextDialog::drawText(const vector<string> &text, unsigned int y,
 void TextDialog::exec() {
 	bool close = false;
 
-	OffscreenSurface bg(gmenu2x->bg);
+	OffscreenSurface bg(*gmenu2x->bg);
 
 	//link icon
 	if (!fileExists(icon))

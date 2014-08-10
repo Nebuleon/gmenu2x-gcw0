@@ -28,6 +28,7 @@
 
 class GMenu2X;
 class Launcher;
+class Surface;
 
 /**
 Parses links files.

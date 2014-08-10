@@ -149,7 +149,7 @@ bool InputDialog::exec() {
 	Uint32 caretTick = 0, curTick;
 	bool caretOn = true;
 
-	OffscreenSurface bg(gmenu2x->bg);
+	OffscreenSurface bg(*gmenu2x->bg);
 	drawTitleIcon(bg, icon, false);
 	writeTitle(bg, title);
 	writeSubTitle(bg, text);

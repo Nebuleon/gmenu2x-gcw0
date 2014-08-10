@@ -29,6 +29,7 @@
 #include <SDL.h>
 #include <string>
 
+class OffscreenSurface;
 class Touchscreen;
 
 class BrowseDialog : protected Dialog {
@@ -72,9 +73,9 @@ private:
 
 	bool ts_pressed;
 
-	Surface *iconGoUp;
-	Surface *iconFolder;
-	Surface *iconFile;
+	OffscreenSurface *iconGoUp;
+	OffscreenSurface *iconFolder;
+	OffscreenSurface *iconFile;
 
 	ButtonBox buttonBox;
 

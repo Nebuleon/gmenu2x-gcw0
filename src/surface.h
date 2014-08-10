@@ -107,14 +107,14 @@ private:
  */
 class OffscreenSurface: public Surface {
 public:
-	static OffscreenSurface *emptySurface(int width, int height);
-	static OffscreenSurface *loadImage(const std::string &img,
-			const std::string &skin="", bool loadAlpha=true);
-
-	// TODO: Remove this once naked Surface pointers are no longer in use.
-	OffscreenSurface(Surface *other) : Surface(*other) {}
+	static std::unique_ptr<OffscreenSurface> emptySurface(
+			int width, int height);
+	static std::unique_ptr<OffscreenSurface> loadImage(
+			std::string const& img, std::string const& skin = "",
+			bool loadAlpha = true);
 
 	OffscreenSurface(Surface const& other) : Surface(other) {}
+	OffscreenSurface(OffscreenSurface const& other) : Surface(other) {}
 	OffscreenSurface(OffscreenSurface&& other);
 	~OffscreenSurface();
 	OffscreenSurface& operator=(OffscreenSurface other);

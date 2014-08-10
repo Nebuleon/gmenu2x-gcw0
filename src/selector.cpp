@@ -59,7 +59,7 @@ int Selector::exec(int startSelection) {
 	fl.setFilter(link->getSelectorFilter());
 	fl.browse();
 
-	OffscreenSurface bg(gmenu2x->bg);
+	OffscreenSurface bg(*gmenu2x->bg);
 	drawTitleIcon(bg, link->getIconPath(), true);
 	writeTitle(bg, link->getTitle());
 	writeSubTitle(bg, link->getDescription());

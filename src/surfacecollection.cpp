@@ -120,7 +120,8 @@ OffscreenSurface *SurfaceCollection::add(const string &path) {
 	}
 
 	DEBUG("Adding surface: '%s'\n", path.c_str());
-	auto s = OffscreenSurface::loadImage(filePath, "", defaultAlpha);
+	// TODO: Be safe.
+	auto s = OffscreenSurface::loadImage(filePath, "", defaultAlpha).release();
 	if (s) {
 		surfaces[path] = s;
 	}
@@ -136,7 +137,8 @@ OffscreenSurface *SurfaceCollection::addSkinRes(const string &path, bool useDefa
 		return NULL;
 
 	DEBUG("Adding skin surface: '%s'\n", path.c_str());
-	auto s = OffscreenSurface::loadImage(skinpath);
+	// TODO: Be safe.
+	auto s = OffscreenSurface::loadImage(skinpath).release();
 	if (s) {
 		surfaces[path] = s;
 	}

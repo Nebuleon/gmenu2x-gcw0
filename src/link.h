@@ -27,7 +27,7 @@
 #include <string>
 
 class GMenu2X;
-class Surface;
+class OffscreenSurface;
 class Touchscreen;
 
 
@@ -68,8 +68,7 @@ protected:
 	bool edited;
 	std::string title, description, launchMsg, icon, iconPath;
 
-	Surface *iconSurface;
-	Surface *icon_hover;
+	OffscreenSurface *iconSurface;
 
 	virtual const std::string &searchIcon();
 	void setIconPath(const std::string &icon);

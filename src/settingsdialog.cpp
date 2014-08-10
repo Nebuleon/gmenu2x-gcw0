@@ -50,7 +50,7 @@ SettingsDialog::~SettingsDialog() {
 }
 
 bool SettingsDialog::exec() {
-	OffscreenSurface bg(gmenu2x->bg);
+	OffscreenSurface bg(*gmenu2x->bg);
 	bg.convertToDisplayFormat();
 
 	bool close = false, ts_pressed = false;

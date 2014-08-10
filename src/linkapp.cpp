@@ -433,11 +433,11 @@ void LinkApp::showManual() {
 		gmenu2x->setSafeMaxClock();
 #endif
 
-		OffscreenSurface *pngman = OffscreenSurface::loadImage(manual);
+		auto pngman = OffscreenSurface::loadImage(manual);
 		if (!pngman) {
 			return;
 		}
-		OffscreenSurface *bg = OffscreenSurface::loadImage(gmenu2x->confStr["wallpaper"]);
+		auto bg = OffscreenSurface::loadImage(gmenu2x->confStr["wallpaper"]);
 		if (!bg) {
 			bg = OffscreenSurface::emptySurface(gmenu2x->s->width(), gmenu2x->s->height());
 		}
@@ -502,7 +502,6 @@ void LinkApp::showManual() {
                     break;
             }
         }
-		delete bg;
 		return;
 	}
 

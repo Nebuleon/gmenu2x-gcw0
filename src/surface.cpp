@@ -281,17 +281,18 @@ void Surface::fillRectAlpha(SDL_Rect rect, RGBAColor c) {
 
 // OffscreenSurface:
 
-OffscreenSurface *OffscreenSurface::emptySurface(int width, int height)
+unique_ptr<OffscreenSurface> OffscreenSurface::emptySurface(
+		int width, int height)
 {
 	SDL_Surface *raw = SDL_CreateRGBSurface(
 			SDL_SWSURFACE, width, height, 32, 0, 0, 0, 0);
-	if (!raw) return nullptr;
+	if (!raw) return unique_ptr<OffscreenSurface>();
 	SDL_FillRect(raw, nullptr, SDL_MapRGB(raw->format, 0, 0, 0));
-	return new OffscreenSurface(raw);
+	return unique_ptr<OffscreenSurface>(new OffscreenSurface(raw));
 }
 
-OffscreenSurface *OffscreenSurface::loadImage(
-		const string &img, const string &skin, bool loadAlpha)
+unique_ptr<OffscreenSurface> OffscreenSurface::loadImage(
+		string const& img,string const& skin, bool loadAlpha)
 {
 	string skinpath;
 	if (!skin.empty() && !img.empty() && img[0]!='/')
@@ -302,10 +303,10 @@ OffscreenSurface *OffscreenSurface::loadImage(
 	SDL_Surface *raw = loadPNG(skinpath, loadAlpha);
 	if (!raw) {
 		ERROR("Couldn't load surface '%s'\n", img.c_str());
-		return nullptr;
+		return unique_ptr<OffscreenSurface>();
 	}
 
-	return new OffscreenSurface(raw);
+	return unique_ptr<OffscreenSurface>(new OffscreenSurface(raw));
 }
 
 OffscreenSurface::OffscreenSurface(OffscreenSurface&& other)

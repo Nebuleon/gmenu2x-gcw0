@@ -42,8 +42,6 @@ class Launcher;
 class Layer;
 class MediaMonitor;
 class Menu;
-class OutputSurface;
-class Surface;
 
 #ifndef GMENU2X_SYSTEM_DIR
 #define GMENU2X_SYSTEM_DIR "/usr/share/gmenu2x"
@@ -160,7 +158,7 @@ public:
 	SurfaceCollection sc;
 	Translator tr;
 	std::unique_ptr<OutputSurface> s;
-	Surface *bg;
+	std::unique_ptr<OffscreenSurface> bg;
 	std::unique_ptr<Font> font;
 
 	//Status functions

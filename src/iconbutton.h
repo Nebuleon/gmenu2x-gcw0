@@ -7,6 +7,7 @@
 #include <SDL.h>
 #include <string>
 
+class OffscreenSurface;
 class Surface;
 class Touchscreen;
 
@@ -34,7 +35,7 @@ private:
 	function_t action;
 
 	SDL_Rect rect, iconRect, labelRect;
-	Surface *iconSurface;
+	OffscreenSurface *iconSurface;
 };
 
 #endif
