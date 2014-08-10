@@ -23,6 +23,8 @@
 #include "gmenu2x.h"
 #include "utilities.h"
 
+#include <algorithm>
+
 using namespace std;
 
 TextDialog::TextDialog(GMenu2X *gmenu2x, const string &title, const string &description, const string &icon, const string &text)
@@ -79,6 +81,8 @@ void TextDialog::exec() {
 	unsigned int contentY, contentHeight;
 	tie(contentY, contentHeight) = gmenu2x->getContentArea();
 	const unsigned rowsPerPage = contentHeight / fontHeight;
+	const unsigned maxFirstRow =
+			text.size() < rowsPerPage ? 0 : text.size() - rowsPerPage;
 	contentY += (contentHeight % fontHeight) / 2;
 
 	unsigned firstRow = 0;
@@ -94,19 +98,14 @@ void TextDialog::exec() {
 				if (firstRow > 0) firstRow--;
 				break;
 			case InputManager::DOWN:
-				if (firstRow + rowsPerPage < text.size()) firstRow++;
+				if (firstRow < maxFirstRow) firstRow++;
 				break;
 			case InputManager::ALTLEFT:
-				if (firstRow >= rowsPerPage-1) firstRow -= rowsPerPage-1;
+				if (firstRow >= rowsPerPage - 1) firstRow -= rowsPerPage - 1;
 				else firstRow = 0;
 				break;
 			case InputManager::ALTRIGHT:
-				if (firstRow + rowsPerPage*2 -1 < text.size()) {
-					firstRow += rowsPerPage-1;
-				} else {
-					firstRow = text.size() < rowsPerPage ?
-						0 : text.size() - rowsPerPage;
-				}
+				firstRow = min(firstRow + rowsPerPage - 1, maxFirstRow);
 				break;
 			case InputManager::SETTINGS:
 			case InputManager::CANCEL:

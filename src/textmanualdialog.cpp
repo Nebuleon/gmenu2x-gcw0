@@ -68,9 +68,6 @@ TextManualDialog::TextManualDialog(GMenu2X *gmenu2x, const string &title, const 
 }
 
 void TextManualDialog::exec() {
-	bool close = false;
-	uint page=0;
-
 	Surface bg(gmenu2x->bg);
 
 	//link icon
@@ -89,12 +86,16 @@ void TextManualDialog::exec() {
 
 	bg.convertToDisplayFormat();
 
-	uint firstRow = 0, rowsPerPage = 180/gmenu2x->font->getLineSpacing();
 	stringstream ss;
 	ss << pages.size();
 	string spagecount;
 	ss >> spagecount;
 	string pageStatus;
+
+	const unsigned rowsPerPage = 180 / gmenu2x->font->getLineSpacing();
+
+	unsigned page = 0, firstRow = 0;
+	bool close = false;
 
 	while (!close) {
 		Surface& s = *gmenu2x->s;
@@ -111,12 +112,15 @@ void TextManualDialog::exec() {
 
 		s.flip();
 
+		const unsigned maxFirstRow = pages[page].text.size() < rowsPerPage
+				? 0 : pages[page].text.size() - rowsPerPage;
+
 		switch(gmenu2x->input.waitForPressedButton()) {
 			case InputManager::UP:
 				if (firstRow > 0) firstRow--;
 				break;
 			case InputManager::DOWN:
-				if (firstRow + rowsPerPage < pages[page].text.size()) firstRow++;
+				if (firstRow < maxFirstRow) firstRow++;
 				break;
 			case InputManager::LEFT:
 				if (page > 0) {
@@ -131,12 +135,11 @@ void TextManualDialog::exec() {
 				}
 				break;
 			case InputManager::ALTLEFT:
-				if (firstRow >= rowsPerPage-1) firstRow -= rowsPerPage-1;
+				if (firstRow >= rowsPerPage - 1) firstRow -= rowsPerPage - 1;
 				else firstRow = 0;
 				break;
 			case InputManager::ALTRIGHT:
-				if (firstRow + rowsPerPage*2 -1 < pages[page].text.size()) firstRow += rowsPerPage-1;
-				else firstRow = max(0ul, (unsigned long) (pages[page].text.size() - rowsPerPage));
+				firstRow = min(firstRow + rowsPerPage - 1, maxFirstRow);
 				break;
 			case InputManager::CANCEL:
 			case InputManager::SETTINGS:
