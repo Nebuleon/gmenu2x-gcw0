@@ -28,6 +28,7 @@
 #include <algorithm>
 #include <cassert>
 #include <iomanip>
+#include <utility>
 
 using namespace std;
 
@@ -94,20 +95,42 @@ Surface::Surface(SDL_Surface *raw_, bool freeWhenDone_)
 {
 }
 
-Surface::Surface(Surface *s) {
-	raw = SDL_ConvertSurface(s->raw, s->raw->format, SDL_SWSURFACE);
+Surface::Surface(Surface const& other)
+	: Surface(SDL_ConvertSurface(
+			other.raw, other.raw->format, SDL_SWSURFACE), true)
+{
 	// Note: A bug in SDL_ConvertSurface() leaves the per-surface alpha
 	//       undefined when converting from RGBA to RGBA. This can cause
 	//       problems if the surface is later converted to a format without
 	//       an alpha channel, such as the display format.
-	raw->format->alpha = s->raw->format->alpha;
-	freeWhenDone = true;
+	raw->format->alpha = other.raw->format->alpha;
 }
 
-Surface::~Surface() {
+Surface::Surface(Surface&& other)
+	: raw(other.raw)
+	, freeWhenDone(other.freeWhenDone)
+{
+	other.raw = nullptr;
+	other.freeWhenDone = false;
+}
+
+Surface::~Surface()
+{
 	if (freeWhenDone) {
 		SDL_FreeSurface(raw);
 	}
+}
+
+Surface& Surface::operator=(Surface other)
+{
+	swap(other);
+	return *this;
+}
+
+void Surface::swap(Surface& other)
+{
+	std::swap(raw, other.raw);
+	std::swap(freeWhenDone, other.freeWhenDone);
 }
 
 void Surface::convertToDisplayFormat() {

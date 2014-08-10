@@ -52,8 +52,14 @@ public:
 	static Surface *loadImage(const std::string &img,
 			const std::string &skin="", bool loadAlpha=true);
 
-	Surface(Surface *s);
+	// TODO: Remove this once naked Surface pointers are no longer in use.
+	Surface(Surface *other) : Surface(*other) {}
+
+	Surface(Surface const& other);
+	Surface(Surface&& other);
 	~Surface();
+	Surface& operator=(Surface other);
+	void swap(Surface& other);
 
 	/** Converts the underlying surface to the same pixel format as the frame
 	  * buffer, for faster blitting. This removes the alpha channel if the
