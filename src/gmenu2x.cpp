@@ -325,8 +325,7 @@ void GMenu2X::initBG() {
 	drawTopBar(*bg);
 	drawBottomBar(*bg);
 
-	Surface *bgmain = new Surface(bg);
-	sc.add(bgmain,"bgmain");
+	Surface *bgmain = sc.add(bg, "bgmain");
 
 	Surface *sd = Surface::loadImage("imgs/sd.png", confStr["skin"]);
 	if (sd) sd->blit(*bgmain, 3, bottomBarIconY);

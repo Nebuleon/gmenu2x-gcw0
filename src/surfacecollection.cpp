@@ -98,10 +98,11 @@ bool SurfaceCollection::exists(const string &path) {
 	return surfaces.find(path) != surfaces.end();
 }
 
-Surface *SurfaceCollection::add(Surface *s, const string &path) {
+Surface *SurfaceCollection::add(Surface const& s, std::string const& path) {
 	if (exists(path)) del(path);
-	surfaces[path] = s;
-	return s;
+	Surface *copy = new Surface(s);
+	surfaces[path] = copy;
+	return copy;
 }
 
 Surface *SurfaceCollection::add(const string &path) {

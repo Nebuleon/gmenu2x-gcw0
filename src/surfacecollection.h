@@ -45,7 +45,12 @@ public:
 	bool defaultAlpha = true;
 	void debug();
 
-	Surface *add(Surface *s, const std::string &path);
+	/**
+	 * Adds a copy of the given surface to this collection under the given
+	 * path. Returns the copy.
+	 */
+	Surface *add(Surface const& s, std::string const& path);
+
 	Surface *add(const std::string &path);
 	Surface *addSkinRes(const std::string &path, bool useDefault = true);
 	void     del(const std::string &path);
