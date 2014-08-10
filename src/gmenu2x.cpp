@@ -157,7 +157,7 @@ int main(int /*argc*/, char * /*argv*/[]) {
 	}
 
 	gmenu2x_home = (string)home + (string)"/.gmenu2x";
-	if (!fileExists(gmenu2x_home) && mkdir(gmenu2x_home.c_str(), 0770) < 0) {
+	if (mkdir(gmenu2x_home.c_str(), 0770) < 0 && errno != EEXIST) {
 		ERROR("Unable to create gmenu2x home directory.\n");
 		return 1;
 	}
