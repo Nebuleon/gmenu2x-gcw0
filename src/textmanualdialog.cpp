@@ -92,7 +92,7 @@ void TextManualDialog::exec() {
 	ss >> spagecount;
 	string pageStatus;
 
-	const unsigned rowsPerPage = 180 / gmenu2x->font->getLineSpacing();
+	const unsigned rowsPerPage = max(180u / gmenu2x->font->getLineSpacing(), 1u);
 
 	unsigned page = 0, firstRow = 0;
 	bool close = false;

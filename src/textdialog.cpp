@@ -80,7 +80,7 @@ void TextDialog::exec() {
 	const int fontHeight = gmenu2x->font->getLineSpacing();
 	unsigned int contentY, contentHeight;
 	tie(contentY, contentHeight) = gmenu2x->getContentArea();
-	const unsigned rowsPerPage = contentHeight / fontHeight;
+	const unsigned rowsPerPage = max(contentHeight / fontHeight, 1u);
 	const unsigned maxFirstRow =
 			text.size() < rowsPerPage ? 0 : text.size() - rowsPerPage;
 	contentY += (contentHeight % fontHeight) / 2;
