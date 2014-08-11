@@ -1088,7 +1088,7 @@ void GMenu2X::drawScrollBar(uint pageSize, uint totalSize, uint pagePos) {
 	top += 2;
 	height -= 4;
 
-	const uint barSize = height * pageSize / totalSize;
+	const uint barSize = max(height * pageSize / totalSize, 4u);
 	const uint barPos = (height - barSize) * pagePos / (totalSize - pageSize);
 
 	s->box(resX - 6, top + barPos, 3, barSize,
