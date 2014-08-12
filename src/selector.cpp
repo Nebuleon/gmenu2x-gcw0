@@ -85,13 +85,13 @@ int Selector::exec(int startSelection) {
 	unsigned int firstElement = 0;
 	unsigned int selected = constrain(startSelection, 0, fl.size() - 1);
 
-	vector<string> screens, titles;
-	prepare(&fl,&screens,&titles);
+	vector<string> titles;
+	prepare(&fl,&titles);
 
-	//Add the folder icon manually to be sure to load it with alpha support since we are going to disable it for screenshots
-	if (gmenu2x->sc.skinRes("imgs/folder.png")==NULL)
-		gmenu2x->sc.addSkinRes("imgs/folder.png");
-	gmenu2x->sc.defaultAlpha = false;
+	auto folderIcon = gmenu2x->sc.skinRes("imgs/folder.png");
+	if (!folderIcon) {
+		folderIcon = gmenu2x->sc.addSkinRes("imgs/folder.png");
+	}
 
 	bool close = false, result = true;
 	while (!close) {
@@ -105,9 +105,10 @@ int Selector::exec(int startSelection) {
 			firstElement = selected;
 
 		//Screenshot
-		if (selected-fl.dirCount()<screens.size()
-				&& !screens[selected-fl.dirCount()].empty()) {
-			Surface *screenshot = gmenu2x->sc[screens[selected-fl.dirCount()]];
+		if (fl.isFile(selected)) {
+			string& noext = titles[selected - fl.dirCount()];
+			string path = screendir + noext + ".png";
+			auto screenshot = OffscreenSurface::loadImage(path, "", false);
 			if (screenshot) {
 				screenshot->blitRight(s, 320, 0, 320, 240, 128u);
 			}
@@ -124,7 +125,7 @@ int Selector::exec(int startSelection) {
 					&& i < firstElement + nb_elements; i++) {
 			iY = i-firstElement;
 			if (fl.isDirectory(i)) {
-				gmenu2x->sc["imgs/folder.png"]->blit(s, 4, top + (iY * fontheight));
+				folderIcon->blit(s, 4, top + (iY * fontheight));
 				gmenu2x->font->write(s, fl[i], 21,
 							top + (iY * fontheight) + (fontheight / 2),
 							Font::HAlignLeft, Font::VAlignMiddle);
@@ -185,7 +186,7 @@ int Selector::exec(int startSelection) {
 						dir = dir.substr(0,p+1);
 						selected = 0;
 						firstElement = 0;
-						prepare(&fl,&screens,&titles);
+						prepare(&fl,&titles);
 					}
 				}
 				break;
@@ -202,7 +203,7 @@ int Selector::exec(int startSelection) {
 
 					selected = 0;
 					firstElement = 0;
-					prepare(&fl,&screens,&titles);
+					prepare(&fl,&titles);
 				}
 				break;
 
@@ -211,19 +212,14 @@ int Selector::exec(int startSelection) {
 		}
 	}
 
-	gmenu2x->sc.defaultAlpha = true;
-	freeScreenshots(&screens);
-
 	return result ? (int)selected : -1;
 }
 
-void Selector::prepare(FileLister *fl, vector<string> *screens, vector<string> *titles) {
+void Selector::prepare(FileLister *fl, vector<string> *titles) {
 	fl->setPath(dir);
-	freeScreenshots(screens);
-	screens->resize(fl->getFiles().size());
 	titles->resize(fl->getFiles().size());
 
-	string screendir = dir;
+	screendir = dir;
 	if (!screendir.empty() && screendir[screendir.length() - 1] != '/') {
 		screendir += "/";
 	}
@@ -237,19 +233,5 @@ void Selector::prepare(FileLister *fl, vector<string> *screens, vector<string> *
 		if (pos!=string::npos && pos>0)
 			noext = noext.substr(0, pos);
 		titles->at(i) = noext;
-
-		DEBUG("Searching for screen '%s%s.png'\n", screendir.c_str(), noext.c_str());
-
-		if (fileExists(screendir+noext+".png"))
-			screens->at(i) = screendir+noext+".png";
-		else
-			screens->at(i) = "";
-	}
-}
-
-void Selector::freeScreenshots(vector<string> *screens) {
-	for (uint i=0; i<screens->size(); i++) {
-		if (!screens->at(i).empty())
-			gmenu2x->sc.del(screens->at(i));
 	}
 }

@@ -34,11 +34,9 @@ class Selector : protected Dialog {
 private:
 	int selRow;
 	LinkApp *link;
-	std::string file, dir;
+	std::string file, dir, screendir;
 
-	void prepare(FileLister *fl, std::vector<std::string> *screens,
-			std::vector<std::string> *titles);
-	void freeScreenshots(std::vector<std::string> *screens);
+	void prepare(FileLister *fl, std::vector<std::string> *titles);
 
 public:
 	Selector(GMenu2X *gmenu2x, LinkApp *link,
