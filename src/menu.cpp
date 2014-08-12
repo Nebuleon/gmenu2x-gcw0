@@ -27,6 +27,7 @@
 #include <fstream>
 #include <unistd.h>
 #include <ini.h>
+#include <cassert>
 
 #ifdef HAVE_LIBOPK
 #include <opk.h>
@@ -396,8 +397,8 @@ void Menu::setSectionIndex(int i) {
 /*====================================
    LINKS MANAGEMENT
   ====================================*/
-bool Menu::addActionLink(uint section, const string &title, function_t action, const string &description, const string &icon) {
-	if (section>=sections.size()) return false;
+void Menu::addActionLink(uint section, const string &title, function_t action, const string &description, const string &icon) {
+	assert(section < sections.size());
 
 	Link *link = new Link(gmenu2x, action);
 	link->setSize(gmenu2x->skinConfInt["linkWidth"], gmenu2x->skinConfInt["linkHeight"]);
@@ -410,8 +411,7 @@ bool Menu::addActionLink(uint section, const string &title, function_t action, c
 		link->setIcon(icon);
 	}
 
-	sectionLinks(section)->push_back(link);
-	return true;
+	links[section].push_back(link);
 }
 
 bool Menu::addLink(string path, string file, string section) {
