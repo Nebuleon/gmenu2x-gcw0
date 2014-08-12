@@ -52,9 +52,6 @@ Selector::Selector(GMenu2X *gmenu2x, LinkApp *link, const string &selectorDir) :
 }
 
 int Selector::exec(int startSelection) {
-	bool close = false, result = true;
-	vector<string> screens, titles;
-
 	FileLister fl(dir, link->getSelectorBrowser());
 	fl.setFilter(link->getSelectorFilter());
 	fl.browse();
@@ -85,15 +82,18 @@ int Selector::exec(int startSelection) {
 
 	bg.convertToDisplayFormat();
 
-	uint i, firstElement = 0, iY;
+	unsigned int firstElement = 0;
+	unsigned int selected = constrain(startSelection, 0, fl.size() - 1);
 
+	vector<string> screens, titles;
 	prepare(&fl,&screens,&titles);
-	uint selected = constrain(startSelection,0,fl.size()-1);
 
 	//Add the folder icon manually to be sure to load it with alpha support since we are going to disable it for screenshots
 	if (gmenu2x->sc.skinRes("imgs/folder.png")==NULL)
 		gmenu2x->sc.addSkinRes("imgs/folder.png");
 	gmenu2x->sc.defaultAlpha = false;
+
+	bool close = false, result = true;
 	while (!close) {
 		OutputSurface& s = *gmenu2x->s;
 
@@ -114,13 +114,13 @@ int Selector::exec(int startSelection) {
 		}
 
 		//Selection
-		iY = top + (selected - firstElement) * fontheight;
+		unsigned int iY = top + (selected - firstElement) * fontheight;
 		if (selected<fl.size())
 			s.box(1, iY, 309, fontheight, gmenu2x->skinConfColors[COLOR_SELECTION_BG]);
 
 		//Files & Dirs
 		s.setClipRect(0, top, 311, height);
-		for (i = firstElement; i < fl.size()
+		for (unsigned int i = firstElement; i < fl.size()
 					&& i < firstElement + nb_elements; i++) {
 			iY = i-firstElement;
 			if (fl.isDirectory(i)) {
