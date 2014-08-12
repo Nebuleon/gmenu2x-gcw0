@@ -20,13 +20,14 @@
 #ifndef SURFACECOLLECTION_H
 #define SURFACECOLLECTION_H
 
+#include <memory>
 #include <string>
 #include <unordered_map>
 
 class OffscreenSurface;
 class Surface;
 
-typedef std::unordered_map<std::string, OffscreenSurface *> SurfaceHash;
+typedef std::unordered_map<std::string, std::shared_ptr<OffscreenSurface> > SurfaceHash;
 
 /**
 Hash Map of surfaces that loads surfaces not already loaded and reuses already loaded ones.
@@ -50,17 +51,17 @@ public:
 	 * Adds a copy of the given surface to this collection under the given
 	 * path. Returns the copy.
 	 */
-	OffscreenSurface *add(Surface const& s, std::string const& path);
+	std::shared_ptr<OffscreenSurface> add(Surface const& s, std::string const& path);
 
-	OffscreenSurface *add(const std::string &path);
-	OffscreenSurface *addSkinRes(const std::string &path, bool useDefault = true);
+	std::shared_ptr<OffscreenSurface> add(const std::string &path);
+	std::shared_ptr<OffscreenSurface> addSkinRes(const std::string &path, bool useDefault = true);
 	void     del(const std::string &path);
 	void     clear();
 	void     move(const std::string &from, const std::string &to);
 	bool     exists(const std::string &path);
 
-	OffscreenSurface *operator[](const std::string &);
-	OffscreenSurface *skinRes(const std::string &key, bool useDefault = true);
+	std::shared_ptr<OffscreenSurface> operator[](const std::string &);
+	std::shared_ptr<OffscreenSurface> skinRes(const std::string &key, bool useDefault = true);
 
 private:
 	SurfaceHash surfaces;

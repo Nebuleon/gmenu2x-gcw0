@@ -324,7 +324,7 @@ void GMenu2X::initBG() {
 	drawTopBar(*bg);
 	drawBottomBar(*bg);
 
-	OffscreenSurface *bgmain = sc.add(*bg, "bgmain");
+	auto bgmain = sc.add(*bg, "bgmain");
 
 	{
 		auto sd = OffscreenSurface::loadImage("imgs/sd.png", confStr["skin"]);
@@ -1096,7 +1096,7 @@ void GMenu2X::drawScrollBar(uint pageSize, uint totalSize, uint pagePos) {
 }
 
 void GMenu2X::drawTopBar(Surface& s) {
-	Surface *bar = sc.skinRes("imgs/topbar.png", false);
+	auto bar = sc.skinRes("imgs/topbar.png", false);
 	if (bar) {
 		bar->blit(s, 0, 0);
 	} else {
@@ -1106,7 +1106,7 @@ void GMenu2X::drawTopBar(Surface& s) {
 }
 
 void GMenu2X::drawBottomBar(Surface& s) {
-	Surface *bar = sc.skinRes("imgs/bottombar.png", false);
+	auto bar = sc.skinRes("imgs/bottombar.png", false);
 	if (bar) {
 		bar->blit(s, 0, resY-bar->height());
 	} else {

@@ -26,6 +26,7 @@
 #include "filelister.h"
 #include "inputmanager.h"
 
+#include <memory>
 #include <SDL.h>
 #include <string>
 
@@ -73,9 +74,9 @@ private:
 
 	bool ts_pressed;
 
-	OffscreenSurface *iconGoUp;
-	OffscreenSurface *iconFolder;
-	OffscreenSurface *iconFile;
+	std::shared_ptr<OffscreenSurface> iconGoUp;
+	std::shared_ptr<OffscreenSurface> iconFolder;
+	std::shared_ptr<OffscreenSurface> iconFile;
 
 	ButtonBox buttonBox;
 

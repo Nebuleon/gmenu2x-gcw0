@@ -107,7 +107,7 @@ int Selector::exec(int startSelection) {
 		//Screenshot
 		if (selected-fl.dirCount()<screens.size()
 				&& !screens[selected-fl.dirCount()].empty()) {
-			Surface *screenshot = gmenu2x->sc[screens[selected-fl.dirCount()]];
+			std::shared_ptr<OffscreenSurface> screenshot = gmenu2x->sc[screens[selected-fl.dirCount()]];
 			if (screenshot) {
 				screenshot->blitRight(s, 320, 0, 320, 240, 128u);
 			}

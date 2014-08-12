@@ -98,14 +98,14 @@ bool SurfaceCollection::exists(const string &path) {
 	return surfaces.find(path) != surfaces.end();
 }
 
-OffscreenSurface *SurfaceCollection::add(Surface const& s, std::string const& path) {
+std::shared_ptr<OffscreenSurface> SurfaceCollection::add(Surface const& s, std::string const& path) {
 	if (exists(path)) del(path);
-	auto copy = new OffscreenSurface(s);
+	auto copy = std::make_shared<OffscreenSurface>(s);
 	surfaces[path] = copy;
 	return copy;
 }
 
-OffscreenSurface *SurfaceCollection::add(const string &path) {
+std::shared_ptr<OffscreenSurface> SurfaceCollection::add(const string &path) {
 	if (path.empty()) return NULL;
 	if (exists(path)) del(path);
 	string filePath = path;
@@ -121,14 +121,14 @@ OffscreenSurface *SurfaceCollection::add(const string &path) {
 
 	DEBUG("Adding surface: '%s'\n", path.c_str());
 	// TODO: Be safe.
-	auto s = OffscreenSurface::loadImage(filePath, "", defaultAlpha).release();
+	auto s = std::shared_ptr<OffscreenSurface>(OffscreenSurface::loadImage(filePath, "", defaultAlpha));
 	if (s) {
 		surfaces[path] = s;
 	}
 	return s;
 }
 
-OffscreenSurface *SurfaceCollection::addSkinRes(const string &path, bool useDefault) {
+std::shared_ptr<OffscreenSurface> SurfaceCollection::addSkinRes(const string &path, bool useDefault) {
 	if (path.empty()) return NULL;
 	if (exists(path)) del(path);
 
@@ -138,7 +138,7 @@ OffscreenSurface *SurfaceCollection::addSkinRes(const string &path, bool useDefa
 
 	DEBUG("Adding skin surface: '%s'\n", path.c_str());
 	// TODO: Be safe.
-	auto s = OffscreenSurface::loadImage(skinpath).release();
+	auto s = std::shared_ptr<OffscreenSurface>(OffscreenSurface::loadImage(skinpath));
 	if (s) {
 		surfaces[path] = s;
 	}
@@ -148,7 +148,6 @@ OffscreenSurface *SurfaceCollection::addSkinRes(const string &path, bool useDefa
 void SurfaceCollection::del(const string &path) {
 	SurfaceHash::iterator i = surfaces.find(path);
 	if (i != surfaces.end()) {
-		delete i->second;
 		surfaces.erase(i);
 	}
 
@@ -165,7 +164,7 @@ void SurfaceCollection::move(const string &from, const string &to) {
 	surfaces.erase(from);
 }
 
-OffscreenSurface *SurfaceCollection::operator[](const string &key) {
+std::shared_ptr<OffscreenSurface> SurfaceCollection::operator[](const string &key) {
 	SurfaceHash::iterator i = surfaces.find(key);
 	if (i == surfaces.end())
 		return add(key);
@@ -173,7 +172,7 @@ OffscreenSurface *SurfaceCollection::operator[](const string &key) {
 		return i->second;
 }
 
-OffscreenSurface *SurfaceCollection::skinRes(const string &key, bool useDefault) {
+std::shared_ptr<OffscreenSurface> SurfaceCollection::skinRes(const string &key, bool useDefault) {
 	if (key.empty()) return NULL;
 
 	SurfaceHash::iterator i = surfaces.find(key);

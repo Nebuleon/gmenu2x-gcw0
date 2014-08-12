@@ -210,7 +210,7 @@ void Menu::paint(Surface &s) {
 	for (int i = leftSection; i <= rightSection; i++) {
 		uint j = (centerSection + numSections + i) % numSections;
 		string sectionIcon = "skin:sections/" + sections[j] + ".png";
-		Surface *icon = sc.exists(sectionIcon)
+		shared_ptr<OffscreenSurface> icon = sc.exists(sectionIcon)
 				? sc[sectionIcon]
 				: sc.skinRes("icons/section.png");
 		int x = width / 2 + i * linkWidth + sectionDelta;

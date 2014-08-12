@@ -35,7 +35,7 @@ private:
 	function_t action;
 
 	SDL_Rect rect, iconRect, labelRect;
-	OffscreenSurface *iconSurface;
+	std::shared_ptr<OffscreenSurface> iconSurface;
 };
 
 #endif

@@ -23,6 +23,7 @@
 
 #include "delegate.h"
 
+#include <memory>
 #include <SDL.h>
 #include <string>
 
@@ -68,7 +69,7 @@ protected:
 	bool edited;
 	std::string title, description, launchMsg, icon, iconPath;
 
-	OffscreenSurface *iconSurface;
+	std::shared_ptr<OffscreenSurface> iconSurface;
 
 	virtual const std::string &searchIcon();
 	void setIconPath(const std::string &icon);
