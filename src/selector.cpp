@@ -217,7 +217,6 @@ int Selector::exec(int startSelection) {
 
 void Selector::prepare(FileLister *fl, vector<string> *titles) {
 	fl->setPath(dir);
-	titles->resize(fl->getFiles().size());
 
 	screendir = dir;
 	if (!screendir.empty() && screendir[screendir.length() - 1] != '/') {
@@ -225,13 +224,8 @@ void Selector::prepare(FileLister *fl, vector<string> *titles) {
 	}
 	screendir += "previews/";
 
-	string noext;
-	string::size_type pos;
+	titles->resize(fl->getFiles().size());
 	for (uint i=0; i<fl->getFiles().size(); i++) {
-		noext = fl->getFiles()[i];
-		pos = noext.rfind(".");
-		if (pos!=string::npos && pos>0)
-			noext = noext.substr(0, pos);
-		titles->at(i) = noext;
+		titles->at(i) = trimExtension(fl->getFiles()[i]);
 	}
 }

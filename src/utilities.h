@@ -52,6 +52,10 @@ std::string readFileAsString(const char *filename);
 std::string strreplace(std::string orig, const std::string &search, const std::string &replace);
 std::string cmdclean(std::string cmdline);
 
+inline std::string trimExtension(std::string const& filename) {
+	return filename.substr(0, filename.rfind('.'));
+}
+
 bool fileExists(const std::string &file);
 bool rmtree(std::string path);
 
