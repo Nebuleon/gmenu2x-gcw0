@@ -36,7 +36,7 @@ private:
 	LinkApp *link;
 	std::string file, dir, screendir;
 
-	void prepare(FileLister *fl, std::vector<std::string> *titles);
+	void prepare(FileLister& fl);
 
 public:
 	Selector(GMenu2X *gmenu2x, LinkApp *link,

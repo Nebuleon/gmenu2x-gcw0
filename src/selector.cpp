@@ -85,8 +85,7 @@ int Selector::exec(int startSelection) {
 	unsigned int firstElement = 0;
 	unsigned int selected = constrain(startSelection, 0, fl.size() - 1);
 
-	vector<string> titles;
-	prepare(&fl,&titles);
+	prepare(fl);
 
 	auto folderIcon = gmenu2x->sc.skinRes("imgs/folder.png");
 	if (!folderIcon) {
@@ -106,8 +105,7 @@ int Selector::exec(int startSelection) {
 
 		//Screenshot
 		if (fl.isFile(selected)) {
-			string& noext = titles[selected - fl.dirCount()];
-			string path = screendir + noext + ".png";
+			string path = screendir + trimExtension(fl[selected]) + ".png";
 			auto screenshot = OffscreenSurface::loadImage(path, "", false);
 			if (screenshot) {
 				screenshot->blitRight(s, 320, 0, 320, 240, 128u);
@@ -130,7 +128,7 @@ int Selector::exec(int startSelection) {
 							top + (iY * fontheight) + (fontheight / 2),
 							Font::HAlignLeft, Font::VAlignMiddle);
 			} else
-				gmenu2x->font->write(s, titles[i - fl.dirCount()], 4,
+				gmenu2x->font->write(s, trimExtension(fl[i]), 4,
 							top + (iY * fontheight) + (fontheight / 2),
 							Font::HAlignLeft, Font::VAlignMiddle);
 		}
@@ -186,7 +184,7 @@ int Selector::exec(int startSelection) {
 						dir = dir.substr(0,p+1);
 						selected = 0;
 						firstElement = 0;
-						prepare(&fl,&titles);
+						prepare(fl);
 					}
 				}
 				break;
@@ -203,7 +201,7 @@ int Selector::exec(int startSelection) {
 
 					selected = 0;
 					firstElement = 0;
-					prepare(&fl,&titles);
+					prepare(fl);
 				}
 				break;
 
@@ -215,17 +213,12 @@ int Selector::exec(int startSelection) {
 	return result ? (int)selected : -1;
 }
 
-void Selector::prepare(FileLister *fl, vector<string> *titles) {
-	fl->setPath(dir);
+void Selector::prepare(FileLister& fl) {
+	fl.setPath(dir);
 
 	screendir = dir;
 	if (!screendir.empty() && screendir[screendir.length() - 1] != '/') {
 		screendir += "/";
 	}
 	screendir += "previews/";
-
-	titles->resize(fl->getFiles().size());
-	for (uint i=0; i<fl->getFiles().size(); i++) {
-		titles->at(i) = trimExtension(fl->getFiles()[i]);
-	}
 }
