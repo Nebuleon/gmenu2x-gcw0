@@ -43,7 +43,6 @@ public:
 	static std::string getSkinFilePath(const std::string &skin, const std::string &file, bool useDefault = true);
 	static std::string getSkinPath(const std::string &skin);
 
-	bool defaultAlpha = true;
 	void debug();
 
 	/**

@@ -121,7 +121,7 @@ OffscreenSurface *SurfaceCollection::add(const string &path) {
 
 	DEBUG("Adding surface: '%s'\n", path.c_str());
 	// TODO: Be safe.
-	auto s = OffscreenSurface::loadImage(filePath, "", defaultAlpha).release();
+	auto s = OffscreenSurface::loadImage(filePath).release();
 	if (s) {
 		surfaces[path] = s;
 	}
