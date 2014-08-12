@@ -403,8 +403,12 @@ bool Menu::addActionLink(uint section, const string &title, function_t action, c
 	link->setSize(gmenu2x->skinConfInt["linkWidth"], gmenu2x->skinConfInt["linkHeight"]);
 	link->setTitle(title);
 	link->setDescription(description);
-	if (gmenu2x->sc.exists(icon) || (icon.substr(0,5)=="skin:" && !gmenu2x->sc.getSkinFilePath(icon.substr(5,icon.length())).empty()) || fileExists(icon))
-	link->setIcon(icon);
+	if (gmenu2x->sc.exists(icon)
+			|| (icon.substr(0,5)=="skin:"
+				&& !gmenu2x->sc.getSkinFilePath(icon.substr(5,icon.length())).empty())
+			|| fileExists(icon)) {
+		link->setIcon(icon);
+	}
 
 	sectionLinks(section)->push_back(link);
 	return true;
