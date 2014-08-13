@@ -83,82 +83,80 @@ void FileLister::browse(const string& path, bool clean)
 	directories.clear();
 	files.clear();
 
-	if (showDirectories || showFiles) {
-		DIR *dirp;
-		string slashedPath = path;
-		if (path[path.length() - 1] != '/')
-			slashedPath.push_back('/');
+	DIR *dirp;
+	string slashedPath = path;
+	if (path[path.length() - 1] != '/')
+		slashedPath.push_back('/');
 
-		if ((dirp = opendir(slashedPath.c_str())) == NULL) {
-			ERROR("Unable to open directory: %s\n", slashedPath.c_str());
-			return;
+	if ((dirp = opendir(slashedPath.c_str())) == NULL) {
+		ERROR("Unable to open directory: %s\n", slashedPath.c_str());
+		return;
+	}
+
+	string filepath, file;
+	struct stat st;
+	struct dirent *dptr;
+
+	while ((dptr = readdir(dirp))) {
+		file = dptr->d_name;
+
+		if (file[0] == '.' && file != "..")
+			continue;
+
+		filepath = slashedPath + file;
+		int statRet = stat(filepath.c_str(), &st);
+		if (statRet == -1) {
+			ERROR("Stat failed on '%s' with error '%s'\n", filepath.c_str(), strerror(errno));
+			continue;
 		}
+		if (find(excludes.begin(), excludes.end(), file) != excludes.end())
+			continue;
 
-		string filepath, file;
-		struct stat st;
-		struct dirent *dptr;
-
-		while ((dptr = readdir(dirp))) {
-			file = dptr->d_name;
-
-			if (file[0] == '.' && file != "..")
+		if (S_ISDIR(st.st_mode)) {
+			if (!showDirectories)
 				continue;
 
-			filepath = slashedPath + file;
-			int statRet = stat(filepath.c_str(), &st);
-			if (statRet == -1) {
-				ERROR("Stat failed on '%s' with error '%s'\n", filepath.c_str(), strerror(errno));
+			directorySet.insert(file);
+		} else {
+			if (!showFiles)
+				continue;
+
+			if (filter.empty()) {
+				fileSet.insert(file);
 				continue;
 			}
-			if (find(excludes.begin(), excludes.end(), file) != excludes.end())
-				continue;
 
-			if (S_ISDIR(st.st_mode)) {
-				if (!showDirectories)
-					continue;
+			for (vector<string>::iterator it = filter.begin(); it != filter.end(); ++it) {
+				if (file.find('.') == string::npos) {
+					if (!it->empty())
+						continue;
 
-				directorySet.insert(file);
-			} else {
-				if (!showFiles)
-					continue;
-
-				if (filter.empty()) {
 					fileSet.insert(file);
-					continue;
+					break;
 				}
 
-				for (vector<string>::iterator it = filter.begin(); it != filter.end(); ++it) {
-					if (file.find('.') == string::npos) {
-						if (!it->empty())
-							continue;
+				if (it->length() < file.length()) {
+					if (file[file.length() - it->length() - 1] != '.')
+						continue;
 
+					string file_lowercase =
+								file.substr(file.length() - it->length());
+
+					/* XXX: This won't accept UTF-8 codes.
+						* Thanksfully file extensions shouldn't contain any. */
+					transform(file_lowercase.begin(), file_lowercase.end(),
+								file_lowercase.begin(), ::tolower);
+
+					if (file_lowercase.compare(0, it->length(), *it) == 0) {
 						fileSet.insert(file);
 						break;
 					}
-
-					if (it->length() < file.length()) {
-						if (file[file.length() - it->length() - 1] != '.')
-							continue;
-
-						string file_lowercase =
-									file.substr(file.length() - it->length());
-
-						/* XXX: This won't accept UTF-8 codes.
-						 * Thanksfully file extensions shouldn't contain any. */
-						transform(file_lowercase.begin(), file_lowercase.end(),
-									file_lowercase.begin(), ::tolower);
-
-						if (file_lowercase.compare(0, it->length(), *it) == 0) {
-							fileSet.insert(file);
-							break;
-						}
-					}
 				}
 			}
 		}
-
-		closedir(dirp);
 	}
+
+	closedir(dirp);
 
 	moveNames(move(directorySet), directories);
 	moveNames(move(fileSet), files);
