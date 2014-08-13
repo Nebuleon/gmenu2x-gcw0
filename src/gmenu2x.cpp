@@ -676,12 +676,9 @@ void GMenu2X::showSettings() {
 #endif
 
 	FileLister fl_tr;
+	fl_tr.setShowDirectories(false);
 	fl_tr.browse(GMENU2X_SYSTEM_DIR "/translations");
-
-	string tr_path = getHome() + "/translations";
-	if (fileExists(tr_path)) {
-		fl_tr.browse(tr_path, false);
-	}
+	fl_tr.browse(getHome() + "/translations", false);
 
 	fl_tr.insertFile("English");
 	string lang = tr.lang();
