@@ -905,6 +905,7 @@ void GMenu2X::editLink() {
 		linkApp->setManual(linkManual);
 		linkApp->setSelectorFilter(linkSelFilter);
 		linkApp->setSelectorDir(linkSelDir);
+		linkApp->setSelectorBrowser(linkSelBrowser);
 		linkApp->setClock(linkClock);
 
 		INFO("New Section: '%s'\n", newSection.c_str());
