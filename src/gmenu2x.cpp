@@ -508,11 +508,15 @@ void GMenu2X::writeConfig() {
 
 void GMenu2X::writeSkinConfig() {
 	string conffile = getHome() + "/skins/";
-	if (!fileExists(conffile))
-	  mkdir(conffile.c_str(), 0770);
+	if (mkdir(conffile.c_str(), 0770) < 0 && errno != EEXIST) {
+		ERROR("Failed to create directory %s to write skin configuration: %s\n", conffile.c_str(), strerror(errno));
+		return;
+	}
 	conffile = conffile + confStr["skin"];
-	if (!fileExists(conffile))
-	  mkdir(conffile.c_str(), 0770);
+	if (mkdir(conffile.c_str(), 0770) < 0 && errno != EEXIST) {
+		ERROR("Failed to create directory %s to write skin configuration: %s\n", conffile.c_str(), strerror(errno));
+		return;
+	}
 	conffile = conffile + "/skin.conf";
 
 	ofstream inf(conffile.c_str());
