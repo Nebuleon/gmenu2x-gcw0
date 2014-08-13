@@ -85,7 +85,9 @@ void FileLister::browse(const string& path, bool clean)
 
 	DIR *dirp;
 	if ((dirp = opendir(slashedPath.c_str())) == NULL) {
-		ERROR("Unable to open directory: %s\n", slashedPath.c_str());
+		if (errno != ENOENT) {
+			ERROR("Unable to open directory: %s\n", slashedPath.c_str());
+		}
 		return;
 	}
 
