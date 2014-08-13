@@ -28,7 +28,6 @@ public:
 	DirDialog(
 			GMenu2X *gmenu2x, Touchscreen &ts,
 			const std::string &text, const std::string &dir = "");
-	~DirDialog();
 };
 
 #endif // DIRDIALOG_H

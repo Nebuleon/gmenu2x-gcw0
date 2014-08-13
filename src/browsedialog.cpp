@@ -48,9 +48,6 @@ BrowseDialog::~BrowseDialog()
 
 bool BrowseDialog::exec()
 {
-	if (!fl)
-		return false;
-
 	string path = getPath();
 	if (path.empty() || !fileExists(path)
 		|| path.compare(0, strlen(CARD_ROOT), CARD_ROOT) != 0)
@@ -127,7 +124,7 @@ void BrowseDialog::handleInput()
 		ts_pressed = false;
 	}
 
-	if (action == BrowseDialog::ACT_SELECT && (*fl)[selected] == "..") {
+	if (action == BrowseDialog::ACT_SELECT && fl[selected] == "..") {
 		action = BrowseDialog::ACT_GOUP;
 	}
 	switch (action) {
@@ -136,7 +133,7 @@ void BrowseDialog::handleInput()
 		break;
 	case BrowseDialog::ACT_UP:
 		if (selected == 0)
-			selected = fl->size() - 1;
+			selected = fl.size() - 1;
 		else
 			selected -= 1;
 		break;
@@ -147,14 +144,14 @@ void BrowseDialog::handleInput()
 			selected -= numRows - 2;
 		break;
 	case BrowseDialog::ACT_DOWN:
-		if (fl->size() - 1 <= selected)
+		if (fl.size() - 1 <= selected)
 			selected = 0;
 		else
 			selected += 1;
 		break;
 	case BrowseDialog::ACT_SCROLLDOWN:
-		if (selected+(numRows-2)>=fl->size())
-			selected = fl->size()-1;
+		if (selected+(numRows-2)>=fl.size())
+			selected = fl.size()-1;
 		else
 			selected += numRows-2;
 		break;
@@ -162,7 +159,7 @@ void BrowseDialog::handleInput()
 		directoryUp();
 		break;
 	case BrowseDialog::ACT_SELECT:
-		if (fl->isDirectory(selected)) {
+		if (fl.isDirectory(selected)) {
 			directoryEnter();
 			break;
 		}
@@ -203,7 +200,7 @@ void BrowseDialog::directoryEnter()
 		path += "/";
 	}
 
-	setPath(path + fl->at(selected));
+	setPath(path + fl.at(selected));
 
 	selected = 0;
 }
@@ -253,8 +250,8 @@ void BrowseDialog::paint()
 			gmenu2x->skinConfColors[COLOR_SELECTION_BG]);
 
 	lastElement = firstElement + numRows;
-	if (lastElement > fl->size())
-		lastElement = fl->size();
+	if (lastElement > fl.size())
+		lastElement = fl.size();
 
 	offsetY = topBarHeight + 1;
 
@@ -262,8 +259,8 @@ void BrowseDialog::paint()
 	s.setClipRect(clipRect);
 	for (i = firstElement; i < lastElement; i++) {
 		Surface *icon;
-		if (fl->isDirectory(i)) {
-			if ((*fl)[i] == "..") {
+		if (fl.isDirectory(i)) {
+			if (fl[i] == "..") {
 				icon = iconGoUp;
 			} else {
 				icon = iconFolder;
@@ -272,7 +269,7 @@ void BrowseDialog::paint()
 			icon = iconFile;
 		}
 		icon->blit(s, 5, offsetY);
-		gmenu2x->font->write(s, (*fl)[i], 24, offsetY + rowHeight / 2,
+		gmenu2x->font->write(s, fl[i], 24, offsetY + rowHeight / 2,
 				Font::HAlignLeft, Font::VAlignMiddle);
 
 		if (ts.available() && ts.pressed()
@@ -285,6 +282,6 @@ void BrowseDialog::paint()
 	}
 	s.clearClipRect();
 
-	gmenu2x->drawScrollBar(numRows,fl->size(), firstElement);
+	gmenu2x->drawScrollBar(numRows,fl.size(), firstElement);
 	s.flip();
 }

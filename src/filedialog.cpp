@@ -37,19 +37,13 @@ FileDialog::FileDialog(
 			path = file.substr(0, pos);
 	}
 
-	fl = new FileLister();
-	fl->setFilter(filter);
+	fl.setFilter(filter);
 	setPath(path);
-}
-
-FileDialog::~FileDialog()
-{
-	delete fl;
 }
 
 bool FileDialog::exec() {
 	bool ret = BrowseDialog::exec();
-	if (ret && fl->isDirectory(selected)) {
+	if (ret && fl.isDirectory(selected)) {
 		// FileDialog must only pick regular files.
 		ret = false;
 	}

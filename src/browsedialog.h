@@ -41,10 +41,10 @@ protected:
 
 	void setPath(const std::string &path) {
 		this->path = path;
-		fl->browse(path);
+		fl.browse(path);
 	}
 
-	FileLister *fl;
+	FileLister fl;
 	unsigned int selected;
 
 private:
@@ -98,7 +98,7 @@ public:
 		return path;
 	}
 	std::string getFile() {
-		return (*fl)[selected];
+		return fl[selected];
 	}
 };
 

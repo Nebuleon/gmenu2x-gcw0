@@ -29,12 +29,6 @@ DirDialog::DirDialog(
 		const string &text, const string &dir)
 	: BrowseDialog(gmenu2x, ts, "Directory Browser", text)
 {
-	fl = new FileLister();
-	fl->setShowFiles(false);
+	fl.setShowFiles(false);
 	setPath(dir);
-}
-
-DirDialog::~DirDialog()
-{
-	delete fl;
 }
