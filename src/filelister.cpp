@@ -83,27 +83,24 @@ void FileLister::browse(const string& path, bool clean)
 	directories.clear();
 	files.clear();
 
-	DIR *dirp;
 	string slashedPath = path;
 	if (path[path.length() - 1] != '/')
 		slashedPath.push_back('/');
 
+	DIR *dirp;
 	if ((dirp = opendir(slashedPath.c_str())) == NULL) {
 		ERROR("Unable to open directory: %s\n", slashedPath.c_str());
 		return;
 	}
 
-	string filepath, file;
-	struct stat st;
-	struct dirent *dptr;
-
-	while ((dptr = readdir(dirp))) {
-		file = dptr->d_name;
+	while (struct dirent *dptr = readdir(dirp)) {
+		string file = dptr->d_name;
 
 		if (file[0] == '.' && file != "..")
 			continue;
 
-		filepath = slashedPath + file;
+		string filepath = slashedPath + file;
+		struct stat st;
 		int statRet = stat(filepath.c_str(), &st);
 		if (statRet == -1) {
 			ERROR("Stat failed on '%s' with error '%s'\n", filepath.c_str(), strerror(errno));
