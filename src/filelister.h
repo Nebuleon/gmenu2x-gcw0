@@ -26,7 +26,7 @@
 
 class FileLister {
 private:
-	std::string filter;
+	std::vector<std::string> filter;
 	bool showDirectories, showFiles;
 
 	std::vector<std::string> directories, files, excludes;
@@ -43,7 +43,6 @@ public:
 	bool isFile(unsigned int);
 	bool isDirectory(unsigned int);
 
-	const std::string &getFilter();
 	void setFilter(const std::string &filter);
 
 	void setShowDirectories(bool);

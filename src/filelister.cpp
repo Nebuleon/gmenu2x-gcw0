@@ -40,14 +40,13 @@ FileLister::FileLister()
 {
 }
 
-const string &FileLister::getFilter()
-{
-	return filter;
-}
-
 void FileLister::setFilter(const string &filter)
 {
-	this->filter = filter;
+	if (filter.empty() || filter == "*") {
+		this->filter.clear();
+	} else {
+		split(this->filter, filter, ",");
+	}
 }
 
 void FileLister::setShowDirectories(bool showDirectories)
@@ -112,14 +111,12 @@ void FileLister::browse(const string& path, bool clean)
 				if (std::find(files.begin(), files.end(), file) != files.end())
 				  continue;
 
-				if (filter.compare("*") == 0) {
+				if (filter.empty()) {
 					files.push_back(file);
 					continue;
 				}
 
-				vector<string> vfilter;
-				split(vfilter, filter, ",");
-				for (vector<string>::iterator it = vfilter.begin(); it != vfilter.end(); ++it) {
+				for (vector<string>::iterator it = filter.begin(); it != filter.end(); ++it) {
 					if (file.find('.') == string::npos) {
 						if (!it->empty())
 							continue;
