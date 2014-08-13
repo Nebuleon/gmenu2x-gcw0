@@ -60,6 +60,18 @@ void FileLister::setShowFiles(bool showFiles)
 	this->showFiles = showFiles;
 }
 
+static void moveNames(set<string, case_less>&& from, vector<string>& to)
+{
+	to.reserve(from.size());
+	for (string const& name : from) {
+		// Casting away the const is necessary to make the move work.
+		// It will leave the set in an invalid state where it contains multiple
+		// empty strings, but since the set is an rvalue we don't care.
+		to.emplace_back(move(const_cast<string&>(name)));
+	}
+	to.shrink_to_fit();
+}
+
 void FileLister::browse(const string& path, bool clean)
 {
 	set<string, case_less> directorySet;
@@ -68,6 +80,8 @@ void FileLister::browse(const string& path, bool clean)
 		directorySet.insert(directories.begin(), directories.end());
 		fileSet.insert(files.begin(), files.end());
 	}
+	directories.clear();
+	files.clear();
 
 	if (showDirectories || showFiles) {
 		DIR *dirp;
@@ -146,8 +160,8 @@ void FileLister::browse(const string& path, bool clean)
 		closedir(dirp);
 	}
 
-	directories = vector<string>(directorySet.begin(), directorySet.end());
-	files = vector<string>(fileSet.begin(), fileSet.end());
+	moveNames(move(directorySet), directories);
+	moveNames(move(fileSet), files);
 }
 
 unsigned int FileLister::size()
