@@ -74,14 +74,10 @@ static void moveNames(set<string, case_less>&& from, vector<string>& to)
 
 void FileLister::browse(const string& path, bool clean)
 {
-	set<string, case_less> directorySet;
-	set<string, case_less> fileSet;
-	if (!clean) {
-		directorySet.insert(directories.begin(), directories.end());
-		fileSet.insert(files.begin(), files.end());
+	if (clean) {
+		directories.clear();
+		files.clear();
 	}
-	directories.clear();
-	files.clear();
 
 	string slashedPath = path;
 	if (path[path.length() - 1] != '/')
@@ -92,6 +88,9 @@ void FileLister::browse(const string& path, bool clean)
 		ERROR("Unable to open directory: %s\n", slashedPath.c_str());
 		return;
 	}
+
+	set<string, case_less> directorySet;
+	set<string, case_less> fileSet;
 
 	while (struct dirent *dptr = readdir(dirp)) {
 		string file = dptr->d_name;
@@ -155,8 +154,21 @@ void FileLister::browse(const string& path, bool clean)
 
 	closedir(dirp);
 
-	moveNames(move(directorySet), directories);
-	moveNames(move(fileSet), files);
+	if (!directorySet.empty()) {
+		for (string& dir : directories) {
+			directorySet.emplace(move(dir));
+		}
+		directories.clear();
+		moveNames(move(directorySet), directories);
+	}
+
+	if (!fileSet.empty()) {
+		for (string& file : files) {
+			fileSet.emplace(move(file));
+		}
+		files.clear();
+		moveNames(move(fileSet), files);
+	}
 }
 
 unsigned int FileLister::size()
