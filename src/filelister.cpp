@@ -31,6 +31,7 @@
 #include <iostream>
 #include <algorithm>
 #include <cstring>
+#include <set>
 
 using namespace std;
 
@@ -61,9 +62,11 @@ void FileLister::setShowFiles(bool showFiles)
 
 void FileLister::browse(const string& path, bool clean)
 {
-	if (clean) {
-		directories.clear();
-		files.clear();
+	set<string, case_less> directorySet;
+	set<string, case_less> fileSet;
+	if (!clean) {
+		directorySet.insert(directories.begin(), directories.end());
+		fileSet.insert(files.begin(), files.end());
 	}
 
 	if (showDirectories || showFiles) {
@@ -100,19 +103,13 @@ void FileLister::browse(const string& path, bool clean)
 				if (!showDirectories)
 					continue;
 
-				if (std::find(directories.begin(), directories.end(), file) != directories.end())
-				  continue;
-
-				directories.push_back(file);
+				directorySet.insert(file);
 			} else {
 				if (!showFiles)
 					continue;
 
-				if (std::find(files.begin(), files.end(), file) != files.end())
-				  continue;
-
 				if (filter.empty()) {
-					files.push_back(file);
+					fileSet.insert(file);
 					continue;
 				}
 
@@ -121,7 +118,7 @@ void FileLister::browse(const string& path, bool clean)
 						if (!it->empty())
 							continue;
 
-						files.push_back(file);
+						fileSet.insert(file);
 						break;
 					}
 
@@ -138,7 +135,7 @@ void FileLister::browse(const string& path, bool clean)
 									file_lowercase.begin(), ::tolower);
 
 						if (file_lowercase.compare(0, it->length(), *it) == 0) {
-							files.push_back(file);
+							fileSet.insert(file);
 							break;
 						}
 					}
@@ -147,9 +144,10 @@ void FileLister::browse(const string& path, bool clean)
 		}
 
 		closedir(dirp);
-		sort(files.begin(), files.end(), case_less());
-		sort(directories.begin(), directories.end(), case_less());
 	}
+
+	directories = vector<string>(directorySet.begin(), directorySet.end());
+	files = vector<string>(fileSet.begin(), fileSet.end());
 }
 
 unsigned int FileLister::size()
