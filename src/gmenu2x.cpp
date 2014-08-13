@@ -537,27 +537,25 @@ void GMenu2X::writeSkinConfig() {
 
 void GMenu2X::readTmp() {
 	lastSelectorElement = -1;
-	if (fileExists("/tmp/gmenu2x.tmp")) {
-		ifstream inf("/tmp/gmenu2x.tmp", ios_base::in);
-		if (inf.is_open()) {
-			string line;
-			string section = "";
-			while (getline(inf, line, '\n')) {
-				string::size_type pos = line.find("=");
-				string name = trim(line.substr(0,pos));
-				string value = trim(line.substr(pos+1,line.length()));
+	ifstream inf("/tmp/gmenu2x.tmp", ios_base::in);
+	if (inf.is_open()) {
+		string line;
+		string section = "";
+		while (getline(inf, line, '\n')) {
+			string::size_type pos = line.find("=");
+			string name = trim(line.substr(0,pos));
+			string value = trim(line.substr(pos+1,line.length()));
 
-				if (name=="section")
-					menu->setSectionIndex(atoi(value.c_str()));
-				else if (name=="link")
-					menu->setLinkIndex(atoi(value.c_str()));
-				else if (name=="selectorelem")
-					lastSelectorElement = atoi(value.c_str());
-				else if (name=="selectordir")
-					lastSelectorDir = value;
-			}
-			inf.close();
+			if (name=="section")
+				menu->setSectionIndex(atoi(value.c_str()));
+			else if (name=="link")
+				menu->setLinkIndex(atoi(value.c_str()));
+			else if (name=="selectorelem")
+				lastSelectorElement = atoi(value.c_str());
+			else if (name=="selectordir")
+				lastSelectorDir = value;
 		}
+		inf.close();
 	}
 }
 
