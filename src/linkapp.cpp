@@ -93,6 +93,8 @@ LinkApp::LinkApp(GMenu2X *gmenu2x_, const char* linkfile)
 	file = linkfile;
 #ifdef ENABLE_CPUFREQ
 	setClock(gmenu2x->getDefaultAppClock());
+#else
+	setClock(0);
 #endif
 	selectordir = "";
 	selectorfilter = "*";
