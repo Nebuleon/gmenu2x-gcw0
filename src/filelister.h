@@ -26,14 +26,14 @@
 
 class FileLister {
 private:
-	std::string path, filter;
+	std::string filter;
 	bool showDirectories, showFiles;
 
 	std::vector<std::string> directories, files, excludes;
 
 public:
-	FileLister(const std::string &startPath = "/boot/local", bool showDirectories = true, bool showFiles = true);
-	void browse(bool clean = true);
+	FileLister();
+	void browse(const std::string& path, bool clean = true);
 
 	unsigned int size();
 	unsigned int dirCount();
@@ -43,10 +43,11 @@ public:
 	bool isFile(unsigned int);
 	bool isDirectory(unsigned int);
 
-	const std::string &getPath();
-	void setPath(const std::string &path, bool doBrowse=true);
 	const std::string &getFilter();
 	void setFilter(const std::string &filter);
+
+	void setShowDirectories(bool);
+	void setShowFiles(bool);
 
 	const std::vector<std::string> &getDirectories() { return directories; }
 	const std::vector<std::string> &getFiles() { return files; }

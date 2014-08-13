@@ -40,7 +40,8 @@ protected:
 	virtual ~BrowseDialog();
 
 	void setPath(const std::string &path) {
-		fl->setPath(path);
+		this->path = path;
+		fl->browse(path);
 	}
 
 	FileLister *fl;
@@ -64,6 +65,7 @@ private:
 
 	std::string title;
 	std::string subtitle;
+	std::string path;
 
 	SDL_Rect clipRect;
 	SDL_Rect touchRect;
@@ -93,7 +95,7 @@ public:
 	bool exec();
 
 	const std::string &getPath() {
-		return fl->getPath();
+		return path;
 	}
 	std::string getFile() {
 		return (*fl)[selected];

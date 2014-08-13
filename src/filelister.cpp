@@ -34,26 +34,10 @@
 
 using namespace std;
 
-FileLister::FileLister(const string &startPath, bool showDirectories,
-	bool showFiles) : showDirectories(showDirectories), showFiles(showFiles)
+FileLister::FileLister()
+	: showDirectories(true)
+	, showFiles(true)
 {
-	setPath(startPath, false);
-}
-
-const string &FileLister::getPath()
-{
-	return path;
-}
-
-void FileLister::setPath(const string &path, bool doBrowse)
-{
-	this->path = path;
-
-	if (this->path[path.length() - 1]!='/')
-		this->path += "/";
-
-	if (doBrowse)
-		browse();
 }
 
 const string &FileLister::getFilter()
@@ -66,7 +50,17 @@ void FileLister::setFilter(const string &filter)
 	this->filter = filter;
 }
 
-void FileLister::browse(bool clean)
+void FileLister::setShowDirectories(bool showDirectories)
+{
+	this->showDirectories = showDirectories;
+}
+
+void FileLister::setShowFiles(bool showFiles)
+{
+	this->showFiles = showFiles;
+}
+
+void FileLister::browse(const string& path, bool clean)
 {
 	if (clean) {
 		directories.clear();
@@ -75,8 +69,12 @@ void FileLister::browse(bool clean)
 
 	if (showDirectories || showFiles) {
 		DIR *dirp;
-		if ((dirp = opendir(path.c_str())) == NULL) {
-			ERROR("Unable to open directory: %s\n", path.c_str());
+		string slashedPath = path;
+		if (path[path.length() - 1] != '/')
+			slashedPath.push_back('/');
+
+		if ((dirp = opendir(slashedPath.c_str())) == NULL) {
+			ERROR("Unable to open directory: %s\n", slashedPath.c_str());
 			return;
 		}
 
@@ -90,7 +88,7 @@ void FileLister::browse(bool clean)
 			if (file[0] == '.' && file != "..")
 				continue;
 
-			filepath = path + file;
+			filepath = slashedPath + file;
 			int statRet = stat(filepath.c_str(), &st);
 			if (statRet == -1) {
 				ERROR("Stat failed on '%s' with error '%s'\n", filepath.c_str(), strerror(errno));

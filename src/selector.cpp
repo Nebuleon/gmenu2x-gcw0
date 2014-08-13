@@ -52,9 +52,10 @@ Selector::Selector(GMenu2X *gmenu2x, LinkApp *link, const string &selectorDir) :
 }
 
 int Selector::exec(int startSelection) {
-	FileLister fl(dir, link->getSelectorBrowser());
+	FileLister fl;
+	fl.setShowDirectories(link->getSelectorBrowser());
 	fl.setFilter(link->getSelectorFilter());
-	fl.browse();
+	prepare(fl);
 
 	OffscreenSurface bg(*gmenu2x->bg);
 	drawTitleIcon(bg, link->getIconPath(), true);
@@ -84,8 +85,6 @@ int Selector::exec(int startSelection) {
 
 	unsigned int firstElement = 0;
 	unsigned int selected = constrain(startSelection, 0, fl.size() - 1);
-
-	prepare(fl);
 
 	auto folderIcon = gmenu2x->sc.skinRes("imgs/folder.png");
 	if (!folderIcon) {
@@ -214,7 +213,7 @@ int Selector::exec(int startSelection) {
 }
 
 void Selector::prepare(FileLister& fl) {
-	fl.setPath(dir);
+	fl.browse(dir);
 
 	screendir = dir;
 	if (!screendir.empty() && screendir[screendir.length() - 1] != '/') {

@@ -37,8 +37,9 @@ FileDialog::FileDialog(
 			path = file.substr(0, pos);
 	}
 
-	fl = new FileLister(path);
+	fl = new FileLister();
 	fl->setFilter(filter);
+	setPath(path);
 }
 
 FileDialog::~FileDialog()

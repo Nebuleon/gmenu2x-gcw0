@@ -51,12 +51,10 @@ bool BrowseDialog::exec()
 	if (!fl)
 		return false;
 
-	string path = fl->getPath();
-	if (path.empty() || !fileExists(path) || path.compare(0,
-					strlen(CARD_ROOT), CARD_ROOT) != 0)
+	string path = getPath();
+	if (path.empty() || !fileExists(path)
+		|| path.compare(0, strlen(CARD_ROOT), CARD_ROOT) != 0)
 		setPath(CARD_ROOT);
-
-	fl->browse();
 
 	const int topBarHeight = gmenu2x->skinConfInt["topBarHeight"];
 	rowHeight = gmenu2x->font->getLineSpacing() + 1; // gp2x=15+1 / pandora=19+1
@@ -183,7 +181,7 @@ void BrowseDialog::handleInput()
 
 void BrowseDialog::directoryUp()
 {
-	string path = fl->getPath();
+	string path = getPath();
 	string::size_type p = path.rfind("/");
 
 	if (p == path.size() - 1) {
@@ -200,7 +198,7 @@ void BrowseDialog::directoryUp()
 
 void BrowseDialog::directoryEnter()
 {
-	string path = fl->getPath();
+	string path = getPath();
 	if (path[path.size()-1] != '/') {
 		path += "/";
 	}

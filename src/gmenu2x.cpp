@@ -673,13 +673,12 @@ void GMenu2X::showSettings() {
 	int curMenuClock = confInt["menuClock"];
 #endif
 
-	FileLister fl_tr(GMENU2X_SYSTEM_DIR "/translations");
-	fl_tr.browse();
+	FileLister fl_tr;
+	fl_tr.browse(GMENU2X_SYSTEM_DIR "/translations");
 
 	string tr_path = getHome() + "/translations";
 	if (fileExists(tr_path)) {
-		fl_tr.setPath(tr_path, false);
-		fl_tr.browse(false);
+		fl_tr.browse(tr_path, false);
 	}
 
 	fl_tr.insertFile("English");
@@ -725,11 +724,11 @@ void GMenu2X::showSettings() {
 }
 
 void GMenu2X::skinMenu() {
-	FileLister fl_sk(getHome() + "/skins", true, false);
+	FileLister fl_sk;
+	fl_sk.setShowFiles(false);
 	fl_sk.addExclude("..");
-	fl_sk.browse();
-	fl_sk.setPath(GMENU2X_SYSTEM_DIR "/skins", false);
-	fl_sk.browse(false);
+	fl_sk.browse(getHome() + "/skins");
+	fl_sk.browse(GMENU2X_SYSTEM_DIR "/skins", false);
 
 	string curSkin = confStr["skin"];
 

@@ -464,9 +464,10 @@ bool Menu::addLink(string path, string file, string section) {
 		manual = exename+".man.txt";
 	} else {
 		//scan directory for a file like *readme*
-		FileLister fl(path, false);
+		FileLister fl;
+		fl.setShowDirectories(false);
 		fl.setFilter(".txt");
-		fl.browse();
+		fl.browse(path);
 		bool found = false;
 		for (uint x=0; x<fl.size() && !found; x++) {
 			string lcfilename = fl[x];
