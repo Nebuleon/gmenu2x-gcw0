@@ -43,30 +43,17 @@ bool WallpaperDialog::exec()
 	bool close = false, result = true;
 
 	FileLister fl;
+	fl.setShowDirectories(false);
 	fl.setFilter("png");
 
-	string filepath = GMenu2X::getHome() + "/skins/"
-		+ gmenu2x->confStr["skin"] + "/wallpapers";
-	if (fileExists(filepath)) {
-		fl.browse(filepath, true);
-	}
-
-	filepath = GMENU2X_SYSTEM_DIR "/skins/"
-		+ gmenu2x->confStr["skin"] + "/wallpapers";
-	if (fileExists(filepath)) {
-		fl.browse(filepath, false);
-	}
+	fl.browse(GMenu2X::getHome() + "/skins/"
+		+ gmenu2x->confStr["skin"] + "/wallpapers", true);
+	fl.browse(GMENU2X_SYSTEM_DIR "/skins/"
+		+ gmenu2x->confStr["skin"] + "/wallpapers", false);
 
 	if (gmenu2x->confStr["skin"] != "Default") {
-		filepath = GMenu2X::getHome() + "/skins/Default/wallpapers";
-		if (fileExists(filepath)) {
-			fl.browse(filepath, false);
-		}
-
-		filepath = GMENU2X_SYSTEM_DIR "/skins/Default/wallpapers";
-		if (fileExists(filepath)) {
-			fl.browse(filepath, false);
-		}
+		fl.browse(GMenu2X::getHome() + "/skins/Default/wallpapers", false);
+		fl.browse(GMENU2X_SYSTEM_DIR "/skins/Default/wallpapers", false);
 	}
 
 	vector<string> wallpapers = fl.getFiles();
