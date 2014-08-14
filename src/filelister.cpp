@@ -124,32 +124,17 @@ void FileLister::browse(const string& path, bool clean)
 				continue;
 			}
 
-			string file = dptr->d_name;
-			for (vector<string>::iterator it = filter.begin(); it != filter.end(); ++it) {
-				if (file.find('.') == string::npos) {
-					if (!it->empty())
-						continue;
+			// Determine file extension.
+			const char *ext = strrchr(dptr->d_name, '.');
+			if (ext) ext++; else ext = "";
 
-					fileSet.insert(file);
+			for (auto& filterExt : filter) {
+				// Note: strcasecmp can't compare multi-byte UTF-8 characters,
+				//       but the filtered file extensions don't contain any of
+				//       those.
+				if (strcasecmp(ext, filterExt.c_str()) == 0) {
+					fileSet.insert(string(dptr->d_name));
 					break;
-				}
-
-				if (it->length() < file.length()) {
-					if (file[file.length() - it->length() - 1] != '.')
-						continue;
-
-					string file_lowercase =
-								file.substr(file.length() - it->length());
-
-					/* XXX: This won't accept UTF-8 codes.
-						* Thanksfully file extensions shouldn't contain any. */
-					transform(file_lowercase.begin(), file_lowercase.end(),
-								file_lowercase.begin(), ::tolower);
-
-					if (file_lowercase.compare(0, it->length(), *it) == 0) {
-						fileSet.insert(file);
-						break;
-					}
 				}
 			}
 		}
