@@ -40,7 +40,7 @@ public:
 	unsigned int fileCount() { return files.size(); }
 
 	std::string operator[](unsigned int);
-	bool isFile(unsigned int x) { return x >= directories.size(); }
+	bool isFile(unsigned int x) { return x >= directories.size() && x < size(); }
 	bool isDirectory(unsigned int x) { return x < directories.size(); }
 
 	void setFilter(const std::string &filter);
