@@ -103,6 +103,7 @@ LinkApp::LinkApp(GMenu2X *gmenu2x_, const char* linkfile)
 	editable = true;
 	edited = false;
 
+	bool appTakesFileArg = true;
 #ifdef HAVE_LIBOPK
 	isOPK = !!opk;
 
@@ -120,6 +121,8 @@ LinkApp::LinkApp(GMenu2X *gmenu2x_, const char* linkfile)
 		opkMount = opkMount.substr(0, pos);
 
 		file = gmenu2x->getHome() + "/sections/";
+
+		appTakesFileArg = false;
 
 		while ((ret = opk_read_pair(opk, &key, &lkey, &val, &lval))) {
 			if (ret < 0) {
@@ -169,6 +172,7 @@ LinkApp::LinkApp(GMenu2X *gmenu2x_, const char* linkfile)
 				for (auto token : tokens) {
 					if (tmp.find(token) != tmp.npos) {
 						selectordir = CARD_ROOT;
+						appTakesFileArg = true;
 						break;
 					}
 				}
@@ -226,7 +230,7 @@ LinkApp::LinkApp(GMenu2X *gmenu2x_, const char* linkfile)
 		if (name == "clock") {
 			setClock( atoi(value.c_str()) );
 		} else if (name == "selectordir") {
-			setSelectorDir( value );
+			if (appTakesFileArg) setSelectorDir(value);
 		} else if (name == "selectorbrowser") {
 			if (value=="false") selectorbrowser = false;
 		} else if (!isOpk()) {
