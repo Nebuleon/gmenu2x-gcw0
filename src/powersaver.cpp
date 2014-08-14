@@ -1,13 +1,14 @@
 #include "powersaver.h"
 #include "debug.h"
 
-#include <errno.h>
+#include <cassert>
+#include <cerrno>
+#include <cstdio>
+#include <cstring>
 #include <fcntl.h>
-#include <stdio.h>
-#include <string.h>
 #include <unistd.h>
 
-PowerSaver *PowerSaver::instance = NULL;
+PowerSaver *PowerSaver::instance = nullptr;
 
 Uint32 screenTimerCallback(Uint32 timeout, void *d) {
 	unsigned int * old_ticks = (unsigned int *) d;
@@ -20,29 +21,32 @@ Uint32 screenTimerCallback(Uint32 timeout, void *d) {
 	}
 
 	DEBUG("Disable Backlight Event\n");
-	PowerSaver::getInstance()->disableScreen();
+	PowerSaver::instance->disableScreen();
 	return 0;
 }
 
 PowerSaver *PowerSaver::getInstance() {
-	if (instance == NULL) {
+	if (!instance) {
 		instance = new PowerSaver();
 	}
 	return instance;
 }
 
 bool PowerSaver::isRunning() {
-	return instance != NULL;
+	return !!instance;
 }
 
-PowerSaver::PowerSaver() {
-	setScreenTimeout(0);
-	screenTimer = NULL;
+PowerSaver::PowerSaver()
+	: screenState(false)
+	, screenTimeout(0)
+	, screenTimer(nullptr)
+{
+	enableScreen();
 }
 
 PowerSaver::~PowerSaver() {
-	SDL_RemoveTimer(screenTimer);
-	instance = NULL;
+	removeScreenTimer();
+	instance = nullptr;
 }
 
 void PowerSaver::setScreenTimeout(unsigned int seconds) {
@@ -51,28 +55,27 @@ void PowerSaver::setScreenTimeout(unsigned int seconds) {
 }
 
 void PowerSaver::resetScreenTimer() {
-	if (screenTimer != NULL) {
-		SDL_RemoveTimer(screenTimer);
-	}
-
-	addScreenTimer();
-	// If display is off, turn on it.
-	if (!screenState) {
-		enableScreen();
+	removeScreenTimer();
+	enableScreen();
+	if (screenTimeout != 0) {
+		addScreenTimer();
 	}
 }
 
 void PowerSaver::addScreenTimer() {
-	// If timeout is zero, don't set timeout.
-	if (screenTimeout == 0) {
-		screenTimer = NULL;
-		return;
-	}
-
+	assert(!screenTimer);
 	timeout_startms = SDL_GetTicks();
-	screenTimer = SDL_AddTimer(screenTimeout * 1000, screenTimerCallback, &timeout_startms);
-	if (screenTimer == NULL) {
+	screenTimer = SDL_AddTimer(
+			screenTimeout * 1000, screenTimerCallback, &timeout_startms);
+	if (!screenTimer) {
 		ERROR("Could not initialize SDLTimer: %s\n", SDL_GetError());
+	}
+}
+
+void PowerSaver::removeScreenTimer() {
+	if (screenTimer) {
+		SDL_RemoveTimer(screenTimer);
+		screenTimer = nullptr;
 	}
 }
 
