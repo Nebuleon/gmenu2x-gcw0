@@ -215,6 +215,7 @@ void GMenu2X::initCPULimits() {
 #endif
 
 GMenu2X::GMenu2X()
+	: input(powerSaver)
 {
 	usbnet = samba = inet = web = false;
 	useSelectionPng = false;
@@ -283,18 +284,14 @@ GMenu2X::GMenu2X()
 		exit(EXIT_FAILURE);
 	}
 
-	if (confInt["backlightTimeout"] > 0)
-        PowerSaver::getInstance()->setScreenTimeout( confInt["backlightTimeout"] );
+	powerSaver.setScreenTimeout(confInt["backlightTimeout"]);
+
 #ifdef ENABLE_CPUFREQ
 	setClock(confInt["menuClock"]);
 #endif
 }
 
 GMenu2X::~GMenu2X() {
-	if (PowerSaver::isRunning()) {
-		delete PowerSaver::getInstance();
-	}
-
 	fflush(NULL);
 	sc.clear();
 
@@ -704,12 +701,7 @@ void GMenu2X::showSettings() {
 		if (curMenuClock != confInt["menuClock"]) setClock(confInt["menuClock"]);
 #endif
 
-		if (confInt["backlightTimeout"] == 0) {
-			if (PowerSaver::isRunning())
-				delete PowerSaver::getInstance();
-		} else {
-			PowerSaver::getInstance()->setScreenTimeout( confInt["backlightTimeout"] );
-		}
+		powerSaver.setScreenTimeout(confInt["backlightTimeout"]);
 
 		input.repeatRateChanged();
 

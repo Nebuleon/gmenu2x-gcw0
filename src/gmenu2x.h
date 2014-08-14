@@ -26,6 +26,7 @@
 #include "translator.h"
 #include "touchscreen.h"
 #include "inputmanager.h"
+#include "powersaver.h"
 #include "surface.h"
 #include "utilities.h"
 
@@ -144,6 +145,7 @@ public:
 		return std::make_pair(top, resY - top - bottom);
 	}
 
+	PowerSaver powerSaver;
 	InputManager input;
 
 	//Configuration hashes

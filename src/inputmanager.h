@@ -29,6 +29,7 @@
 
 class GMenu2X;
 class Menu;
+class PowerSaver;
 class InputManager;
 
 enum EventCode {
@@ -61,7 +62,7 @@ public:
 	};
 	#define BUTTON_TYPE_SIZE 10
 
-	InputManager();
+	InputManager(PowerSaver& powerSaver);
 	~InputManager();
 
 	bool init(GMenu2X *gmenu2x, Menu *menu);
@@ -81,6 +82,7 @@ private:
 
 	GMenu2X *gmenu2x;
 	Menu *menu;
+	PowerSaver& powerSaver;
 
 	ButtonMapEntry buttonMap[BUTTON_TYPE_SIZE];
 #ifndef SDL_JOYSTICK_DISABLED

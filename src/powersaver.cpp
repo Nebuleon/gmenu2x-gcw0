@@ -25,23 +25,14 @@ Uint32 screenTimerCallback(Uint32 timeout, void *d) {
 	return 0;
 }
 
-PowerSaver *PowerSaver::getInstance() {
-	if (!instance) {
-		instance = new PowerSaver();
-	}
-	return instance;
-}
-
-bool PowerSaver::isRunning() {
-	return !!instance;
-}
-
 PowerSaver::PowerSaver()
 	: screenState(false)
 	, screenTimeout(0)
 	, screenTimer(nullptr)
 {
 	enableScreen();
+	assert(!instance);
+	instance = this;
 }
 
 PowerSaver::~PowerSaver() {

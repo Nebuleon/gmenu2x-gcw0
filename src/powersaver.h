@@ -5,14 +5,12 @@
 
 class PowerSaver {
 public:
-	static PowerSaver *getInstance();
-	static bool isRunning();
+	PowerSaver();
 	~PowerSaver();
 	void resetScreenTimer();
 	void setScreenTimeout(unsigned int seconds);
 
 private:
-	PowerSaver();
 	void addScreenTimer();
 	void removeScreenTimer();
 	void setScreenBlanking(bool state);

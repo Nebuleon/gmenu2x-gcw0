@@ -57,7 +57,8 @@ bool InputManager::init(GMenu2X *gmenu2x, Menu *menu) {
 	return true;
 }
 
-InputManager::InputManager()
+InputManager::InputManager(PowerSaver& powerSaver)
+	: powerSaver(powerSaver)
 {
 #ifndef SDL_JOYSTICK_DISABLED
 	int i;
@@ -301,8 +302,8 @@ bool InputManager::getButton(Button *button, bool wait) {
 	if (i == BUTTON_TYPE_SIZE)
 		return false;
 
-	if (wait && PowerSaver::isRunning()) {
-		PowerSaver::getInstance()->resetScreenTimer();
+	if (wait) {
+		powerSaver.resetScreenTimer();
 	}
 
 	return true;
