@@ -33,7 +33,7 @@ int Monitor::run(void)
 
 	DEBUG("Starting inotify thread for path %s...\n", path.c_str());
 
-	fd = inotify_init();
+	fd = inotify_init1(IN_CLOEXEC);
 	if (fd < 0) {
 		ERROR("Unable to start inotify\n");
 		return fd;
