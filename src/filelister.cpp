@@ -169,7 +169,3 @@ string FileLister::operator[](uint x)
 	const auto dirCount = directories.size();
 	return x < dirCount ? directories[x] : files[x - dirCount];
 }
-
-void FileLister::insertFile(const string &file) {
-	files.insert(files.begin(), file);
-}

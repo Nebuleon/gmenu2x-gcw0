@@ -680,7 +680,8 @@ void GMenu2X::showSettings() {
 	fl_tr.browse(GMENU2X_SYSTEM_DIR "/translations");
 	fl_tr.browse(getHome() + "/translations", false);
 
-	fl_tr.insertFile("English");
+	vector<string> translations = fl_tr.getFiles();
+	translations.insert(translations.begin(), "English");
 	string lang = tr.lang();
 
 	vector<string> encodings;
@@ -688,7 +689,7 @@ void GMenu2X::showSettings() {
 	encodings.push_back("PAL");
 
 	SettingsDialog sd(this, input, ts, tr["Settings"]);
-	sd.addSetting(new MenuSettingMultiString(this, ts, tr["Language"], tr["Set the language used by GMenu2X"], &lang, &fl_tr.getFiles()));
+	sd.addSetting(new MenuSettingMultiString(this, ts, tr["Language"], tr["Set the language used by GMenu2X"], &lang, &translations));
 	sd.addSetting(new MenuSettingBool(this, ts, tr["Save last selection"], tr["Save the last selected link and section on exit"], &confInt["saveSelection"]));
 #ifdef ENABLE_CPUFREQ
 	sd.addSetting(new MenuSettingInt(this, ts, tr["Clock for GMenu2X"], tr["Set the cpu working frequency when running GMenu2X"], &confInt["menuClock"], cpuFreqMin, cpuFreqSafeMax, cpuFreqMultiple));

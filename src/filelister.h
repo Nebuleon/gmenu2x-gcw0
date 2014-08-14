@@ -51,7 +51,6 @@ public:
 
 	const std::vector<std::string> &getDirectories() { return directories; }
 	const std::vector<std::string> &getFiles() { return files; }
-	void insertFile(const std::string &file);
 };
 
 #endif // FILELISTER_H
