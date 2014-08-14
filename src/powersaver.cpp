@@ -38,6 +38,7 @@ PowerSaver::PowerSaver()
 PowerSaver::~PowerSaver() {
 	removeScreenTimer();
 	instance = nullptr;
+	enableScreen();
 }
 
 void PowerSaver::setScreenTimeout(unsigned int seconds) {
