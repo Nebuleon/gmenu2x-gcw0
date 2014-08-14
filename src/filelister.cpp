@@ -93,7 +93,6 @@ void FileLister::browse(const string& path, bool clean)
 			}
 		}
 
-		string file = dptr->d_name;
 		bool isDir;
 #ifdef DT_DIR
 		if (dptr->d_type != DT_UNKNOWN) {
@@ -101,7 +100,7 @@ void FileLister::browse(const string& path, bool clean)
 		} else
 #endif
 		{
-			string filepath = slashedPath + file;
+			string filepath = slashedPath + dptr->d_name;
 			struct stat st;
 			int statRet = stat(filepath.c_str(), &st);
 			if (statRet == -1) {
@@ -115,16 +114,17 @@ void FileLister::browse(const string& path, bool clean)
 			if (!showDirectories)
 				continue;
 
-			directorySet.insert(file);
+			directorySet.insert(string(dptr->d_name));
 		} else {
 			if (!showFiles)
 				continue;
 
 			if (filter.empty()) {
-				fileSet.insert(file);
+				fileSet.insert(string(dptr->d_name));
 				continue;
 			}
 
+			string file = dptr->d_name;
 			for (vector<string>::iterator it = filter.begin(); it != filter.end(); ++it) {
 				if (file.find('.') == string::npos) {
 					if (!it->empty())
