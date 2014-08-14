@@ -27,9 +27,9 @@
 class FileLister {
 private:
 	std::vector<std::string> filter;
-	bool showDirectories, showFiles;
+	bool showDirectories, showUpdir, showFiles;
 
-	std::vector<std::string> directories, files, excludes;
+	std::vector<std::string> directories, files;
 
 public:
 	FileLister();
@@ -46,12 +46,12 @@ public:
 	void setFilter(const std::string &filter);
 
 	void setShowDirectories(bool);
+	void setShowUpdir(bool);
 	void setShowFiles(bool);
 
 	const std::vector<std::string> &getDirectories() { return directories; }
 	const std::vector<std::string> &getFiles() { return files; }
 	void insertFile(const std::string &file);
-	void addExclude(const std::string &exclude);
 };
 
 #endif // FILELISTER_H

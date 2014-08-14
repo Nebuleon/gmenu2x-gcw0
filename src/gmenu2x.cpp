@@ -725,7 +725,7 @@ void GMenu2X::showSettings() {
 void GMenu2X::skinMenu() {
 	FileLister fl_sk;
 	fl_sk.setShowFiles(false);
-	fl_sk.addExclude("..");
+	fl_sk.setShowUpdir(false);
 	fl_sk.browse(getHome() + "/skins");
 	fl_sk.browse(GMENU2X_SYSTEM_DIR "/skins", false);
 

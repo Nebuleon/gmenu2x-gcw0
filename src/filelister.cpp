@@ -37,6 +37,7 @@ using namespace std;
 
 FileLister::FileLister()
 	: showDirectories(true)
+	, showUpdir(true)
 	, showFiles(true)
 {
 }
@@ -53,6 +54,11 @@ void FileLister::setFilter(const string &filter)
 void FileLister::setShowDirectories(bool showDirectories)
 {
 	this->showDirectories = showDirectories;
+}
+
+void FileLister::setShowUpdir(bool showUpdir)
+{
+	this->showUpdir = showUpdir;
 }
 
 void FileLister::setShowFiles(bool showFiles)
@@ -95,11 +101,14 @@ void FileLister::browse(const string& path, bool clean)
 	set<string, case_less> fileSet;
 
 	while (struct dirent *dptr = readdir(dirp)) {
+		// Ignore hidden files and optionally "..".
+		if (dptr->d_name[0] == '.') {
+			if (!(dptr->d_name[1] == '.' && showUpdir)) {
+				continue;
+			}
+		}
+
 		string file = dptr->d_name;
-
-		if (file[0] == '.' && file != "..")
-			continue;
-
 		string filepath = slashedPath + file;
 		struct stat st;
 		int statRet = stat(filepath.c_str(), &st);
@@ -107,9 +116,6 @@ void FileLister::browse(const string& path, bool clean)
 			ERROR("Stat failed on '%s' with error '%s'\n", filepath.c_str(), strerror(errno));
 			continue;
 		}
-		if (find(excludes.begin(), excludes.end(), file) != excludes.end())
-			continue;
-
 		if (S_ISDIR(st.st_mode)) {
 			if (!showDirectories)
 				continue;
@@ -213,8 +219,4 @@ bool FileLister::isDirectory(unsigned int x)
 
 void FileLister::insertFile(const string &file) {
 	files.insert(files.begin(), file);
-}
-
-void FileLister::addExclude(const string &exclude) {
-	excludes.push_back(exclude);
 }
