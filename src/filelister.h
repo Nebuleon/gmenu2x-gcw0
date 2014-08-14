@@ -40,7 +40,6 @@ public:
 	unsigned int fileCount() { return files.size(); }
 
 	std::string operator[](unsigned int);
-	std::string at(unsigned int);
 	bool isFile(unsigned int x) { return x >= directories.size(); }
 	bool isDirectory(unsigned int x) { return x < directories.size(); }
 

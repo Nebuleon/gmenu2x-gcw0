@@ -166,15 +166,8 @@ void FileLister::browse(const string& path, bool clean)
 
 string FileLister::operator[](uint x)
 {
-	return at(x);
-}
-
-string FileLister::at(uint x)
-{
-	if (x < directories.size())
-		return directories[x];
-	else
-		return files[x-directories.size()];
+	const auto dirCount = directories.size();
+	return x < dirCount ? directories[x] : files[x - dirCount];
 }
 
 void FileLister::insertFile(const string &file) {

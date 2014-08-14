@@ -200,7 +200,7 @@ void BrowseDialog::directoryEnter()
 		path += "/";
 	}
 
-	setPath(path + fl.at(selected));
+	setPath(path + fl[selected]);
 
 	selected = 0;
 }
