@@ -329,7 +329,7 @@ void GMenu2X::initBG() {
 	{
 		auto cpu = OffscreenSurface::loadImage(
 				sc.getSkinFilePath("imgs/cpu.png"));
-		if (cpu) cpu->blit(bgmain, cpuX, bottomBarIconY);
+		if (cpu) cpu->blit(*bgmain, cpuX, bottomBarIconY);
 	}
 	cpuX += 19;
 	manualX = cpuX + font->getTextWidth("300MHz") + 5;
