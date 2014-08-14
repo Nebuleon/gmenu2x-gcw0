@@ -316,7 +316,8 @@ void GMenu2X::initBG() {
 	OffscreenSurface *bgmain = sc.add(*bg, "bgmain");
 
 	{
-		auto sd = OffscreenSurface::loadImage("imgs/sd.png", confStr["skin"]);
+		auto sd = OffscreenSurface::loadImage(
+				sc.getSkinFilePath("imgs/sd.png"));
 		if (sd) sd->blit(*bgmain, 3, bottomBarIconY);
 	}
 
@@ -326,7 +327,8 @@ void GMenu2X::initBG() {
 	cpuX = font->getTextWidth(df) + 32;
 #ifdef ENABLE_CPUFREQ
 	{
-		auto cpu = OffscreenSurface::loadImage("imgs/cpu.png", confStr["skin"]);
+		auto cpu = OffscreenSurface::loadImage(
+				sc.getSkinFilePath("imgs/cpu.png"));
 		if (cpu) cpu->blit(bgmain, cpuX, bottomBarIconY);
 	}
 	cpuX += 19;
@@ -339,19 +341,19 @@ void GMenu2X::initBG() {
 	if (usbnet) {
 		if (web) {
 			auto webserver = OffscreenSurface::loadImage(
-					"imgs/webserver.png", confStr["skin"]);
+					sc.getSkinFilePath("imgs/webserver.png"));
 			if (webserver) webserver->blit(*bgmain, serviceX, bottomBarIconY);
 			serviceX -= 19;
 		}
 		if (samba) {
 			auto sambaS = OffscreenSurface::loadImage(
-					"imgs/samba.png", confStr["skin"]);
+					sc.getSkinFilePath("imgs/samba.png"));
 			if (sambaS) sambaS->blit(*bgmain, serviceX, bottomBarIconY);
 			serviceX -= 19;
 		}
 		if (inet) {
 			auto inetS = OffscreenSurface::loadImage(
-					"imgs/inet.png", confStr["skin"]);
+					sc.getSkinFilePath("imgs/inet.png"));
 			if (inetS) inetS->blit(*bgmain, serviceX, bottomBarIconY);
 			serviceX -= 19;
 		}

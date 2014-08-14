@@ -105,7 +105,7 @@ int Selector::exec(int startSelection) {
 		//Screenshot
 		if (fl.isFile(selected)) {
 			string path = screendir + trimExtension(fl[selected]) + ".png";
-			auto screenshot = OffscreenSurface::loadImage(path, "", false);
+			auto screenshot = OffscreenSurface::loadImage(path, false);
 			if (screenshot) {
 				screenshot->blitRight(s, 320, 0, 320, 240, 128u);
 			}

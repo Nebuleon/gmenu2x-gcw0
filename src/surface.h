@@ -110,8 +110,7 @@ public:
 	static std::unique_ptr<OffscreenSurface> emptySurface(
 			int width, int height);
 	static std::unique_ptr<OffscreenSurface> loadImage(
-			std::string const& img, std::string const& skin = "",
-			bool loadAlpha = true);
+			std::string const& img, bool loadAlpha = true);
 
 	OffscreenSurface(Surface const& other) : Surface(other) {}
 	OffscreenSurface(OffscreenSurface const& other) : Surface(other) {}

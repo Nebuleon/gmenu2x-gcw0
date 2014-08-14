@@ -22,7 +22,6 @@
 
 #include "debug.h"
 #include "imageio.h"
-#include "surfacecollection.h"
 #include "utilities.h"
 
 #include <algorithm>
@@ -292,15 +291,9 @@ unique_ptr<OffscreenSurface> OffscreenSurface::emptySurface(
 }
 
 unique_ptr<OffscreenSurface> OffscreenSurface::loadImage(
-		string const& img,string const& skin, bool loadAlpha)
+		string const& img, bool loadAlpha)
 {
-	string skinpath;
-	if (!skin.empty() && !img.empty() && img[0]!='/')
-	  skinpath = SurfaceCollection::getSkinFilePath(skin, img);
-	else
-	  skinpath = img;
-
-	SDL_Surface *raw = loadPNG(skinpath, loadAlpha);
+	SDL_Surface *raw = loadPNG(img, loadAlpha);
 	if (!raw) {
 		ERROR("Couldn't load surface '%s'\n", img.c_str());
 		return unique_ptr<OffscreenSurface>();
