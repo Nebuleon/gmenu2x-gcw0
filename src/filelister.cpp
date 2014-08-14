@@ -94,14 +94,24 @@ void FileLister::browse(const string& path, bool clean)
 		}
 
 		string file = dptr->d_name;
-		string filepath = slashedPath + file;
-		struct stat st;
-		int statRet = stat(filepath.c_str(), &st);
-		if (statRet == -1) {
-			ERROR("Stat failed on '%s' with error '%s'\n", filepath.c_str(), strerror(errno));
-			continue;
+		bool isDir;
+#ifdef DT_DIR
+		if (dptr->d_type != DT_UNKNOWN) {
+			isDir = dptr->d_type == DT_DIR;
+		} else
+#endif
+		{
+			string filepath = slashedPath + file;
+			struct stat st;
+			int statRet = stat(filepath.c_str(), &st);
+			if (statRet == -1) {
+				ERROR("Stat failed on '%s' with error '%s'\n", filepath.c_str(), strerror(errno));
+				continue;
+			}
+			isDir = S_ISDIR(st.st_mode);
 		}
-		if (S_ISDIR(st.st_mode)) {
+
+		if (isDir) {
 			if (!showDirectories)
 				continue;
 
