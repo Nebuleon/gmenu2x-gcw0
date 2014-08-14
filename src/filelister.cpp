@@ -51,21 +51,6 @@ void FileLister::setFilter(const string &filter)
 	}
 }
 
-void FileLister::setShowDirectories(bool showDirectories)
-{
-	this->showDirectories = showDirectories;
-}
-
-void FileLister::setShowUpdir(bool showUpdir)
-{
-	this->showUpdir = showUpdir;
-}
-
-void FileLister::setShowFiles(bool showFiles)
-{
-	this->showFiles = showFiles;
-}
-
 static void moveNames(set<string, case_less>&& from, vector<string>& to)
 {
 	to.reserve(from.size());
@@ -179,21 +164,6 @@ void FileLister::browse(const string& path, bool clean)
 	}
 }
 
-unsigned int FileLister::size()
-{
-	return files.size() + directories.size();
-}
-
-unsigned int FileLister::dirCount()
-{
-	return directories.size();
-}
-
-unsigned int FileLister::fileCount()
-{
-	return files.size();
-}
-
 string FileLister::operator[](uint x)
 {
 	return at(x);
@@ -205,16 +175,6 @@ string FileLister::at(uint x)
 		return directories[x];
 	else
 		return files[x-directories.size()];
-}
-
-bool FileLister::isFile(unsigned int x)
-{
-	return x >= directories.size() && x < size();
-}
-
-bool FileLister::isDirectory(unsigned int x)
-{
-	return x < directories.size();
 }
 
 void FileLister::insertFile(const string &file) {

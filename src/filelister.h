@@ -35,19 +35,20 @@ public:
 	FileLister();
 	void browse(const std::string& path, bool clean = true);
 
-	unsigned int size();
-	unsigned int dirCount();
-	unsigned int fileCount();
+	unsigned int size() { return files.size() + directories.size(); }
+	unsigned int dirCount() { return directories.size(); }
+	unsigned int fileCount() { return files.size(); }
+
 	std::string operator[](unsigned int);
 	std::string at(unsigned int);
-	bool isFile(unsigned int);
-	bool isDirectory(unsigned int);
+	bool isFile(unsigned int x) { return x >= directories.size(); }
+	bool isDirectory(unsigned int x) { return x < directories.size(); }
 
 	void setFilter(const std::string &filter);
 
-	void setShowDirectories(bool);
-	void setShowUpdir(bool);
-	void setShowFiles(bool);
+	void setShowDirectories(bool enabled) { showDirectories = enabled; }
+	void setShowUpdir(bool enabled) { showUpdir = enabled; }
+	void setShowFiles(bool enabled) { showFiles = enabled; }
 
 	const std::vector<std::string> &getDirectories() { return directories; }
 	const std::vector<std::string> &getFiles() { return files; }
