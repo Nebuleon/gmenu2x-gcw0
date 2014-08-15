@@ -70,10 +70,11 @@ void TextDialog::exec() {
 	writeTitle(bg, title);
 	writeSubTitle(bg, description);
 
-	gmenu2x->drawButton(bg, "start", gmenu2x->tr["Exit"],
-	gmenu2x->drawButton(bg, "cancel", "",
-	gmenu2x->drawButton(bg, "down", gmenu2x->tr["Scroll"],
-	gmenu2x->drawButton(bg, "up", "", 5))));
+	int x = 5;
+	x = gmenu2x->drawButton(bg, "up", "", x);
+	x = gmenu2x->drawButton(bg, "down", gmenu2x->tr["Scroll"], x);
+	x = gmenu2x->drawButton(bg, "cancel", "", x);
+	x = gmenu2x->drawButton(bg, "start", gmenu2x->tr["Exit"], x);
 
 	bg.convertToDisplayFormat();
 
