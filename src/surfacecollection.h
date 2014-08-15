@@ -44,7 +44,6 @@ public:
 
 	void debug();
 
-	OffscreenSurface *add(const std::string &path);
 	OffscreenSurface *addSkinRes(const std::string &path, bool useDefault = true);
 	void     del(const std::string &path);
 	void     clear();
@@ -55,6 +54,8 @@ public:
 	OffscreenSurface *skinRes(const std::string &key, bool useDefault = true);
 
 private:
+	OffscreenSurface *add(const std::string &path);
+
 	SurfaceHash surfaces;
 	std::string skin;
 };

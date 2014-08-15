@@ -140,9 +140,7 @@ void Menu::skinUpdated() {
 	//reload section icons
 	vector<string>::size_type i = 0;
 	for (string sectionName : sections) {
-		string sectionIcon = "sections/" + sectionName + ".png";
-		if (!gmenu2x->sc.getSkinFilePath(sectionIcon).empty())
-			gmenu2x->sc.add("skin:" + sectionIcon);
+		gmenu2x->sc["skin:sections/" + sectionName + ".png"];
 
 		for (Link *&link : links[i]) {
 			link->loadIcon();
