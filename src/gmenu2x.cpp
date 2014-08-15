@@ -130,7 +130,7 @@ static void quit_all(int err) {
 	exit(err);
 }
 
-const string GMenu2X::getHome(void)
+const string GMenu2X::getHome()
 {
 	return gmenu2x_home;
 }

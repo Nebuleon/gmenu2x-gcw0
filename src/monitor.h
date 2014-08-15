@@ -13,8 +13,8 @@ public:
 				IN_DELETE_SELF | IN_MOVE_SELF);
 	virtual ~Monitor();
 
-	int run(void);
-	const std::string getPath(void) { return path; }
+	int run();
+	const std::string getPath() { return path; }
 
 private:
 	std::string path;

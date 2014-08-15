@@ -27,7 +27,7 @@ bool Monitor::event_accepted(struct inotify_event &event)
 	return len >= 5 && !strncmp(event.name + len - 4, ".opk", 4);
 }
 
-int Monitor::run(void)
+int Monitor::run()
 {
 	int wd, fd;
 
@@ -84,7 +84,7 @@ Monitor::Monitor(std::string path, unsigned int flags) : path(path)
 	pthread_create(&thd, NULL, inotify_thd, (void *) this);
 }
 
-Monitor::~Monitor(void)
+Monitor::~Monitor()
 {
 	pthread_cancel(thd);
 	pthread_join(thd, NULL);

@@ -126,7 +126,7 @@ public:
 
 	/* Returns the home directory of gmenu2x, usually
 	 * ~/.gmenu2x */
-	static const std::string getHome(void);
+	static const std::string getHome();
 
 	/*
 	 * Variables needed for elements disposition
