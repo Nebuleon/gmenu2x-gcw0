@@ -26,6 +26,8 @@
 #include "inputdialog.h"
 
 using std::string;
+using std::unique_ptr;
+using std::move;
 
 MenuSettingString::MenuSettingString(
 		GMenu2X *gmenu2x, Touchscreen &ts_,
@@ -36,15 +38,15 @@ MenuSettingString::MenuSettingString(
 	, diagTitle(diagTitle_)
 	, diagIcon(diagIcon_)
 {
-	IconButton *btn;
+	unique_ptr<IconButton> btnClear(new IconButton(
+		gmenu2x, ts, "skin:imgs/buttons/cancel.png", gmenu2x->tr["Clear"]));
+	btnClear->setAction(BIND(&MenuSettingString::clear));
+	buttonBox.add(move(btnClear));
 
-	btn = new IconButton(gmenu2x, ts, "skin:imgs/buttons/cancel.png", gmenu2x->tr["Clear"]);
-	btn->setAction(BIND(&MenuSettingString::clear));
-	buttonBox.add(btn);
-
-	btn = new IconButton(gmenu2x, ts, "skin:imgs/buttons/accept.png", gmenu2x->tr["Edit"]);
-	btn->setAction(BIND(&MenuSettingString::edit));
-	buttonBox.add(btn);
+	unique_ptr<IconButton> btnEdit(new IconButton(
+		gmenu2x, ts, "skin:imgs/buttons/accept.png", gmenu2x->tr["Edit"]));
+	btnEdit->setAction(BIND(&MenuSettingString::edit));
+	buttonBox.add(move(btnEdit));
 }
 
 void MenuSettingString::edit()
