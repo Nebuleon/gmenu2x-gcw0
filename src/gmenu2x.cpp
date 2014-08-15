@@ -1039,14 +1039,14 @@ int GMenu2X::drawButton(Surface& s, IconButton *btn, int x, int y) {
 
 int GMenu2X::drawButton(Surface& s, const string &btn, const string &text, int x, int y) {
 	if (y<0) y = resY+y;
-	SDL_Rect re = { static_cast<Sint16>(x), static_cast<Sint16>(y - 7), 0, 16 };
+	int w = 0;
 	if (sc.skinRes("imgs/buttons/"+btn+".png") != NULL) {
 		sc["imgs/buttons/"+btn+".png"]->blit(s, x, y-7);
-		re.w = sc["imgs/buttons/"+btn+".png"]->width() + 3;
-		re.w += font->write(
-				s, text, x+re.w, y, Font::HAlignLeft, Font::VAlignMiddle);
+		w = sc["imgs/buttons/"+btn+".png"]->width() + 3;
+		w += font->write(
+				s, text, x + w, y, Font::HAlignLeft, Font::VAlignMiddle);
 	}
-	return x+re.w+6;
+	return x + w + 6;
 }
 
 int GMenu2X::drawButtonRight(Surface& s, const string &btn, const string &text, int x, int y) {
