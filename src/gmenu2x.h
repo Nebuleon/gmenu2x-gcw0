@@ -205,7 +205,6 @@ public:
 	void renameSection();
 	void deleteSection();
 
-	int drawButton(Surface& s, IconButton *btn, int x=5, int y=-10);
 	int drawButton(Surface& s, const std::string &btn, const std::string &text, int x=5, int y=-10);
 	int drawButtonRight(Surface& s, const std::string &btn, const std::string &text, int x=5, int y=-10);
 	void drawScrollBar(uint pageSize, uint totalSize, uint pagePos);

@@ -16,7 +16,7 @@ public:
 	void add(IconButton *button);
 	void clear();
 
-	void paint(Surface& s, unsigned int posX);
+	void paint(Surface& s, unsigned int x);
 	void handleTS();
 
 private:

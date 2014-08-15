@@ -22,10 +22,14 @@ void ButtonBox::clear()
 	buttons.clear();
 }
 
-void ButtonBox::paint(Surface& s, unsigned int posX)
+void ButtonBox::paint(Surface& s, unsigned int x)
 {
+	const int y = gmenu2x->resY - 1;
 	for (auto button : buttons) {
-		posX = gmenu2x->drawButton(s, button, posX);
+		auto rect = button->getRect();
+		button->setPosition(x, y - rect.h);
+		button->paint(s);
+		x += button->getRect().w + 6;
 	}
 }
 
