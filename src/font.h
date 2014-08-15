@@ -38,7 +38,11 @@ public:
 		return lineSpacing;
 	}
 
-	void write(Surface& surface,
+	/**
+	 * Draws a text on a surface in this font.
+	 * @return The width of the text in pixels.
+	 */
+	int write(Surface& surface,
 				const std::string &text, int x, int y,
 				HAlign halign = HAlignLeft, VAlign valign = VAlignTop);
 
@@ -48,7 +52,11 @@ private:
 	std::string wordWrapSingleLine(const std::string &text,
 				size_t start, size_t end, int width);
 
-	void writeLine(Surface& surface, std::string const& text,
+	/**
+	 * Draws a single line of text on a surface in this font.
+	 * @return The width of the text in pixels.
+	 */
+	int writeLine(Surface& surface, std::string const& text,
 				int x, int y, HAlign halign, VAlign valign);
 
 	TTF_Font *font;

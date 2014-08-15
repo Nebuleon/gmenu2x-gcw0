@@ -6,6 +6,7 @@
 
 #include <SDL.h>
 #include <SDL_ttf.h>
+#include <algorithm>
 #include <vector>
 
 /* TODO: Let the theme choose the font and font size */
@@ -197,38 +198,38 @@ int Font::getTextHeight(const string &text)
 	return nLines * getLineSpacing();
 }
 
-void Font::write(Surface& surface, const string &text,
+int Font::write(Surface& surface, const string &text,
 			int x, int y, HAlign halign, VAlign valign)
 {
 	if (!font) {
-		return;
+		return 0;
 	}
 
 	size_t pos = text.find('\n', 0);
 	if (pos == string::npos) {
-		writeLine(surface, text, x, y, halign, valign);
+		return writeLine(surface, text, x, y, halign, valign);
 	} else {
+		int maxWidth = 0;
 		size_t prev = 0;
 		do {
-			writeLine(surface, text.substr(prev, pos - prev),
-					x, y, halign, valign);
+			maxWidth = max(maxWidth,
+					writeLine(surface, text.substr(prev, pos - prev),
+						x, y, halign, valign));
 			y += lineSpacing;
 			prev = pos + 1;
 			pos = text.find('\n', prev);
 		} while (pos != string::npos);
-		writeLine(surface, text.substr(prev), x, y, halign, valign);
+		return max(maxWidth,
+				writeLine(surface, text.substr(prev), x, y, halign, valign));
 	}
 }
 
-void Font::writeLine(Surface& surface, std::string const& text,
+int Font::writeLine(Surface& surface, std::string const& text,
 				int x, int y, HAlign halign, VAlign valign)
 {
-	if (!font) {
-		return;
-	}
 	if (text.empty()) {
 		// SDL_ttf will return a nullptr when rendering the empty string.
-		return;
+		return 0;
 	}
 
 	switch (valign) {
@@ -246,17 +247,18 @@ void Font::writeLine(Surface& surface, std::string const& text,
 	SDL_Surface *s = TTF_RenderUTF8_Blended(font, text.c_str(), color);
 	if (!s) {
 		ERROR("Font rendering failed for text \"%s\"\n", text.c_str());
-		return;
+		return 0;
 	}
+	const int width = s->w;
 
 	switch (halign) {
 	case HAlignLeft:
 		break;
 	case HAlignCenter:
-		x -= s->w / 2;
+		x -= width / 2;
 		break;
 	case HAlignRight:
-		x -= s->w;
+		x -= width;
 		break;
 	}
 
@@ -287,8 +289,10 @@ void Font::writeLine(Surface& surface, std::string const& text,
 	s = TTF_RenderUTF8_Blended(font, text.c_str(), color);
 	if (!s) {
 		ERROR("Font rendering failed for text \"%s\"\n", text.c_str());
-		return;
+		return width;
 	}
 	SDL_BlitSurface(s, NULL, surface.raw, &rect);
 	SDL_FreeSurface(s);
+
+	return width;
 }

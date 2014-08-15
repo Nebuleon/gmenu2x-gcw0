@@ -321,10 +321,9 @@ void GMenu2X::initBG() {
 		if (sd) sd->blit(*bgmain, 3, bottomBarIconY);
 	}
 
-	string df = getDiskFree(getHome().c_str());
-	font->write(*bgmain, df, 22, bottomBarTextY, Font::HAlignLeft, Font::VAlignMiddle);
+	cpuX = 32 + font->write(*bgmain, getDiskFree(getHome().c_str()),
+			22, bottomBarTextY, Font::HAlignLeft, Font::VAlignMiddle);
 
-	cpuX = font->getTextWidth(df) + 32;
 #ifdef ENABLE_CPUFREQ
 	{
 		auto cpu = OffscreenSurface::loadImage(
@@ -1044,8 +1043,8 @@ int GMenu2X::drawButton(Surface& s, const string &btn, const string &text, int x
 	if (sc.skinRes("imgs/buttons/"+btn+".png") != NULL) {
 		sc["imgs/buttons/"+btn+".png"]->blit(s, x, y-7);
 		re.w = sc["imgs/buttons/"+btn+".png"]->width() + 3;
-		font->write(s, text, x+re.w, y, Font::HAlignLeft, Font::VAlignMiddle);
-		re.w += font->getTextWidth(text);
+		re.w += font->write(
+				s, text, x+re.w, y, Font::HAlignLeft, Font::VAlignMiddle);
 	}
 	return x+re.w+6;
 }
@@ -1056,8 +1055,8 @@ int GMenu2X::drawButtonRight(Surface& s, const string &btn, const string &text, 
 		x -= 16;
 		sc["imgs/buttons/"+btn+".png"]->blit(s, x, y-7);
 		x -= 3;
-		font->write(s, text, x, y, Font::HAlignRight, Font::VAlignMiddle);
-		return x-6-font->getTextWidth(text);
+		return x-6 - font->write(
+				s, text, x, y, Font::HAlignRight, Font::VAlignMiddle);
 	}
 	return x-6;
 }
