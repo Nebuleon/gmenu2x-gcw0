@@ -98,25 +98,25 @@ InputDialog::InputDialog(GMenu2X *gmenu2x, InputManager &inputMgr_,
 	setKeyboard(0);
 
 	buttonbox = new ButtonBox(gmenu2x);
-	IconButton *btnBackspace = new IconButton(gmenu2x, ts,
-			"skin:imgs/buttons/l.png", gmenu2x->tr["Backspace"]);
+	unique_ptr<IconButton> btnBackspace(new IconButton(
+		gmenu2x, ts, "skin:imgs/buttons/l.png", gmenu2x->tr["Backspace"]));
 	btnBackspace->setAction(BIND(&InputDialog::backspace));
-	buttonbox->add(btnBackspace);
+	buttonbox->add(move(btnBackspace));
 
-	IconButton *btnSpace = new IconButton(gmenu2x, ts,
-			"skin:imgs/buttons/r.png", gmenu2x->tr["Space"]);
+	unique_ptr<IconButton> btnSpace(
+		new IconButton(gmenu2x, ts, "skin:imgs/buttons/r.png", gmenu2x->tr["Space"]));
 	btnSpace->setAction(BIND(&InputDialog::space));
-	buttonbox->add(btnSpace);
+	buttonbox->add(move(btnSpace));
 
-	IconButton *btnConfirm = new IconButton(gmenu2x, ts,
-			"skin:imgs/buttons/accept.png", gmenu2x->tr["Confirm"]);
+	unique_ptr<IconButton> btnConfirm(new IconButton(
+		gmenu2x, ts, "skin:imgs/buttons/accept.png", gmenu2x->tr["Confirm"]));
 	btnConfirm->setAction(BIND(&InputDialog::confirm));
-	buttonbox->add(btnConfirm);
+	buttonbox->add(move(btnConfirm));
 
-	IconButton *btnChangeKeys = new IconButton(gmenu2x, ts,
-			"skin:imgs/buttons/cancel.png", gmenu2x->tr["Change keys"]);
+	unique_ptr<IconButton> btnChangeKeys(new IconButton(
+		gmenu2x, ts, "skin:imgs/buttons/cancel.png", gmenu2x->tr["Change keys"]));
 	btnChangeKeys->setAction(BIND(&InputDialog::changeKeys));
-	buttonbox->add(btnChangeKeys);
+	buttonbox->add(move(btnChangeKeys));
 }
 
 void InputDialog::setKeyboard(int kb) {

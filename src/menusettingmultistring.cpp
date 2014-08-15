@@ -28,6 +28,8 @@
 using std::find;
 using std::string;
 using std::vector;
+using std::unique_ptr;
+using std::move;
 
 MenuSettingMultiString::MenuSettingMultiString(
 		GMenu2X *gmenu2x, Touchscreen &ts,
@@ -38,15 +40,15 @@ MenuSettingMultiString::MenuSettingMultiString(
 {
 	setSel(find(choices->begin(), choices->end(), *value) - choices->begin());
 
-	IconButton *btn;
+	unique_ptr<IconButton> btnDec(new IconButton(
+		gmenu2x, ts, "skin:imgs/buttons/left.png"));
+	btnDec->setAction(BIND(&MenuSettingMultiString::decSel));
+	buttonBox.add(move(btnDec));
 
-	btn = new IconButton(gmenu2x, ts, "skin:imgs/buttons/left.png");
-	btn->setAction(BIND(&MenuSettingMultiString::decSel));
-	buttonBox.add(btn);
-
-	btn = new IconButton(gmenu2x, ts, "skin:imgs/buttons/right.png", gmenu2x->tr["Change value"]);
-	btn->setAction(BIND(&MenuSettingMultiString::incSel));
-	buttonBox.add(btn);
+	unique_ptr<IconButton> btnInc(new IconButton(
+		gmenu2x, ts, "skin:imgs/buttons/right.png", gmenu2x->tr["Change value"]));
+	btnInc->setAction(BIND(&MenuSettingMultiString::incSel));
+	buttonBox.add(move(btnInc));
 }
 
 bool MenuSettingMultiString::handleButtonPress(InputManager::Button button)

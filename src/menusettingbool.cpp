@@ -29,6 +29,8 @@
 #include <sstream>
 
 using std::string;
+using std::unique_ptr;
+using std::move;
 
 MenuSettingBool::MenuSettingBool(
 		GMenu2X *gmenu2x, Touchscreen &ts,
@@ -58,11 +60,10 @@ MenuSettingBool::MenuSettingBool(
 
 void MenuSettingBool::initButton()
 {
-	IconButton *btn = new IconButton(gmenu2x, ts,
-									 "skin:imgs/buttons/accept.png",
-									 gmenu2x->tr["Switch"]);
+	unique_ptr<IconButton> btn(new IconButton(
+		gmenu2x, ts, "skin:imgs/buttons/accept.png", gmenu2x->tr["Switch"]));
 	btn->setAction(BIND(&MenuSettingBool::toggle));
-	buttonBox.add(btn);
+	buttonBox.add(move(btn));
 }
 
 void MenuSettingBool::draw(int valueX, int y, int h)

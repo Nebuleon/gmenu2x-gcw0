@@ -7,6 +7,8 @@
 #include "utilities.h"
 
 using std::string;
+using std::unique_ptr;
+using std::move;
 
 BrowseDialog::BrowseDialog(
 		GMenu2X *gmenu2x, Touchscreen &ts_,
@@ -18,24 +20,26 @@ BrowseDialog::BrowseDialog(
 	, ts_pressed(false)
 	, buttonBox(gmenu2x)
 {
-	IconButton *btn;
+	buttonBox.add(unique_ptr<IconButton>(new IconButton(gmenu2x, ts, "skin:imgs/buttons/left.png")));
+	unique_ptr<IconButton> btnUp(new IconButton(
+		gmenu2x, ts, "skin:imgs/buttons/cancel.png", gmenu2x->tr["Up one folder"]));
+	btnUp->setAction(BIND(&BrowseDialog::directoryUp));
+	buttonBox.add(move(btnUp));
 
-	buttonBox.add(new IconButton(gmenu2x, ts, "skin:imgs/buttons/left.png"));
-	btn = new IconButton(gmenu2x, ts, "skin:imgs/buttons/cancel.png", gmenu2x->tr["Up one folder"]);
-	btn->setAction(BIND(&BrowseDialog::directoryUp));
-	buttonBox.add(btn);
+	unique_ptr<IconButton> btnSelect(new IconButton(
+		gmenu2x, ts, "skin:imgs/buttons/accept.png", gmenu2x->tr["Select"]));
+	btnSelect->setAction(BIND(&BrowseDialog::directoryEnter));
+	buttonBox.add(move(btnSelect));
 
-	btn = new IconButton(gmenu2x, ts, "skin:imgs/buttons/accept.png", gmenu2x->tr["Select"]);
-	btn->setAction(BIND(&BrowseDialog::directoryEnter));
-	buttonBox.add(btn);
+	unique_ptr<IconButton> btnConfirm(new IconButton(
+		gmenu2x, ts, "skin:imgs/buttons/start.png", gmenu2x->tr["Confirm"]));
+	btnConfirm->setAction(BIND(&BrowseDialog::confirm));
+	buttonBox.add(move(btnConfirm));
 
-	btn = new IconButton(gmenu2x, ts, "skin:imgs/buttons/start.png", gmenu2x->tr["Confirm"]);
-	btn->setAction(BIND(&BrowseDialog::confirm));
-	buttonBox.add(btn);
-
-	btn = new IconButton(gmenu2x, ts, "skin:imgs/buttons/select.png", gmenu2x->tr["Exit"]);
-	btn->setAction(BIND(&BrowseDialog::quit));
-	buttonBox.add(btn);
+	unique_ptr<IconButton> btnExit(new IconButton(
+		gmenu2x, ts, "skin:imgs/buttons/select.png", gmenu2x->tr["Exit"]));
+	btnExit->setAction(BIND(&BrowseDialog::quit));
+	buttonBox.add(move(btnExit));
 
 	iconGoUp = gmenu2x->sc.skinRes("imgs/go-up.png");
 	iconFolder = gmenu2x->sc.skinRes("imgs/folder.png");
