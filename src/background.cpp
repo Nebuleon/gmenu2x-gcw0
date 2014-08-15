@@ -13,10 +13,10 @@ Background::Background(GMenu2X& gmenu2x)
 }
 
 void Background::paint(Surface& s) {
-	Font &font = *gmenu2x.font;
-	SurfaceCollection &sc = gmenu2x.sc;
+	Font& font = *gmenu2x.font;
+	OffscreenSurface& bgmain = *gmenu2x.bgmain;
 
-	sc["bgmain"]->blit(s, 0, 0);
+	bgmain.blit(s, 0, 0);
 
 	font.write(s, clock.getTime(),
 			s.width() / 2, gmenu2x.bottomBarTextY,

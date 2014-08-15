@@ -93,13 +93,6 @@ bool SurfaceCollection::exists(const string &path) {
 	return surfaces.find(path) != surfaces.end();
 }
 
-OffscreenSurface *SurfaceCollection::add(Surface const& s, std::string const& path) {
-	if (exists(path)) del(path);
-	auto copy = new OffscreenSurface(s);
-	surfaces[path] = copy;
-	return copy;
-}
-
 OffscreenSurface *SurfaceCollection::add(const string &path) {
 	if (path.empty()) return NULL;
 	if (exists(path)) del(path);

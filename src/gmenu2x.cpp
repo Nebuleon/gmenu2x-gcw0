@@ -301,8 +301,8 @@ GMenu2X::~GMenu2X() {
 }
 
 void GMenu2X::initBG() {
-	sc.del("bgmain");
 	bg.reset();
+	bgmain.reset();
 
 	// Load wallpaper.
 	bg = OffscreenSurface::loadImage(confStr["wallpaper"]);
@@ -313,7 +313,7 @@ void GMenu2X::initBG() {
 	drawTopBar(*bg);
 	drawBottomBar(*bg);
 
-	OffscreenSurface *bgmain = sc.add(*bg, "bgmain");
+	bgmain.reset(new OffscreenSurface(*bg));
 
 	{
 		auto sd = OffscreenSurface::loadImage(

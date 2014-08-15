@@ -44,12 +44,6 @@ public:
 
 	void debug();
 
-	/**
-	 * Adds a copy of the given surface to this collection under the given
-	 * path. Returns the copy.
-	 */
-	OffscreenSurface *add(Surface const& s, std::string const& path);
-
 	OffscreenSurface *add(const std::string &path);
 	OffscreenSurface *addSkinRes(const std::string &path, bool useDefault = true);
 	void     del(const std::string &path);
