@@ -83,7 +83,7 @@ private:
 	// Load all the .opk packages of the given directory
 	void readPackages(std::string parentDir);
 #ifdef ENABLE_INOTIFY
-	std::vector<Monitor *> monitors;
+	std::vector<std::unique_ptr<Monitor>> monitors;
 #endif
 #endif
 

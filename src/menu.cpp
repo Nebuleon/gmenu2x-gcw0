@@ -106,11 +106,6 @@ Menu::Menu(GMenu2X *gmenu2x, Touchscreen &ts)
 
 Menu::~Menu() {
 	freeLinks();
-
-#ifdef ENABLE_INOTIFY
-	for (auto it : monitors)
-		delete it;
-#endif
 }
 
 void Menu::readSections(std::string parentDir)
@@ -659,7 +654,7 @@ void Menu::openPackagesFromDir(std::string path)
 	DEBUG("Opening packages from directory: %s\n", path.c_str());
 	readPackages(path);
 #ifdef ENABLE_INOTIFY
-	monitors.push_back(new Monitor(path.c_str()));
+	monitors.emplace_back(new Monitor(path.c_str()));
 #endif
 }
 
@@ -789,10 +784,8 @@ void Menu::removePackageLink(std::string path)
 	}
 
 	/* Remove registered monitors */
-	for (vector<Monitor *>::iterator it = monitors.begin();
-				it < monitors.end(); it++) {
+	for (auto it = monitors.begin(); it < monitors.end(); ++it) {
 		if ((*it)->getPath().compare(0, path.size(), path) == 0) {
-			delete (*it);
 			monitors.erase(it);
 		}
 	}
