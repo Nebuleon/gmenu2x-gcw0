@@ -176,7 +176,7 @@ int Selector::exec(int startSelection) {
 			case InputManager::LEFT:
 				if (link->getSelectorBrowser()) {
 					string::size_type p = dir.rfind("/", dir.size()-2);
-					if (p==string::npos || dir.compare(0, 1, "/") != 0 || dir.length() < 2) {
+					if (p==string::npos || dir.length() < 2 || dir[0] != '/') {
 						close = true;
 						result = false;
 					} else {

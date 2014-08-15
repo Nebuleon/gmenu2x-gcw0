@@ -185,7 +185,7 @@ void BrowseDialog::directoryUp()
 		p = path.rfind("/", p - 1);
 	}
 
-	if (p == string::npos || path.compare(0, 1, "/") != 0 || path.length() < 2) {
+	if (p == string::npos || path.length() < 2 || path[0] != '/') {
 		quit();
 	} else {
 		selected = 0;

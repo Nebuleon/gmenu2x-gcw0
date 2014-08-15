@@ -545,7 +545,7 @@ void Menu::deleteSelectedLink()
 				!icon_used && section<links.end(); section++)
 		for (vector<Link*>::iterator link = section->begin();
 					!icon_used && link<section->end(); link++)
-			icon_used = !iconpath.compare((*link)->getIconPath());
+			icon_used = iconpath == (*link)->getIconPath();
 
 	if (!icon_used)
 	  gmenu2x->sc.del(iconpath);
@@ -694,7 +694,7 @@ void Menu::openPackage(std::string path, bool order)
 			pos = metadata.rfind('.');
 			metadata = metadata.substr(pos + 1);
 
-			if (!metadata.compare(PLATFORM) || !metadata.compare("all")) {
+			if (metadata == PLATFORM || metadata == "all") {
 				has_metadata = true;
 				break;
 			}
