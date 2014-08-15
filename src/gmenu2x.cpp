@@ -1031,11 +1031,13 @@ string GMenu2X::getDiskFree(const char *path) {
 }
 
 int GMenu2X::drawButton(Surface& s, const string &btn, const string &text, int x, int y) {
-	if (y<0) y = resY+y;
 	int w = 0;
-	if (sc.skinRes("imgs/buttons/"+btn+".png") != NULL) {
-		sc["imgs/buttons/"+btn+".png"]->blit(s, x, y-7);
-		w = sc["imgs/buttons/"+btn+".png"]->width() + 3;
+	auto icon = sc["skin:imgs/buttons/" + btn + ".png"];
+	if (icon) {
+		if (y < 0) y = resY + y;
+		w = icon->width();
+		icon->blit(s, x, y - 7);
+		w += 3;
 		w += font->write(
 				s, text, x + w, y, Font::HAlignLeft, Font::VAlignMiddle);
 	}
@@ -1043,15 +1045,17 @@ int GMenu2X::drawButton(Surface& s, const string &btn, const string &text, int x
 }
 
 int GMenu2X::drawButtonRight(Surface& s, const string &btn, const string &text, int x, int y) {
-	if (y<0) y = resY+y;
-	if (sc.skinRes("imgs/buttons/"+btn+".png") != NULL) {
-		x -= 16;
-		sc["imgs/buttons/"+btn+".png"]->blit(s, x, y-7);
-		x -= 3;
-		return x-6 - font->write(
-				s, text, x, y, Font::HAlignRight, Font::VAlignMiddle);
+	int w = 0;
+	auto icon = sc["skin:imgs/buttons/" + btn + ".png"];
+	if (icon) {
+		if (y < 0) y = resY + y;
+		w = icon->width();
+		icon->blit(s, x - w, y - 7);
+		w += 3;
+		w += font->write(
+				s, text, x - w, y, Font::HAlignRight, Font::VAlignMiddle);
 	}
-	return x-6;
+	return x - (w + 6);
 }
 
 void GMenu2X::drawScrollBar(uint pageSize, uint totalSize, uint pagePos) {
