@@ -120,10 +120,8 @@ void Menu::readSections(std::string parentDir)
 		if (dptr->d_name[0] == '.' || dptr->d_type != DT_DIR)
 			continue;
 
-		string filepath = parentDir + "/" + dptr->d_name;
-
-		if (find(sections.begin(), sections.end(), (string)dptr->d_name) == sections.end()) {
-			sections.push_back((string)dptr->d_name);
+		if (find(sections.begin(), sections.end(), dptr->d_name) == sections.end()) {
+			sections.emplace_back(dptr->d_name);
 			vector<Link*> ll;
 			links.push_back(ll);
 		}
@@ -802,8 +800,7 @@ void Menu::readLinksOfSection(std::string path, std::vector<std::string> &linkfi
 
 	while ((dptr = readdir(dirp))) {
 		if (dptr->d_type != DT_REG) continue;
-		string filepath = path + "/" + dptr->d_name;
-		linkfiles.push_back(filepath);
+		linkfiles.emplace_back(path + "/" + dptr->d_name);
 	}
 
 	closedir(dirp);
@@ -836,7 +833,6 @@ void Menu::readLinks() {
 
 	iLink = 0;
 	iFirstDispRow = 0;
-	string filepath;
 
 	for (uint i=0; i<links.size(); i++) {
 		links[i].clear();
