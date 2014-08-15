@@ -62,16 +62,15 @@ int Selector::exec(int startSelection) {
 	writeTitle(bg, link->getTitle());
 	writeSubTitle(bg, link->getDescription());
 
+	int x = 5;
+	x = gmenu2x->drawButton(bg, "accept", gmenu2x->tr["Select"], x);
 	if (link->getSelectorBrowser()) {
-		gmenu2x->drawButton(bg, "start", gmenu2x->tr["Exit"],
-		gmenu2x->drawButton(bg, "accept", gmenu2x->tr["Select"],
-		gmenu2x->drawButton(bg, "cancel", gmenu2x->tr["Up one folder"],
-		gmenu2x->drawButton(bg, "left", "", 5))));
+		x = gmenu2x->drawButton(bg, "left", "", x);
+		x = gmenu2x->drawButton(bg, "cancel", gmenu2x->tr["Up one folder"], x);
 	} else {
-		gmenu2x->drawButton(bg, "start", gmenu2x->tr["Exit"],
-		gmenu2x->drawButton(bg, "cancel", "",
-		gmenu2x->drawButton(bg, "accept", gmenu2x->tr["Select"], 5)));
+		x = gmenu2x->drawButton(bg, "cancel", "", x);
 	}
+	x = gmenu2x->drawButton(bg, "start", gmenu2x->tr["Exit"], x);
 
 	unsigned int top, height;
 	tie(top, height) = gmenu2x->getContentArea();
