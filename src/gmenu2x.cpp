@@ -1037,11 +1037,14 @@ int GMenu2X::drawButton(Surface& s, const string &btn, const string &text, int x
 		if (y < 0) y = resY + y;
 		w = icon->width();
 		icon->blit(s, x, y - 7);
-		w += 3;
-		w += font->write(
-				s, text, x + w, y, Font::HAlignLeft, Font::VAlignMiddle);
+		if (!text.empty()) {
+			w += 3;
+			w += font->write(
+					s, text, x + w, y, Font::HAlignLeft, Font::VAlignMiddle);
+			w += 6;
+		}
 	}
-	return x + w + 6;
+	return x + w;
 }
 
 int GMenu2X::drawButtonRight(Surface& s, const string &btn, const string &text, int x, int y) {
@@ -1051,11 +1054,14 @@ int GMenu2X::drawButtonRight(Surface& s, const string &btn, const string &text, 
 		if (y < 0) y = resY + y;
 		w = icon->width();
 		icon->blit(s, x - w, y - 7);
-		w += 3;
-		w += font->write(
-				s, text, x - w, y, Font::HAlignRight, Font::VAlignMiddle);
+		if (!text.empty()) {
+			w += 3;
+			w += font->write(
+					s, text, x - w, y, Font::HAlignRight, Font::VAlignMiddle);
+			w += 6;
+		}
 	}
-	return x - (w + 6);
+	return x - w;
 }
 
 void GMenu2X::drawScrollBar(uint pageSize, uint totalSize, uint pagePos) {

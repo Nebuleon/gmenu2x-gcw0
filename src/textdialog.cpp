@@ -73,7 +73,7 @@ void TextDialog::exec() {
 	gmenu2x->drawButton(bg, "start", gmenu2x->tr["Exit"],
 	gmenu2x->drawButton(bg, "cancel", "",
 	gmenu2x->drawButton(bg, "down", gmenu2x->tr["Scroll"],
-	gmenu2x->drawButton(bg, "up", "", 5)-10))-10);
+	gmenu2x->drawButton(bg, "up", "", 5))));
 
 	bg.convertToDisplayFormat();
 

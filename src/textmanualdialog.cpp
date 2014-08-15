@@ -82,7 +82,7 @@ void TextManualDialog::exec() {
 	gmenu2x->drawButton(bg, "right", gmenu2x->tr["Change page"],
 	gmenu2x->drawButton(bg, "left", "",
 	gmenu2x->drawButton(bg, "down", gmenu2x->tr["Scroll"],
-	gmenu2x->drawButton(bg, "up", "", 5)-10))-10))-10);
+	gmenu2x->drawButton(bg, "up", "", 5))))));
 
 	bg.convertToDisplayFormat();
 

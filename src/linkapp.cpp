@@ -475,7 +475,7 @@ void LinkApp::showManual() {
 				gmenu2x->drawButton(s, "start", gmenu2x->tr["Exit"],
 				gmenu2x->drawButton(s, "cancel", "",
 				gmenu2x->drawButton(s, "right", gmenu2x->tr["Change page"],
-				gmenu2x->drawButton(s, "left", "", 5)-10))-10);
+				gmenu2x->drawButton(s, "left", "", 5))));
 
 				ss.clear();
 				ss << page+1;
