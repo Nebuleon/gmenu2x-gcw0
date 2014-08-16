@@ -75,11 +75,15 @@ int Selector::exec(int startSelection) {
 
 	auto folderIcon = gmenu2x->sc.skinRes("imgs/folder.png");
 
+	// Figure out how many items we can fit in the content area.
 	int lineHeight = gmenu2x->font->getLineSpacing();
 	if (showDirectories && folderIcon) {
 		lineHeight = max(lineHeight, folderIcon->height() + 2);
 	}
 	unsigned int nb_elements = max(height / lineHeight, 1u);
+	// Redistribute any leftover space.
+	lineHeight = height / nb_elements;
+	top += (height - lineHeight * nb_elements) / 2;
 
 	bg.convertToDisplayFormat();
 
