@@ -30,7 +30,6 @@
 using std::string;
 using std::stringstream;
 using std::unique_ptr;
-using std::move;
 
 constexpr unsigned int COMPONENT_WIDTH = 28;
 

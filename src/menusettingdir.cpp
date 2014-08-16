@@ -27,7 +27,6 @@
 
 using std::string;
 using std::unique_ptr;
-using std::move;
 
 MenuSettingDir::MenuSettingDir(
 		GMenu2X *gmenu2x, Touchscreen &ts_,
@@ -35,15 +34,15 @@ MenuSettingDir::MenuSettingDir(
 	: MenuSettingStringBase(gmenu2x, name, description, value)
 	, ts(ts_)
 {
-	unique_ptr<IconButton> btnCancel(new IconButton(
-		gmenu2x, ts, "skin:imgs/buttons/cancel.png", gmenu2x->tr["Clear"]));
-	btnCancel->setAction(BIND(&MenuSettingDir::clear));
-	buttonBox.add(move(btnCancel));
+	buttonBox.add(unique_ptr<IconButton>(new IconButton(
+			gmenu2x, ts, "skin:imgs/buttons/cancel.png",
+			gmenu2x->tr["Clear"],
+			BIND(&MenuSettingDir::clear))));
 
-	unique_ptr<IconButton> btnAccept(new IconButton(
-		gmenu2x, ts, "skin:imgs/buttons/accept.png", gmenu2x->tr["Select"]));
-	btnAccept->setAction(BIND(&MenuSettingDir::edit));
-	buttonBox.add(move(btnAccept));
+	buttonBox.add(unique_ptr<IconButton>(new IconButton(
+			gmenu2x, ts, "skin:imgs/buttons/accept.png",
+			gmenu2x->tr["Select"],
+			BIND(&MenuSettingDir::edit))));
 }
 
 void MenuSettingDir::edit()

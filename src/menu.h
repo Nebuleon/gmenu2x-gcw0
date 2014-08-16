@@ -22,6 +22,7 @@
 #define MENU_H
 
 #include "delegate.h"
+#include "iconbutton.h"
 #include "layer.h"
 #include "link.h"
 
@@ -55,7 +56,7 @@ private:
 
 	GMenu2X *gmenu2x;
 	Touchscreen &ts;
-	std::unique_ptr<IconButton> btnContextMenu;
+	IconButton btnContextMenu;
 	int iSection, iLink;
 	uint iFirstDispRow;
 	std::vector<std::string> sections;

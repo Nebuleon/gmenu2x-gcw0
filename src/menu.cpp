@@ -40,7 +40,6 @@
 #include "filelister.h"
 #include "utilities.h"
 #include "debug.h"
-#include "iconbutton.h"
 
 using namespace std;
 
@@ -71,7 +70,8 @@ void Menu::Animation::step()
 Menu::Menu(GMenu2X *gmenu2x, Touchscreen &ts)
 	: gmenu2x(gmenu2x)
 	, ts(ts)
-	, btnContextMenu(new IconButton(gmenu2x, ts, "skin:imgs/menu.png"))
+	, btnContextMenu(gmenu2x, ts, "skin:imgs/menu.png", "",
+			std::bind(&GMenu2X::showContextMenu, gmenu2x))
 {
 	readSections(GMENU2X_SYSTEM_DIR "/sections");
 	readSections(GMenu2X::getHome() + "/sections");
@@ -100,8 +100,7 @@ Menu::Menu(GMenu2X *gmenu2x, Touchscreen &ts)
 	}
 #endif
 
-	btnContextMenu->setPosition(gmenu2x->resX - 38, gmenu2x->bottomBarIconY);
-	btnContextMenu->setAction(std::bind(&GMenu2X::showContextMenu, gmenu2x));
+	btnContextMenu.setPosition(gmenu2x->resX - 38, gmenu2x->bottomBarIconY);
 }
 
 Menu::~Menu() {
@@ -265,7 +264,7 @@ void Menu::paint(Surface &s) {
 	}
 
 	if (ts.available()) {
-		btnContextMenu->paint(s);
+		btnContextMenu.paint(s);
 	}
 }
 
@@ -301,7 +300,7 @@ bool Menu::handleButtonPress(InputManager::Button button) {
 }
 
 bool Menu::handleTouchscreen(Touchscreen &ts) {
-	btnContextMenu->handleTS();
+	btnContextMenu.handleTS();
 
 	ConfIntHash &skinConfInt = gmenu2x->skinConfInt;
 	const int topBarHeight = skinConfInt["topBarHeight"];

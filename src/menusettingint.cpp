@@ -31,7 +31,6 @@
 using std::string;
 using std::stringstream;
 using std::unique_ptr;
-using std::move;
 
 MenuSettingInt::MenuSettingInt(
 		GMenu2X *gmenu2x, Touchscreen &ts,
@@ -50,25 +49,19 @@ MenuSettingInt::MenuSettingInt(
 	function_t actionInc = BIND(&MenuSettingInt::inc);
 	function_t actionDec = BIND(&MenuSettingInt::dec);
 
-	unique_ptr<IconButton> btnL1(new IconButton(
-		gmenu2x, ts, "skin:imgs/buttons/l.png"));
-	btnL1->setAction(actionDec);
-	buttonBox.add(move(btnL1));
+	buttonBox.add(unique_ptr<IconButton>(new IconButton(
+			gmenu2x, ts, "skin:imgs/buttons/l.png",
+			"", actionDec)));
+	buttonBox.add(unique_ptr<IconButton>(new IconButton(
+			gmenu2x, ts, "skin:imgs/buttons/left.png",
+			gmenu2x->tr["Decrease"], actionDec)));
 
-	unique_ptr<IconButton> btnL2(new IconButton(
-		gmenu2x, ts, "skin:imgs/buttons/left.png", gmenu2x->tr["Decrease"]));
-	btnL2->setAction(actionDec);
-	buttonBox.add(move(btnL2));
-
-	unique_ptr<IconButton> btnR1(new IconButton(
-		gmenu2x, ts, "skin:imgs/buttons/r.png"));
-	btnR1->setAction(actionInc);
-	buttonBox.add(move(btnR1));
-
-	unique_ptr<IconButton> btnR2(new IconButton(
-		gmenu2x, ts, "skin:imgs/buttons/right.png", gmenu2x->tr["Increase"]));
-	btnR2->setAction(actionInc);
-	buttonBox.add(move(btnR2));
+	buttonBox.add(unique_ptr<IconButton>(new IconButton(
+			gmenu2x, ts, "skin:imgs/buttons/r.png",
+			"", actionInc)));
+	buttonBox.add(unique_ptr<IconButton>(new IconButton(
+			gmenu2x, ts, "skin:imgs/buttons/right.png",
+			gmenu2x->tr["Increase"], actionInc)));
 }
 
 void MenuSettingInt::draw(int valueX, int y, int h)

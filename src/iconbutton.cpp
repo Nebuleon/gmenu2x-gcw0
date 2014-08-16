@@ -9,20 +9,16 @@ using namespace std;
 
 IconButton::IconButton(
 		GMenu2X *gmenu2x, Touchscreen &ts,
-		const string &icon, const string &label)
+		const string &icon, const string &label, function_t action)
 	: gmenu2x(gmenu2x)
 	, ts(ts)
 	, icon(icon)
 	, label(label)
-	, action([] {})
+	, action(action)
 	, rect({ 0, 0, 0, 0 })
 {
 	iconSurface = gmenu2x->sc[icon];
 	recalcRects();
-}
-
-void IconButton::setAction(function_t action) {
-	this->action = action;
 }
 
 void IconButton::setPosition(int x, int y) {
@@ -57,7 +53,7 @@ void IconButton::recalcRects() {
 }
 
 bool IconButton::handleTS() {
-	if (ts.released() && ts.inRect(rect)) {
+	if (action && ts.released() && ts.inRect(rect)) {
 		ts.setHandled();
 		action();
 		return true;

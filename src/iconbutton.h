@@ -15,9 +15,8 @@ class Touchscreen;
 class IconButton {
 public:
 	IconButton(GMenu2X *gmenu2x, Touchscreen &ts,
-			const std::string &icon, const std::string &label = "");
-
-	void setAction(function_t action);
+			const std::string &icon, const std::string &label = "",
+			function_t action = nullptr);
 
 	SDL_Rect getRect() { return rect; }
 	void setPosition(int x, int y);

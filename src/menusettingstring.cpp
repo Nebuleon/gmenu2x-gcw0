@@ -27,7 +27,6 @@
 
 using std::string;
 using std::unique_ptr;
-using std::move;
 
 MenuSettingString::MenuSettingString(
 		GMenu2X *gmenu2x, Touchscreen &ts_,
@@ -38,15 +37,15 @@ MenuSettingString::MenuSettingString(
 	, diagTitle(diagTitle_)
 	, diagIcon(diagIcon_)
 {
-	unique_ptr<IconButton> btnClear(new IconButton(
-		gmenu2x, ts, "skin:imgs/buttons/cancel.png", gmenu2x->tr["Clear"]));
-	btnClear->setAction(BIND(&MenuSettingString::clear));
-	buttonBox.add(move(btnClear));
+	buttonBox.add(unique_ptr<IconButton>(new IconButton(
+			gmenu2x, ts, "skin:imgs/buttons/cancel.png",
+			gmenu2x->tr["Clear"],
+			BIND(&MenuSettingString::clear))));
 
-	unique_ptr<IconButton> btnEdit(new IconButton(
-		gmenu2x, ts, "skin:imgs/buttons/accept.png", gmenu2x->tr["Edit"]));
-	btnEdit->setAction(BIND(&MenuSettingString::edit));
-	buttonBox.add(move(btnEdit));
+	buttonBox.add(unique_ptr<IconButton>(new IconButton(
+			gmenu2x, ts, "skin:imgs/buttons/accept.png",
+			gmenu2x->tr["Edit"],
+			BIND(&MenuSettingString::edit))));
 }
 
 void MenuSettingString::edit()
