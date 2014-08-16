@@ -55,7 +55,7 @@ private:
 	bool close, ok;
 	std::string title, text, icon;
 	short curKeyboard;
-	std::vector< std::vector<std::string> > keyboard;
+	std::vector<std::vector<std::string>> keyboard;
 	std::vector<std::string> *kb;
 	int kbLength, kbWidth, kbHeight, kbLeft;
 	SDL_Rect kbRect;

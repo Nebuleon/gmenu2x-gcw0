@@ -21,7 +21,7 @@ public:
 	void handleTS();
 
 private:
-	std::vector<std::unique_ptr<IconButton> > buttons;
+	std::vector<std::unique_ptr<IconButton>> buttons;
 	GMenu2X *gmenu2x;
 };
 

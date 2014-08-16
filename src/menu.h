@@ -59,7 +59,7 @@ private:
 	int iSection, iLink;
 	uint iFirstDispRow;
 	std::vector<std::string> sections;
-	std::vector< std::vector<Link*> > links;
+	std::vector<std::vector<Link*>> links;
 
 	uint linkColumns, linkRows;
 
