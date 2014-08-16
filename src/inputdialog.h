@@ -22,12 +22,12 @@
 #define INPUTDIALOG_H
 
 #include "dialog.h"
+#include "buttonbox.h"
 
 #include <SDL.h>
 #include <string>
 #include <vector>
 
-class ButtonBox;
 class InputManager;
 class Touchscreen;
 
@@ -59,7 +59,7 @@ private:
 	std::vector<std::string> *kb;
 	int kbLength, kbWidth, kbHeight, kbLeft;
 	SDL_Rect kbRect;
-	ButtonBox *buttonbox;
+	ButtonBox buttonbox;
 	std::string input;
 };
 

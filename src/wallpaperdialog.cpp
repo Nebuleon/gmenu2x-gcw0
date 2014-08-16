@@ -62,7 +62,7 @@ bool WallpaperDialog::exec()
 
 	uint i, selected = 0, firstElement = 0, iY;
 
-	ButtonBox buttonbox(gmenu2x);
+	ButtonBox buttonbox;
 	buttonbox.add(unique_ptr<IconButton>(new IconButton(gmenu2x, ts, "skin:imgs/buttons/accept.png", gmenu2x->tr["Select"])));
 	buttonbox.add(unique_ptr<IconButton>(new IconButton(gmenu2x, ts, "skin:imgs/buttons/cancel.png", gmenu2x->tr["Exit"])));
 
@@ -90,7 +90,7 @@ bool WallpaperDialog::exec()
 		writeTitle(s, gmenu2x->tr["Wallpaper selection"]);
 		writeSubTitle(s, gmenu2x->tr["Select a wallpaper from the list"]);
 
-		buttonbox.paint(s, 5);
+		buttonbox.paint(s, 5, gmenu2x->resY - 1);
 
 		//Selection
 		iY = selected - firstElement;

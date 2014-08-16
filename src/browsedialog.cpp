@@ -18,7 +18,6 @@ BrowseDialog::BrowseDialog(
 	, title(title)
 	, subtitle(subtitle)
 	, ts_pressed(false)
-	, buttonBox(gmenu2x)
 {
 	buttonBox.add(unique_ptr<IconButton>(new IconButton(gmenu2x, ts, "skin:imgs/buttons/left.png")));
 	unique_ptr<IconButton> btnUp(new IconButton(
@@ -233,7 +232,7 @@ void BrowseDialog::paint()
 	drawTitleIcon(bg, "icons/explorer.png", true);
 	writeTitle(bg, title);
 	writeSubTitle(bg, subtitle);
-	buttonBox.paint(bg, 5);
+	buttonBox.paint(bg, 5, gmenu2x->resY - 1);
 
 	bg.convertToDisplayFormat();
 	bg.blit(s, 0, 0);
