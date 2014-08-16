@@ -48,7 +48,10 @@ public:
 		settings.push_back(std::move(setting));
 	}
 
-	bool edited();
+	/**
+	 * Shows the dialog in a modal way.
+	 * @return true iff any settings were changed.
+	 */
 	bool exec();
 };
 

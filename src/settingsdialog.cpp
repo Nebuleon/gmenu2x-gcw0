@@ -141,12 +141,6 @@ bool SettingsDialog::exec() {
 		}
 	}
 
-	return true;
-}
-
-bool SettingsDialog::edited() {
-	for (uint i=0; i < settings.size(); i++) {
-		if (settings[i]->edited()) return true;
-	}
-	return false;
+	return any_of(settings.begin(), settings.end(),
+			[](unique_ptr<MenuSetting>& setting){ return setting->edited(); });
 }

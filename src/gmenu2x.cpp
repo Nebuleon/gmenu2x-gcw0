@@ -737,7 +737,7 @@ void GMenu2X::showSettings() {
 			tr["Set button repetitions per second"],
 			&confInt["buttonRepeatRate"], 0, 20)));
 
-	if (sd.exec() && sd.edited()) {
+	if (sd.exec()) {
 #ifdef ENABLE_CPUFREQ
 		if (curMenuClock != confInt["menuClock"]) setClock(confInt["menuClock"]);
 #endif
@@ -795,7 +795,7 @@ void GMenu2X::skinMenu() {
 			tr["Color of the selection of the message box"],
 			&skinConfColors[COLOR_MESSAGE_BOX_SELECTION])));
 
-	if (sd.exec() && sd.edited()) {
+	if (sd.exec()) {
 		if (curSkin != confStr["skin"]) {
 			setSkin(confStr["skin"]);
 			writeConfig();
@@ -979,7 +979,7 @@ void GMenu2X::editLink() {
 				&linkApp->consoleApp)));
 	}
 
-	if (sd.exec() && sd.edited()) {
+	if (sd.exec()) {
 		linkApp->setTitle(linkTitle);
 		linkApp->setDescription(linkDescription);
 		linkApp->setIcon(linkIcon);
