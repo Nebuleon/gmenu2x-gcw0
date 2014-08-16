@@ -73,21 +73,18 @@ int Selector::exec(int startSelection) {
 	unsigned int top, height;
 	tie(top, height) = gmenu2x->getContentArea();
 
-	int fontHeight = gmenu2x->font->getLineSpacing();
-	if (showDirectories) {
-		fontHeight = constrain(fontHeight, 20, 40);
+	auto folderIcon = gmenu2x->sc.skinRes("imgs/folder.png");
+
+	int lineHeight = gmenu2x->font->getLineSpacing();
+	if (showDirectories && folderIcon) {
+		lineHeight = max(lineHeight, folderIcon->height() + 2);
 	}
-	unsigned int nb_elements = height / fontHeight;
+	unsigned int nb_elements = max(height / lineHeight, 1u);
 
 	bg.convertToDisplayFormat();
 
 	unsigned int firstElement = 0;
 	unsigned int selected = constrain(startSelection, 0, fl.size() - 1);
-
-	auto folderIcon = gmenu2x->sc.skinRes("imgs/folder.png");
-	if (!folderIcon) {
-		folderIcon = gmenu2x->sc.addSkinRes("imgs/folder.png");
-	}
 
 	bool close = false, result = true;
 	while (!close) {
@@ -110,23 +107,28 @@ int Selector::exec(int startSelection) {
 		}
 
 		//Selection
-		unsigned int iY = top + (selected - firstElement) * fontHeight;
+		int iY = top + (selected - firstElement) * lineHeight;
 		if (selected<fl.size())
-			s.box(1, iY, 309, fontHeight, gmenu2x->skinConfColors[COLOR_SELECTION_BG]);
+			s.box(1, iY, 309, lineHeight, gmenu2x->skinConfColors[COLOR_SELECTION_BG]);
 
 		//Files & Dirs
 		s.setClipRect(0, top, 311, height);
 		for (unsigned int i = firstElement;
 				i < fl.size() && i < firstElement + nb_elements; i++) {
-			iY = top + (i - firstElement) * fontHeight;
+			iY = top + (i - firstElement) * lineHeight;
+			x = 4;
 			if (fl.isDirectory(i)) {
-				folderIcon->blit(s, 4, top + iY);
+				if (folderIcon) {
+					folderIcon->blit(s,
+							x, iY + (lineHeight - folderIcon->height()) / 2);
+					x += folderIcon->width() + 2;
+				}
 				gmenu2x->font->write(s, fl[i],
-						21, iY + (fontHeight / 2),
+						x, iY + lineHeight / 2,
 						Font::HAlignLeft, Font::VAlignMiddle);
 			} else {
 				gmenu2x->font->write(s, trimExtension(fl[i]),
-						4, iY + (fontHeight / 2),
+						x, iY + lineHeight / 2,
 						Font::HAlignLeft, Font::VAlignMiddle);
 			}
 		}
