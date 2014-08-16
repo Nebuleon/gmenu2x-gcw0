@@ -42,13 +42,6 @@ SettingsDialog::SettingsDialog(
 	}
 }
 
-SettingsDialog::~SettingsDialog() {
-	for (vector<MenuSetting *>::iterator it = settings.begin();
-			it != settings.end(); ++it) {
-		delete *it;
-	}
-}
-
 bool SettingsDialog::exec() {
 	OffscreenSurface bg(*gmenu2x->bg);
 	bg.convertToDisplayFormat();
@@ -149,10 +142,6 @@ bool SettingsDialog::exec() {
 	}
 
 	return true;
-}
-
-void SettingsDialog::addSetting(MenuSetting *set) {
-	settings.push_back(set);
 }
 
 bool SettingsDialog::edited() {

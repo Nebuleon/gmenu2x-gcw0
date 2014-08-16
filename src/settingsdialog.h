@@ -23,6 +23,8 @@
 
 #include "dialog.h"
 
+#include <algorithm>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -34,18 +36,20 @@ class SettingsDialog : protected Dialog {
 private:
 	InputManager &inputMgr;
 	Touchscreen &ts;
-	std::vector<MenuSetting *> settings;
+	std::vector<std::unique_ptr<MenuSetting>> settings;
 	std::string text, icon;
 
 public:
 	SettingsDialog(GMenu2X *gmenu2x, InputManager &inputMgr, Touchscreen &ts,
 			const std::string &text,
 			const std::string &icon = "skin:sections/settings.png");
-	~SettingsDialog();
+
+	void addSetting(std::unique_ptr<MenuSetting> setting) {
+		settings.push_back(std::move(setting));
+	}
 
 	bool edited();
 	bool exec();
-	void addSetting(MenuSetting* set);
 };
 
 #endif // SETTINGSDIALOG_H

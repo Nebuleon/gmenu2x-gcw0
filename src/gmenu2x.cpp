@@ -706,15 +706,36 @@ void GMenu2X::showSettings() {
 	encodings.push_back("PAL");
 
 	SettingsDialog sd(this, input, ts, tr["Settings"]);
-	sd.addSetting(new MenuSettingMultiString(this, ts, tr["Language"], tr["Set the language used by GMenu2X"], &lang, &translations));
-	sd.addSetting(new MenuSettingBool(this, ts, tr["Save last selection"], tr["Save the last selected link and section on exit"], &confInt["saveSelection"]));
+	sd.addSetting(unique_ptr<MenuSetting>(new MenuSettingMultiString(
+			this, ts, tr["Language"],
+			tr["Set the language used by GMenu2X"],
+			&lang, &translations)));
+	sd.addSetting(unique_ptr<MenuSetting>(new MenuSettingBool(
+			this, ts, tr["Save last selection"],
+			tr["Save the last selected link and section on exit"],
+			&confInt["saveSelection"])));
 #ifdef ENABLE_CPUFREQ
-	sd.addSetting(new MenuSettingInt(this, ts, tr["Clock for GMenu2X"], tr["Set the cpu working frequency when running GMenu2X"], &confInt["menuClock"], cpuFreqMin, cpuFreqSafeMax, cpuFreqMultiple));
-	sd.addSetting(new MenuSettingInt(this, ts, tr["Maximum overclock"], tr["Set the maximum overclock for launching links"], &confInt["maxClock"], cpuFreqMin, cpuFreqMax, cpuFreqMultiple));
+	sd.addSetting(unique_ptr<MenuSetting>(new MenuSettingInt(
+			this, ts, tr["Clock for GMenu2X"],
+			tr["Set the cpu working frequency when running GMenu2X"],
+			&confInt["menuClock"], cpuFreqMin, cpuFreqSafeMax, cpuFreqMultiple)));
+	sd.addSetting(unique_ptr<MenuSetting>(new MenuSettingInt(
+			this, ts, tr["Maximum overclock"],
+			tr["Set the maximum overclock for launching links"],
+			&confInt["maxClock"], cpuFreqMin, cpuFreqMax, cpuFreqMultiple)));
 #endif
-	sd.addSetting(new MenuSettingBool(this, ts, tr["Output logs"], tr["Logs the output of the links. Use the Log Viewer to read them."], &confInt["outputLogs"]));
-	sd.addSetting(new MenuSettingInt(this, ts, tr["Screen Timeout"], tr["Set screen's backlight timeout in seconds"], &confInt["backlightTimeout"], 0, 120));
-	sd.addSetting(new MenuSettingInt(this, ts, tr["Button repeat rate"], tr["Set button repetitions per second"], &confInt["buttonRepeatRate"], 0, 20));
+	sd.addSetting(unique_ptr<MenuSetting>(new MenuSettingBool(
+			this, ts, tr["Output logs"],
+			tr["Logs the output of the links. Use the Log Viewer to read them."],
+			&confInt["outputLogs"])));
+	sd.addSetting(unique_ptr<MenuSetting>(new MenuSettingInt(
+			this, ts, tr["Screen Timeout"],
+			tr["Set screen's backlight timeout in seconds"],
+			&confInt["backlightTimeout"], 0, 120)));
+	sd.addSetting(unique_ptr<MenuSetting>(new MenuSettingInt(
+			this, ts, tr["Button repeat rate"],
+			tr["Set button repetitions per second"],
+			&confInt["buttonRepeatRate"], 0, 20)));
 
 	if (sd.exec() && sd.edited()) {
 #ifdef ENABLE_CPUFREQ
@@ -745,13 +766,34 @@ void GMenu2X::skinMenu() {
 	string curSkin = confStr["skin"];
 
 	SettingsDialog sd(this, input, ts, tr["Skin"]);
-	sd.addSetting(new MenuSettingMultiString(this, ts, tr["Skin"], tr["Set the skin used by GMenu2X"], &confStr["skin"], &fl_sk.getDirectories()));
-	sd.addSetting(new MenuSettingRGBA(this, ts, tr["Top Bar"], tr["Color of the top bar"], &skinConfColors[COLOR_TOP_BAR_BG]));
-	sd.addSetting(new MenuSettingRGBA(this, ts, tr["Bottom Bar"], tr["Color of the bottom bar"], &skinConfColors[COLOR_BOTTOM_BAR_BG]));
-	sd.addSetting(new MenuSettingRGBA(this, ts, tr["Selection"], tr["Color of the selection and other interface details"], &skinConfColors[COLOR_SELECTION_BG]));
-	sd.addSetting(new MenuSettingRGBA(this, ts, tr["Message Box"], tr["Background color of the message box"], &skinConfColors[COLOR_MESSAGE_BOX_BG]));
-	sd.addSetting(new MenuSettingRGBA(this, ts, tr["Message Box Border"], tr["Border color of the message box"], &skinConfColors[COLOR_MESSAGE_BOX_BORDER]));
-	sd.addSetting(new MenuSettingRGBA(this, ts, tr["Message Box Selection"], tr["Color of the selection of the message box"], &skinConfColors[COLOR_MESSAGE_BOX_SELECTION]));
+	sd.addSetting(unique_ptr<MenuSetting>(new MenuSettingMultiString(
+			this, ts, tr["Skin"],
+			tr["Set the skin used by GMenu2X"],
+			&confStr["skin"], &fl_sk.getDirectories())));
+	sd.addSetting(unique_ptr<MenuSetting>(new MenuSettingRGBA(
+			this, ts, tr["Top Bar"],
+			tr["Color of the top bar"],
+			&skinConfColors[COLOR_TOP_BAR_BG])));
+	sd.addSetting(unique_ptr<MenuSetting>(new MenuSettingRGBA(
+			this, ts, tr["Bottom Bar"],
+			tr["Color of the bottom bar"],
+			&skinConfColors[COLOR_BOTTOM_BAR_BG])));
+	sd.addSetting(unique_ptr<MenuSetting>(new MenuSettingRGBA(
+			this, ts, tr["Selection"],
+			tr["Color of the selection and other interface details"],
+			&skinConfColors[COLOR_SELECTION_BG])));
+	sd.addSetting(unique_ptr<MenuSetting>(new MenuSettingRGBA(
+			this, ts, tr["Message Box"],
+			tr["Background color of the message box"],
+			&skinConfColors[COLOR_MESSAGE_BOX_BG])));
+	sd.addSetting(unique_ptr<MenuSetting>(new MenuSettingRGBA(
+			this, ts, tr["Message Box Border"],
+			tr["Border color of the message box"],
+			&skinConfColors[COLOR_MESSAGE_BOX_BORDER])));
+	sd.addSetting(unique_ptr<MenuSetting>(new MenuSettingRGBA(
+			this, ts, tr["Message Box Selection"],
+			tr["Color of the selection of the message box"],
+			&skinConfColors[COLOR_MESSAGE_BOX_SELECTION])));
 
 	if (sd.exec() && sd.edited()) {
 		if (curSkin != confStr["skin"]) {
@@ -889,26 +931,52 @@ void GMenu2X::editLink() {
 
 	SettingsDialog sd(this, input, ts, diagTitle, diagIcon);
 	if (!linkApp->isOpk()) {
-		sd.addSetting(new MenuSettingString(this, ts, tr["Title"], tr["Link title"], &linkTitle, diagTitle, diagIcon));
-		sd.addSetting(new MenuSettingString(this, ts, tr["Description"], tr["Link description"], &linkDescription, diagTitle, diagIcon));
-		sd.addSetting(new MenuSettingMultiString(this, ts, tr["Section"], tr["The section this link belongs to"], &newSection, &menu->getSections()));
-		sd.addSetting(new MenuSettingImage(this, ts, tr["Icon"],
-						tr.translate("Select an icon for this link",
-							linkTitle.c_str(), NULL), &linkIcon, "png"));
-		sd.addSetting(new MenuSettingFile(this, ts, tr["Manual"],
-					tr["Select a manual or README file"],
-					&linkManual, "man.png,txt"));
+		sd.addSetting(unique_ptr<MenuSetting>(new MenuSettingString(
+				this, ts, tr["Title"],
+				tr["Link title"],
+				&linkTitle, diagTitle, diagIcon)));
+		sd.addSetting(unique_ptr<MenuSetting>(new MenuSettingString(
+				this, ts, tr["Description"],
+				tr["Link description"],
+				&linkDescription, diagTitle, diagIcon)));
+		sd.addSetting(unique_ptr<MenuSetting>(new MenuSettingMultiString(
+				this, ts, tr["Section"],
+				tr["The section this link belongs to"],
+				&newSection, &menu->getSections())));
+		sd.addSetting(unique_ptr<MenuSetting>(new MenuSettingImage(
+				this, ts, tr["Icon"],
+				tr.translate("Select an icon for this link", linkTitle.c_str(), NULL),
+				&linkIcon, "png")));
+		sd.addSetting(unique_ptr<MenuSetting>(new MenuSettingFile(
+				this, ts, tr["Manual"],
+				tr["Select a manual or README file"],
+				&linkManual, "man.png,txt")));
 	}
 	if (!linkApp->isOpk() || !linkApp->getSelectorDir().empty()) {
-		sd.addSetting(new MenuSettingDir(this, ts, tr["Selector Directory"], tr["Directory to scan for the selector"], &linkSelDir));
-		sd.addSetting(new MenuSettingBool(this, ts, tr["Selector Browser"], tr["Allow the selector to change directory"], &linkSelBrowser));
+		sd.addSetting(unique_ptr<MenuSetting>(new MenuSettingDir(
+				this, ts, tr["Selector Directory"],
+				tr["Directory to scan for the selector"],
+				&linkSelDir)));
+		sd.addSetting(unique_ptr<MenuSetting>(new MenuSettingBool(
+				this, ts, tr["Selector Browser"],
+				tr["Allow the selector to change directory"],
+				&linkSelBrowser)));
 	}
 #ifdef ENABLE_CPUFREQ
-	sd.addSetting(new MenuSettingInt(this, ts, tr["Clock frequency"], tr["CPU clock frequency for this link"], &linkClock, cpuFreqMin, confInt["maxClock"], cpuFreqMultiple));
+	sd.addSetting(unique_ptr<MenuSetting>(new MenuSettingInt(
+			this, ts, tr["Clock frequency"],
+			tr["CPU clock frequency for this link"],
+			&linkClock, cpuFreqMin, confInt["maxClock"], cpuFreqMultiple)));
 #endif
 	if (!linkApp->isOpk()) {
-		sd.addSetting(new MenuSettingString(this, ts, tr["Selector Filter"], tr["Selector filter (Separate values with a comma)"], &linkSelFilter, diagTitle, diagIcon));
-		sd.addSetting(new MenuSettingBool(this, ts, tr["Display Console"], tr["Must be enabled for console-based applications"], &linkApp->consoleApp));
+		sd.addSetting(unique_ptr<MenuSetting>(new MenuSettingString(
+				this, ts, tr["Selector Filter"],
+				tr["Selector filter (Separate values with a comma)"],
+				&linkSelFilter, diagTitle, diagIcon)));
+		sd.addSetting(unique_ptr<MenuSetting>(new MenuSettingBool(
+				this, ts, tr["Display Console"],
+				tr["Must be enabled for console-based applications"],
+				&linkApp->consoleApp)));
 	}
 
 	if (sd.exec() && sd.edited()) {
