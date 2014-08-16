@@ -43,8 +43,8 @@ SettingsDialog::SettingsDialog(
 }
 
 SettingsDialog::~SettingsDialog() {
-	for (vector<MenuSetting *>::iterator it = voices.begin();
-			it != voices.end(); ++it) {
+	for (vector<MenuSetting *>::iterator it = settings.begin();
+			it != settings.end(); ++it) {
 		delete *it;
 	}
 }
@@ -73,7 +73,7 @@ bool SettingsDialog::exec() {
 	uint numRows = (gmenu2x->resY - topBarHeight - 20) / rowHeight;
 
 	uint maxNameWidth = 0;
-	for (auto it = voices.begin(); it != voices.end(); it++) {
+	for (auto it = settings.begin(); it != settings.end(); it++) {
 		maxNameWidth = max(maxNameWidth, (uint) gmenu2x->font->getTextWidth((*it)->getName()));
 	}
 
@@ -98,7 +98,7 @@ bool SettingsDialog::exec() {
 		uint iY = topBarHeight + 2 + (sel - firstElement) * rowHeight;
 
 		//selected option
-		voices[sel]->drawSelected(maxNameWidth + 15, iY, rowHeight);
+		settings[sel]->drawSelected(maxNameWidth + 15, iY, rowHeight);
 
 		if (ts_pressed && !ts.pressed()) {
 			ts_pressed = false;
@@ -106,9 +106,9 @@ bool SettingsDialog::exec() {
 		if (ts.available() && ts.pressed() && !ts.inRect(touchRect)) {
 			ts_pressed = false;
 		}
-		for (i=firstElement; i<voices.size() && i<firstElement+numRows; i++) {
+		for (i=firstElement; i<settings.size() && i<firstElement+numRows; i++) {
 			iY = i-firstElement;
-			voices[i]->draw(maxNameWidth + 15, iY * rowHeight + topBarHeight + 2, rowHeight);
+			settings[i]->draw(maxNameWidth + 15, iY * rowHeight + topBarHeight + 2, rowHeight);
 			if (ts.available() && ts.pressed() && ts.inRect(
 					touchRect.x, touchRect.y + (iY * rowHeight),
 					touchRect.w, rowHeight
@@ -118,30 +118,30 @@ bool SettingsDialog::exec() {
 			}
 		}
 
-		gmenu2x->drawScrollBar(numRows, voices.size(), firstElement);
+		gmenu2x->drawScrollBar(numRows, settings.size(), firstElement);
 
 		//description
-		writeSubTitle(s, voices[sel]->getDescription());
+		writeSubTitle(s, settings[sel]->getDescription());
 
 		s.flip();
-		voices[sel]->handleTS(maxNameWidth + 15, iY, rowHeight);
+		settings[sel]->handleTS(maxNameWidth + 15, iY, rowHeight);
 
 		InputManager::Button button = inputMgr.waitForPressedButton();
-		if (!voices[sel]->handleButtonPress(button)) {
+		if (!settings[sel]->handleButtonPress(button)) {
 			switch (button) {
 				case InputManager::SETTINGS:
 					close = true;
 					break;
 				case InputManager::UP:
 					if (sel == 0) {
-						sel = voices.size() - 1;
+						sel = settings.size() - 1;
 					} else {
 						sel -= 1;
 					}
 					break;
 				case InputManager::DOWN:
 					sel += 1;
-					if (sel>=voices.size()) sel = 0;
+					if (sel>=settings.size()) sel = 0;
 				default:
 					break;
 			}
@@ -152,12 +152,12 @@ bool SettingsDialog::exec() {
 }
 
 void SettingsDialog::addSetting(MenuSetting *set) {
-	voices.push_back(set);
+	settings.push_back(set);
 }
 
 bool SettingsDialog::edited() {
-	for (uint i=0; i < voices.size(); i++) {
-		if (voices[i]->edited()) return true;
+	for (uint i=0; i < settings.size(); i++) {
+		if (settings[i]->edited()) return true;
 	}
 	return false;
 }

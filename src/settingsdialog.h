@@ -34,7 +34,7 @@ class SettingsDialog : protected Dialog {
 private:
 	InputManager &inputMgr;
 	Touchscreen &ts;
-	std::vector<MenuSetting *> voices;
+	std::vector<MenuSetting *> settings;
 	std::string text, icon;
 
 public:
