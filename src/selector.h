@@ -32,14 +32,13 @@ class FileLister;
 
 class Selector : protected Dialog {
 private:
-	int selRow;
-	LinkApp *link;
+	LinkApp& link;
 	std::string file, dir, screendir;
 
 	void prepare(FileLister& fl);
 
 public:
-	Selector(GMenu2X *gmenu2x, LinkApp *link,
+	Selector(GMenu2X *gmenu2x, LinkApp& link,
 			const std::string &selectorDir = "");
 
 	int exec(int startSelection = 0);

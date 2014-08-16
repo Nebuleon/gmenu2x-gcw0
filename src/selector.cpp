@@ -39,32 +39,30 @@
 
 using namespace std;
 
-Selector::Selector(GMenu2X *gmenu2x, LinkApp *link, const string &selectorDir) :
-	Dialog(gmenu2x)
+Selector::Selector(GMenu2X *gmenu2x, LinkApp& link, const string &selectorDir)
+	: Dialog(gmenu2x)
+	, link(link)
 {
-	this->link = link;
-	selRow = 0;
-	if (selectorDir.empty())
-		dir = link->getSelectorDir();
-	else
-		dir = selectorDir;
+	dir = selectorDir.empty() ? link.getSelectorDir() : selectorDir;
 	if (dir[dir.length()-1]!='/') dir += "/";
 }
 
 int Selector::exec(int startSelection) {
+	const bool showDirectories = link.getSelectorBrowser();
+
 	FileLister fl;
-	fl.setShowDirectories(link->getSelectorBrowser());
-	fl.setFilter(link->getSelectorFilter());
+	fl.setShowDirectories(showDirectories);
+	fl.setFilter(link.getSelectorFilter());
 	prepare(fl);
 
 	OffscreenSurface bg(*gmenu2x->bg);
-	drawTitleIcon(bg, link->getIconPath(), true);
-	writeTitle(bg, link->getTitle());
-	writeSubTitle(bg, link->getDescription());
+	drawTitleIcon(bg, link.getIconPath(), true);
+	writeTitle(bg, link.getTitle());
+	writeSubTitle(bg, link.getDescription());
 
 	int x = 5;
 	x = gmenu2x->drawButton(bg, "accept", gmenu2x->tr["Select"], x);
-	if (link->getSelectorBrowser()) {
+	if (showDirectories) {
 		x = gmenu2x->drawButton(bg, "left", "", x);
 		x = gmenu2x->drawButton(bg, "cancel", gmenu2x->tr["Up one folder"], x);
 	} else {
@@ -75,10 +73,11 @@ int Selector::exec(int startSelection) {
 	unsigned int top, height;
 	tie(top, height) = gmenu2x->getContentArea();
 
-	int fontheight = gmenu2x->font->getLineSpacing();
-	if (link->getSelectorBrowser())
-		fontheight = constrain(fontheight, 20, 40);
-	unsigned int nb_elements = height / fontheight;
+	int fontHeight = gmenu2x->font->getLineSpacing();
+	if (showDirectories) {
+		fontHeight = constrain(fontHeight, 20, 40);
+	}
+	unsigned int nb_elements = height / fontHeight;
 
 	bg.convertToDisplayFormat();
 
@@ -111,24 +110,25 @@ int Selector::exec(int startSelection) {
 		}
 
 		//Selection
-		unsigned int iY = top + (selected - firstElement) * fontheight;
+		unsigned int iY = top + (selected - firstElement) * fontHeight;
 		if (selected<fl.size())
-			s.box(1, iY, 309, fontheight, gmenu2x->skinConfColors[COLOR_SELECTION_BG]);
+			s.box(1, iY, 309, fontHeight, gmenu2x->skinConfColors[COLOR_SELECTION_BG]);
 
 		//Files & Dirs
 		s.setClipRect(0, top, 311, height);
-		for (unsigned int i = firstElement; i < fl.size()
-					&& i < firstElement + nb_elements; i++) {
-			iY = i-firstElement;
+		for (unsigned int i = firstElement;
+				i < fl.size() && i < firstElement + nb_elements; i++) {
+			iY = top + (i - firstElement) * fontHeight;
 			if (fl.isDirectory(i)) {
-				folderIcon->blit(s, 4, top + (iY * fontheight));
-				gmenu2x->font->write(s, fl[i], 21,
-							top + (iY * fontheight) + (fontheight / 2),
-							Font::HAlignLeft, Font::VAlignMiddle);
-			} else
-				gmenu2x->font->write(s, trimExtension(fl[i]), 4,
-							top + (iY * fontheight) + (fontheight / 2),
-							Font::HAlignLeft, Font::VAlignMiddle);
+				folderIcon->blit(s, 4, top + iY);
+				gmenu2x->font->write(s, fl[i],
+						21, iY + (fontHeight / 2),
+						Font::HAlignLeft, Font::VAlignMiddle);
+			} else {
+				gmenu2x->font->write(s, trimExtension(fl[i]),
+						4, iY + (fontHeight / 2),
+						Font::HAlignLeft, Font::VAlignMiddle);
+			}
 		}
 		s.clearClipRect();
 
@@ -166,14 +166,14 @@ int Selector::exec(int startSelection) {
 				break;
 
 			case InputManager::CANCEL:
-				if (!link->getSelectorBrowser()) {
+				if (!showDirectories) {
 					close = true;
 					result = false;
 					break;
 				}
 
 			case InputManager::LEFT:
-				if (link->getSelectorBrowser()) {
+				if (showDirectories) {
 					string::size_type p = dir.rfind("/", dir.size()-2);
 					if (p==string::npos || dir.length() < 2 || dir[0] != '/') {
 						close = true;
