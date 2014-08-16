@@ -61,7 +61,9 @@ int Selector::exec(int startSelection) {
 	writeSubTitle(bg, link.getDescription());
 
 	int x = 5;
-	x = gmenu2x->drawButton(bg, "accept", gmenu2x->tr["Select"], x);
+	if (fl.size() != 0) {
+		x = gmenu2x->drawButton(bg, "accept", gmenu2x->tr["Select"], x);
+	}
 	if (showDirectories) {
 		x = gmenu2x->drawButton(bg, "left", "", x);
 		x = gmenu2x->drawButton(bg, "cancel", gmenu2x->tr["Up one folder"], x);
@@ -96,47 +98,52 @@ int Selector::exec(int startSelection) {
 
 		bg.blit(s, 0, 0);
 
-		if (selected >= firstElement + nb_elements)
-			firstElement = selected - nb_elements + 1;
-		if (selected < firstElement)
-			firstElement = selected;
+		if (fl.size() == 0) {
+			gmenu2x->font->write(s, "(no items)", 4, top + lineHeight / 2,
+					Font::HAlignLeft, Font::VAlignMiddle);
+		} else {
+			if (selected >= firstElement + nb_elements)
+				firstElement = selected - nb_elements + 1;
+			if (selected < firstElement)
+				firstElement = selected;
 
-		//Screenshot
-		if (fl.isFile(selected)) {
-			string path = screendir + trimExtension(fl[selected]) + ".png";
-			auto screenshot = OffscreenSurface::loadImage(path, false);
-			if (screenshot) {
-				screenshot->blitRight(s, 320, 0, 320, 240, 128u);
-			}
-		}
-
-		//Selection
-		int iY = top + (selected - firstElement) * lineHeight;
-		if (selected<fl.size())
-			s.box(1, iY, 309, lineHeight, gmenu2x->skinConfColors[COLOR_SELECTION_BG]);
-
-		//Files & Dirs
-		s.setClipRect(0, top, 311, height);
-		for (unsigned int i = firstElement;
-				i < fl.size() && i < firstElement + nb_elements; i++) {
-			iY = top + (i - firstElement) * lineHeight;
-			x = 4;
-			if (fl.isDirectory(i)) {
-				if (folderIcon) {
-					folderIcon->blit(s,
-							x, iY + (lineHeight - folderIcon->height()) / 2);
-					x += folderIcon->width() + 2;
+			//Screenshot
+			if (fl.isFile(selected)) {
+				string path = screendir + trimExtension(fl[selected]) + ".png";
+				auto screenshot = OffscreenSurface::loadImage(path, false);
+				if (screenshot) {
+					screenshot->blitRight(s, 320, 0, 320, 240, 128u);
 				}
-				gmenu2x->font->write(s, fl[i],
-						x, iY + lineHeight / 2,
-						Font::HAlignLeft, Font::VAlignMiddle);
-			} else {
-				gmenu2x->font->write(s, trimExtension(fl[i]),
-						x, iY + lineHeight / 2,
-						Font::HAlignLeft, Font::VAlignMiddle);
 			}
+
+			//Selection
+			int iY = top + (selected - firstElement) * lineHeight;
+			if (selected<fl.size())
+				s.box(1, iY, 309, lineHeight, gmenu2x->skinConfColors[COLOR_SELECTION_BG]);
+
+			//Files & Dirs
+			s.setClipRect(0, top, 311, height);
+			for (unsigned int i = firstElement;
+					i < fl.size() && i < firstElement + nb_elements; i++) {
+				iY = top + (i - firstElement) * lineHeight;
+				x = 4;
+				if (fl.isDirectory(i)) {
+					if (folderIcon) {
+						folderIcon->blit(s,
+								x, iY + (lineHeight - folderIcon->height()) / 2);
+						x += folderIcon->width() + 2;
+					}
+					gmenu2x->font->write(s, fl[i],
+							x, iY + lineHeight / 2,
+							Font::HAlignLeft, Font::VAlignMiddle);
+				} else {
+					gmenu2x->font->write(s, trimExtension(fl[i]),
+							x, iY + lineHeight / 2,
+							Font::HAlignLeft, Font::VAlignMiddle);
+				}
+			}
+			s.clearClipRect();
 		}
-		s.clearClipRect();
 
 		gmenu2x->drawScrollBar(nb_elements, fl.size(), firstElement);
 		s.flip();
@@ -194,18 +201,20 @@ int Selector::exec(int startSelection) {
 				break;
 
 			case InputManager::ACCEPT:
-				if (fl.isFile(selected)) {
-					file = fl[selected];
-					close = true;
-				} else {
-					dir = dir+fl[selected];
-					char *buf = realpath(dir.c_str(), NULL);
-					dir = (string) buf + '/';
-					free(buf);
+				if (fl.size() != 0) {
+					if (fl.isFile(selected)) {
+						file = fl[selected];
+						close = true;
+					} else {
+						dir = dir+fl[selected];
+						char *buf = realpath(dir.c_str(), NULL);
+						dir = (string) buf + '/';
+						free(buf);
 
-					selected = 0;
-					firstElement = 0;
-					prepare(fl);
+						selected = 0;
+						firstElement = 0;
+						prepare(fl);
+					}
 				}
 				break;
 
