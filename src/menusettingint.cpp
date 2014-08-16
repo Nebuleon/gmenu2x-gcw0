@@ -20,7 +20,6 @@
 
 #include "menusettingint.h"
 
-#include "delegate.h"
 #include "gmenu2x.h"
 #include "iconbutton.h"
 #include "surface.h"
@@ -28,6 +27,7 @@
 
 #include <sstream>
 
+using std::bind;
 using std::string;
 using std::stringstream;
 using std::unique_ptr;
@@ -46,8 +46,8 @@ MenuSettingInt::MenuSettingInt(
 	setValue(this->value());
 
 	//Delegates
-	function_t actionInc = BIND(&MenuSettingInt::inc);
-	function_t actionDec = BIND(&MenuSettingInt::dec);
+	IconButton::Action actionInc = bind(&MenuSettingInt::inc, this);
+	IconButton::Action actionDec = bind(&MenuSettingInt::dec, this);
 
 	buttonBox.add(unique_ptr<IconButton>(new IconButton(
 			gmenu2x, ts, "skin:imgs/buttons/l.png",

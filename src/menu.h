@@ -21,11 +21,11 @@
 #ifndef MENU_H
 #define MENU_H
 
-#include "delegate.h"
 #include "iconbutton.h"
 #include "layer.h"
 #include "link.h"
 
+#include <functional>
 #include <memory>
 #include <string>
 #include <vector>
@@ -99,6 +99,8 @@ private:
 	void linkDown();
 
 public:
+	typedef std::function<void(void)> Action;
+
 	Menu(GMenu2X *gmenu2x, Touchscreen &ts);
 	virtual ~Menu();
 
@@ -115,7 +117,7 @@ public:
 	void setSectionIndex(int i);
 
 	void addActionLink(uint section, const std::string &title,
-			function_t action, const std::string &description="",
+			Action action, const std::string &description="",
 			const std::string &icon="");
 	bool addLink(std::string path, std::string file, std::string section="");
 	bool addSection(const std::string &sectionName);

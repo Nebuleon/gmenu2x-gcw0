@@ -9,7 +9,7 @@ using namespace std;
 
 IconButton::IconButton(
 		GMenu2X *gmenu2x, Touchscreen &ts,
-		const string &icon, const string &label, function_t action)
+		const string &icon, const string &label, Action action)
 	: gmenu2x(gmenu2x)
 	, ts(ts)
 	, icon(icon)

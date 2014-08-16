@@ -21,9 +21,9 @@
 #ifndef LINK_H
 #define LINK_H
 
-#include "delegate.h"
-
 #include <SDL.h>
+
+#include <functional>
 #include <string>
 
 class GMenu2X;
@@ -38,7 +38,9 @@ Base class that represents a link on screen.
 */
 class Link {
 public:
-	Link(GMenu2X *gmenu2x, function_t action);
+	typedef std::function<void(void)> Action;
+
+	Link(GMenu2X *gmenu2x, Action action);
 	virtual ~Link() {};
 
 	bool isPressed();
@@ -78,7 +80,7 @@ private:
 	void recalcCoordinates();
 
 	Touchscreen &ts;
-	function_t action;
+	Action action;
 
 	SDL_Rect rect;
 	uint iconX, padding;

@@ -32,7 +32,7 @@
 using namespace std;
 
 
-Link::Link(GMenu2X *gmenu2x, function_t action)
+Link::Link(GMenu2X *gmenu2x, Action action)
 	: gmenu2x(gmenu2x)
 	, ts(gmenu2x->getTouchscreen())
 	, action(action)

@@ -20,7 +20,6 @@
 
 #include "menusettingbool.h"
 
-#include "delegate.h"
 #include "gmenu2x.h"
 #include "iconbutton.h"
 #include "surface.h"
@@ -28,6 +27,7 @@
 
 #include <sstream>
 
+using std::bind;
 using std::string;
 using std::unique_ptr;
 
@@ -62,7 +62,7 @@ void MenuSettingBool::initButton()
 	buttonBox.add(unique_ptr<IconButton>(new IconButton(
 			gmenu2x, ts, "skin:imgs/buttons/accept.png",
 			gmenu2x->tr["Switch"],
-			BIND(&MenuSettingBool::toggle))));
+			bind(&MenuSettingBool::toggle, this))));
 }
 
 void MenuSettingBool::draw(int valueX, int y, int h)

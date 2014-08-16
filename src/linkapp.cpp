@@ -21,7 +21,6 @@
 #include "linkapp.h"
 
 #include "debug.h"
-#include "delegate.h"
 #include "gmenu2x.h"
 #include "launcher.h"
 #include "layer.h"
@@ -87,7 +86,7 @@ LinkApp::LinkApp(GMenu2X *gmenu2x_, const char* linkfile,
 #else
 LinkApp::LinkApp(GMenu2X *gmenu2x_, const char* linkfile)
 #endif
-	: Link(gmenu2x_, BIND(&LinkApp::start))
+	: Link(gmenu2x_, bind(&LinkApp::start, this))
 {
 	manual = "";
 	file = linkfile;

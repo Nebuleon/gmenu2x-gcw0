@@ -20,11 +20,11 @@
 
 #include "menusettingstring.h"
 
-#include "delegate.h"
 #include "gmenu2x.h"
 #include "iconbutton.h"
 #include "inputdialog.h"
 
+using std::bind;
 using std::string;
 using std::unique_ptr;
 
@@ -40,12 +40,12 @@ MenuSettingString::MenuSettingString(
 	buttonBox.add(unique_ptr<IconButton>(new IconButton(
 			gmenu2x, ts, "skin:imgs/buttons/cancel.png",
 			gmenu2x->tr["Clear"],
-			BIND(&MenuSettingString::clear))));
+			bind(&MenuSettingString::clear, this))));
 
 	buttonBox.add(unique_ptr<IconButton>(new IconButton(
 			gmenu2x, ts, "skin:imgs/buttons/accept.png",
 			gmenu2x->tr["Edit"],
-			BIND(&MenuSettingString::edit))));
+			bind(&MenuSettingString::edit, this))));
 }
 
 void MenuSettingString::edit()

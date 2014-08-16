@@ -3,20 +3,21 @@
 
 #include "contextmenu.h"
 
-#include "delegate.h"
 #include "gmenu2x.h"
 #include "linkapp.h"
 #include "menu.h"
 #include "utilities.h"
 
 #include <algorithm>
+#include <functional>
 
 
 struct ContextMenu::MenuOption {
-	MenuOption(std::string text, function_t action)
+	typedef std::function<void(void)> Action;
+	MenuOption(std::string text, Action action)
 		: text(text), action(action) {}
 	std::string text;
-	function_t action;
+	Action action;
 };
 
 ContextMenu::ContextMenu(GMenu2X &gmenu2x, Menu &menu)

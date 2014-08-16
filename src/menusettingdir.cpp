@@ -20,11 +20,11 @@
 
 #include "menusettingdir.h"
 
-#include "delegate.h"
 #include "dirdialog.h"
 #include "gmenu2x.h"
 #include "iconbutton.h"
 
+using std::bind;
 using std::string;
 using std::unique_ptr;
 
@@ -37,12 +37,12 @@ MenuSettingDir::MenuSettingDir(
 	buttonBox.add(unique_ptr<IconButton>(new IconButton(
 			gmenu2x, ts, "skin:imgs/buttons/cancel.png",
 			gmenu2x->tr["Clear"],
-			BIND(&MenuSettingDir::clear))));
+			bind(&MenuSettingDir::clear, this))));
 
 	buttonBox.add(unique_ptr<IconButton>(new IconButton(
 			gmenu2x, ts, "skin:imgs/buttons/accept.png",
 			gmenu2x->tr["Select"],
-			BIND(&MenuSettingDir::edit))));
+			bind(&MenuSettingDir::edit, this))));
 }
 
 void MenuSettingDir::edit()

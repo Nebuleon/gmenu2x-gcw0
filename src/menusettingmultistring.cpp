@@ -18,13 +18,13 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "delegate.h"
 #include "menusettingmultistring.h"
 #include "gmenu2x.h"
 #include "iconbutton.h"
 
 #include <algorithm>
 
+using std::bind;
 using std::find;
 using std::string;
 using std::vector;
@@ -41,11 +41,11 @@ MenuSettingMultiString::MenuSettingMultiString(
 
 	buttonBox.add(unique_ptr<IconButton>(new IconButton(
 			gmenu2x, ts, "skin:imgs/buttons/left.png", "",
-			BIND(&MenuSettingMultiString::decSel))));
+			bind(&MenuSettingMultiString::decSel, this))));
 	buttonBox.add(unique_ptr<IconButton>(new IconButton(
 			gmenu2x, ts, "skin:imgs/buttons/right.png",
 			gmenu2x->tr["Change value"],
-			BIND(&MenuSettingMultiString::incSel))));
+			bind(&MenuSettingMultiString::incSel, this))));
 }
 
 bool MenuSettingMultiString::handleButtonPress(InputManager::Button button)

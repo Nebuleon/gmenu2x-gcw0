@@ -21,7 +21,6 @@
 #include "inputdialog.h"
 
 #include "buttonbox.h"
-#include "delegate.h"
 #include "gmenu2x.h"
 #include "iconbutton.h"
 #include "surface.h"
@@ -100,22 +99,22 @@ InputDialog::InputDialog(GMenu2X *gmenu2x, InputManager &inputMgr_,
 	buttonbox.add(unique_ptr<IconButton>(new IconButton(
 			gmenu2x, ts, "skin:imgs/buttons/l.png",
 			gmenu2x->tr["Backspace"],
-			BIND(&InputDialog::backspace))));
+			bind(&InputDialog::backspace, this))));
 
 	buttonbox.add(unique_ptr<IconButton>(new IconButton(
 			gmenu2x, ts, "skin:imgs/buttons/r.png",
 			gmenu2x->tr["Space"],
-			BIND(&InputDialog::space))));
+			bind(&InputDialog::space, this))));
 
 	buttonbox.add(unique_ptr<IconButton>(new IconButton(
 			gmenu2x, ts, "skin:imgs/buttons/accept.png",
 			gmenu2x->tr["Confirm"],
-			BIND(&InputDialog::confirm))));
+			bind(&InputDialog::confirm, this))));
 
 	buttonbox.add(unique_ptr<IconButton>(new IconButton(
 			gmenu2x, ts, "skin:imgs/buttons/cancel.png",
 			gmenu2x->tr["Change keys"],
-			BIND(&InputDialog::changeKeys))));
+			bind(&InputDialog::changeKeys, this))));
 }
 
 void InputDialog::setKeyboard(int kb) {

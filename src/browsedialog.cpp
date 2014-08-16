@@ -6,6 +6,7 @@
 #include "surface.h"
 #include "utilities.h"
 
+using std::bind;
 using std::string;
 using std::unique_ptr;
 
@@ -23,22 +24,22 @@ BrowseDialog::BrowseDialog(
 	buttonBox.add(unique_ptr<IconButton>(new IconButton(
 			gmenu2x, ts, "skin:imgs/buttons/cancel.png",
 			gmenu2x->tr["Up one folder"],
-			BIND(&BrowseDialog::directoryUp))));
+			bind(&BrowseDialog::directoryUp, this))));
 
 	buttonBox.add(unique_ptr<IconButton>(new IconButton(
 			gmenu2x, ts, "skin:imgs/buttons/accept.png",
 			gmenu2x->tr["Select"],
-			BIND(&BrowseDialog::directoryEnter))));
+			bind(&BrowseDialog::directoryEnter, this))));
 
 	buttonBox.add(unique_ptr<IconButton>(new IconButton(
 			gmenu2x, ts, "skin:imgs/buttons/start.png",
 			gmenu2x->tr["Confirm"],
-			BIND(&BrowseDialog::confirm))));
+			bind(&BrowseDialog::confirm, this))));
 
 	buttonBox.add(unique_ptr<IconButton>(new IconButton(
 			gmenu2x, ts, "skin:imgs/buttons/select.png",
 			gmenu2x->tr["Exit"],
-			BIND(&BrowseDialog::quit))));
+			bind(&BrowseDialog::quit, this))));
 
 	iconGoUp = gmenu2x->sc.skinRes("imgs/go-up.png");
 	iconFolder = gmenu2x->sc.skinRes("imgs/folder.png");

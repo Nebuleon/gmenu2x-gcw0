@@ -20,11 +20,11 @@
 
 #include "menusettingfile.h"
 
-#include "delegate.h"
 #include "filedialog.h"
 #include "gmenu2x.h"
 #include "iconbutton.h"
 
+using std::bind;
 using std::string;
 using std::unique_ptr;
 
@@ -39,12 +39,12 @@ MenuSettingFile::MenuSettingFile(
 	buttonBox.add(unique_ptr<IconButton>(new IconButton(
 			gmenu2x, ts, "skin:imgs/buttons/cancel.png",
 			gmenu2x->tr["Clear"],
-			BIND(&MenuSettingFile::clear))));
+			bind(&MenuSettingFile::clear, this))));
 
 	buttonBox.add(unique_ptr<IconButton>(new IconButton(
 			gmenu2x, ts, "skin:imgs/buttons/accept.png",
 			gmenu2x->tr["Select"],
-			BIND(&MenuSettingFile::edit))));
+			bind(&MenuSettingFile::edit, this))));
 }
 
 void MenuSettingFile::edit()
