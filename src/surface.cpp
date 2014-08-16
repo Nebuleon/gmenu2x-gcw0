@@ -295,7 +295,7 @@ unique_ptr<OffscreenSurface> OffscreenSurface::loadImage(
 {
 	SDL_Surface *raw = loadPNG(img, loadAlpha);
 	if (!raw) {
-		ERROR("Couldn't load surface '%s'\n", img.c_str());
+		DEBUG("Couldn't load surface '%s'\n", img.c_str());
 		return unique_ptr<OffscreenSurface>();
 	}
 
