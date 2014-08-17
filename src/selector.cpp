@@ -191,16 +191,10 @@ int Selector::exec(int startSelection) {
 				// ...fall through...
 			case InputManager::LEFT:
 				if (showDirectories) {
-					string oldDir = dir;
 					dir = parentDir(dir);
-					if (dir == "/" && oldDir == "/") {
-						close = true;
-						result = false;
-					} else {
-						selected = 0;
-						firstElement = 0;
-						prepare(fl);
-					}
+					selected = 0;
+					firstElement = 0;
+					prepare(fl);
 				}
 				break;
 
