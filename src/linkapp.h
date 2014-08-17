@@ -40,7 +40,7 @@ private:
 	std::string sclock;
 	int iclock;
 	std::string exec, params, workdir, manual, selectordir, selectorfilter;
-	bool selectorbrowser, editable;
+	bool selectorbrowser, deletable, editable;
 
 	std::string file;
 
@@ -61,10 +61,10 @@ public:
 	bool isOpk() { return isOPK; }
 	const std::string &getOpkFile() { return opkFile; }
 
-	LinkApp(GMenu2X *gmenu2x, const char* linkfile,
+	LinkApp(GMenu2X *gmenu2x, const char* linkfile, bool deletable,
 				struct OPK *opk = NULL, const char *metadata = NULL);
 #else
-	LinkApp(GMenu2X *gmenu2x, const char* linkfile);
+	LinkApp(GMenu2X *gmenu2x, const char* linkfile, bool deletable);
 	bool isOpk() { return false; }
 #endif
 
@@ -93,6 +93,7 @@ public:
 	void showManual();
 	void selector(int startSelection=0, const std::string &selectorDir="");
 	bool targetExists();
+	bool isDeletable() { return deletable; }
 	bool isEditable() { return editable; }
 
 	const std::string &getFile() { return file; }

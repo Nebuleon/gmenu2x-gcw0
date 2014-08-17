@@ -35,13 +35,13 @@ ContextMenu::ContextMenu(GMenu2X &gmenu2x, Menu &menu)
 			tr.translate("Add link in $1", menu.selSection().c_str(), NULL),
 			std::bind(&GMenu2X::addLink, &gmenu2x)));
 
-	if (app && !app->getManual().empty()) {
-		options.push_back(std::make_shared<MenuOption>(
-				tr.translate("Show manual of $1", app->getTitle().c_str(), NULL),
-				std::bind(&GMenu2X::showManual, &gmenu2x)));
-	}
-
-	if (app && app->isEditable()) {
+	if (app) {
+		if (!app->getManual().empty()) {
+			options.push_back(std::make_shared<MenuOption>(
+					tr.translate("Show manual of $1",
+						app->getTitle().c_str(), NULL),
+					std::bind(&GMenu2X::showManual, &gmenu2x)));
+		}
 
 		/* FIXME(percuei): This permits to mask the "Edit link" entry
 		 *                 on the contextual menu in case CPUFREQ support is
@@ -49,17 +49,19 @@ ContextMenu::ContextMenu(GMenu2X &gmenu2x, Menu &menu)
 		 *                 This is not a good idea as it'll break things if
 		 *                 a new config option is added to the contextual menu.
 		 */
-		if (!app->isOpk()
+		if (app->isEditable() && (
+				!app->isOpk()
 #if defined(ENABLE_CPUFREQ)
 				|| true
 #endif
 				|| !app->getSelectorDir().empty()
-				) {
+				)) {
 			options.push_back(std::make_shared<MenuOption>(
 					tr.translate("Edit $1", app->getTitle().c_str(), NULL),
 					std::bind(&GMenu2X::editLink, &gmenu2x)));
 		}
-		if (!app->isOpk()) {
+
+		if (app->isDeletable()) {
 			options.push_back(std::make_shared<MenuOption>(
 					tr.translate("Delete $1", app->getTitle().c_str(), NULL),
 					std::bind(&GMenu2X::deleteLink, &gmenu2x)));

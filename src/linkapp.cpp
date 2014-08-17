@@ -81,12 +81,13 @@ private:
 
 
 #ifdef HAVE_LIBOPK
-LinkApp::LinkApp(GMenu2X *gmenu2x_, const char* linkfile,
+LinkApp::LinkApp(GMenu2X *gmenu2x_, const char* linkfile, bool deletable,
 			struct OPK *opk, const char *metadata_)
 #else
-LinkApp::LinkApp(GMenu2X *gmenu2x_, const char* linkfile)
+LinkApp::LinkApp(GMenu2X *gmenu2x_, const char* linkfile, bool deletable)
 #endif
 	: Link(gmenu2x_, bind(&LinkApp::start, this))
+	, deletable(deletable)
 {
 	manual = "";
 	file = linkfile;
