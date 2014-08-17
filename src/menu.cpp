@@ -791,21 +791,6 @@ void Menu::removePackageLink(std::string path)
 #endif
 #endif
 
-void Menu::readLinksOfSection(std::string path, std::vector<std::string> &linkfiles)
-{
-	DIR *dirp;
-	struct dirent *dptr;
-
-	if ((dirp = opendir(path.c_str())) == NULL) return;
-
-	while ((dptr = readdir(dirp))) {
-		if (dptr->d_type != DT_REG) continue;
-		linkfiles.emplace_back(path + "/" + dptr->d_name);
-	}
-
-	closedir(dirp);
-}
-
 static bool compare_links(Link *a, Link *b)
 {
 	LinkApp *app1 = dynamic_cast<LinkApp *>(a);
@@ -829,37 +814,46 @@ void Menu::orderLinks()
 
 void Menu::readLinks()
 {
-	vector<string> linkfiles;
-
 	iLink = 0;
 	iFirstDispRow = 0;
 
 	for (uint i=0; i<links.size(); i++) {
 		links[i].clear();
-		linkfiles.clear();
 
 		int correct = (i>sections.size() ? iSection : i);
+		string const& section = sections[correct];
 
-		readLinksOfSection(GMENU2X_SYSTEM_DIR "/sections/"
-		  + sections[correct], linkfiles);
-
-		readLinksOfSection(GMenu2X::getHome() + "/sections/"
-		  + sections[correct], linkfiles);
-
-		for (auto const& linkfile : linkfiles) {
-			// Check whether the link file could be deleted.
-			bool deletable = access(parentDir(linkfile).c_str(), W_OK) == 0;
-
-			LinkApp *link = new LinkApp(gmenu2x, linkfile, deletable);
-			link->setSize(gmenu2x->skinConfInt["linkWidth"], gmenu2x->skinConfInt["linkHeight"]);
-			if (link->targetExists())
-				links[i].push_back(link);
-			else
-				delete link;
-		}
+		readLinksOfSection(GMENU2X_SYSTEM_DIR "/sections/" + section, i);
+		readLinksOfSection(GMenu2X::getHome() + "/sections/" + section, i);
 	}
 
 	orderLinks();
+}
+
+void Menu::readLinksOfSection(std::string const& path, uint i)
+{
+	DIR *dirp = opendir(path.c_str());
+	if (!dirp) return;
+
+	// Check whether link files in this directory could be deleted.
+	bool deletable = access(path.c_str(), W_OK) == 0;
+
+	while (struct dirent *dptr = readdir(dirp)) {
+		if (dptr->d_type != DT_REG) continue;
+		string linkfile = path + '/' + dptr->d_name;
+
+		LinkApp *link = new LinkApp(gmenu2x, linkfile, deletable);
+		if (link->targetExists()) {
+			link->setSize(
+					gmenu2x->skinConfInt["linkWidth"],
+					gmenu2x->skinConfInt["linkHeight"]);
+			links[i].push_back(link);
+		} else {
+			delete link;
+		}
+	}
+
+	closedir(dirp);
 }
 
 void Menu::renameSection(int index, const string &name) {

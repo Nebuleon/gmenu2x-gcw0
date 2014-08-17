@@ -89,7 +89,7 @@ private:
 #endif
 
 	// Load all the links on the given section directory.
-	void readLinksOfSection(std::string path, std::vector<std::string> &linkfiles);
+	void readLinksOfSection(std::string const& path, uint i);
 
 	void decSectionIndex();
 	void incSectionIndex();
