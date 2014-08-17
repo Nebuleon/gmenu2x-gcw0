@@ -71,8 +71,9 @@ bool FileLister::browse(const string& path, bool clean)
 	}
 
 	string slashedPath = path;
-	if (path[path.length() - 1] != '/')
+	if (!path.empty() && path[path.length() - 1] != '/') {
 		slashedPath.push_back('/');
+	}
 
 	DIR *dirp;
 	if ((dirp = opendir(slashedPath.c_str())) == NULL) {
