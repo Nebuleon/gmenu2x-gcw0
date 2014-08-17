@@ -822,13 +822,13 @@ static bool compare_links(Link *a, Link *b)
 
 void Menu::orderLinks()
 {
-	for (std::vector< std::vector<Link *> >::iterator section = links.begin();
-				section < links.end(); section++)
-		if (section->size() > 1)
-			std::sort(section->begin(), section->end(), compare_links);
+	for (auto& section : links) {
+		sort(section.begin(), section.end(), compare_links);
+	}
 }
 
-void Menu::readLinks() {
+void Menu::readLinks()
+{
 	vector<string> linkfiles;
 
 	iLink = 0;
@@ -846,7 +846,6 @@ void Menu::readLinks() {
 		readLinksOfSection(GMenu2X::getHome() + "/sections/"
 		  + sections[correct], linkfiles);
 
-		sort(linkfiles.begin(), linkfiles.end(),case_less());
 		for (auto const& linkfile : linkfiles) {
 			// Check whether the link file could be deleted.
 			bool deletable = access(parentDir(linkfile).c_str(), W_OK) == 0;
@@ -859,6 +858,8 @@ void Menu::readLinks() {
 				delete link;
 		}
 	}
+
+	orderLinks();
 }
 
 void Menu::renameSection(int index, const string &name) {
