@@ -88,7 +88,7 @@ bool FileLister::browse(const string& path, bool clean)
 	while (struct dirent *dptr = readdir(dirp)) {
 		// Ignore hidden files and optionally "..".
 		if (dptr->d_name[0] == '.') {
-			if (!(dptr->d_name[1] == '.' && showUpdir)) {
+			if (!(dptr->d_name[1] == '.' && showUpdir && slashedPath != "/")) {
 				continue;
 			}
 		}
