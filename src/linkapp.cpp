@@ -81,10 +81,10 @@ private:
 
 
 #ifdef HAVE_LIBOPK
-LinkApp::LinkApp(GMenu2X *gmenu2x_, const char* linkfile, bool deletable,
+LinkApp::LinkApp(GMenu2X *gmenu2x_, string const& linkfile, bool deletable,
 			struct OPK *opk, const char *metadata_)
 #else
-LinkApp::LinkApp(GMenu2X *gmenu2x_, const char* linkfile, bool deletable)
+LinkApp::LinkApp(GMenu2X *gmenu2x_, string const& linkfile, bool deletable)
 #endif
 	: Link(gmenu2x_, bind(&LinkApp::start, this))
 	, deletable(deletable)
@@ -161,8 +161,9 @@ LinkApp::LinkApp(GMenu2X *gmenu2x_, const char* linkfile, bool deletable)
 				/* Read the icon from the OPK only
 				 * if it doesn't exist on the skin */
 				this->icon = gmenu2x->sc.getSkinFilePath("icons/" + (string) buf + ".png");
-				if (this->icon.empty())
-					this->icon = (string) linkfile + '#' + buf + ".png";
+				if (this->icon.empty()) {
+					this->icon = linkfile + '#' + buf + ".png";
+				}
 				iconPath = this->icon;
 				updateSurfaces();
 

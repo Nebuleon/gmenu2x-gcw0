@@ -61,10 +61,10 @@ public:
 	bool isOpk() { return isOPK; }
 	const std::string &getOpkFile() { return opkFile; }
 
-	LinkApp(GMenu2X *gmenu2x, const char* linkfile, bool deletable,
+	LinkApp(GMenu2X *gmenu2x, std::string const& linkfile, bool deletable,
 				struct OPK *opk = NULL, const char *metadata = NULL);
 #else
-	LinkApp(GMenu2X *gmenu2x, const char* linkfile, bool deletable);
+	LinkApp(GMenu2X *gmenu2x, std::string const& linkfile, bool deletable);
 	bool isOpk() { return false; }
 #endif
 

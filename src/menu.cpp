@@ -495,7 +495,7 @@ bool Menu::addLink(string path, string file, string section) {
 
 			INFO("Section: '%s(%i)'\n", sections[isection].c_str(), isection);
 
-			LinkApp* link = new LinkApp(gmenu2x, linkpath.c_str(), true);
+			LinkApp* link = new LinkApp(gmenu2x, linkpath, true);
 			link->setSize(gmenu2x->skinConfInt["linkWidth"],gmenu2x->skinConfInt["linkHeight"]);
 			links[isection].push_back( link );
 		}
@@ -701,7 +701,7 @@ void Menu::openPackage(std::string path, bool order)
 		// Note: OPK links can only be deleted by removing the OPK itself,
 		//       but that is not something we want to do in the menu,
 		//       so consider this link undeletable.
-		link = new LinkApp(gmenu2x, path.c_str(), false, opk, name);
+		link = new LinkApp(gmenu2x, path, false, opk, name);
 		link->setSize(gmenu2x->skinConfInt["linkWidth"], gmenu2x->skinConfInt["linkHeight"]);
 
 		addSection(link->getCategory());
@@ -851,7 +851,7 @@ void Menu::readLinks() {
 			// Check whether the link file could be deleted.
 			bool deletable = access(parentDir(linkfile).c_str(), W_OK) == 0;
 
-			LinkApp *link = new LinkApp(gmenu2x, linkfile.c_str(), deletable);
+			LinkApp *link = new LinkApp(gmenu2x, linkfile, deletable);
 			link->setSize(gmenu2x->skinConfInt["linkWidth"], gmenu2x->skinConfInt["linkHeight"]);
 			if (link->targetExists())
 				links[i].push_back(link);
