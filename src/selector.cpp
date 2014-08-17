@@ -99,7 +99,8 @@ int Selector::exec(int startSelection) {
 		bg.blit(s, 0, 0);
 
 		if (fl.size() == 0) {
-			gmenu2x->font->write(s, "(no items)", 4, top + lineHeight / 2,
+			gmenu2x->font->write(s, "(" + gmenu2x->tr["no items"] + ")",
+					4, top + lineHeight / 2,
 					Font::HAlignLeft, Font::VAlignMiddle);
 		} else {
 			if (selected >= firstElement + nb_elements)
