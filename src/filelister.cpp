@@ -63,7 +63,7 @@ static void moveNames(set<string, case_less>&& from, vector<string>& to)
 	to.shrink_to_fit();
 }
 
-void FileLister::browse(const string& path, bool clean)
+bool FileLister::browse(const string& path, bool clean)
 {
 	if (clean) {
 		directories.clear();
@@ -79,7 +79,7 @@ void FileLister::browse(const string& path, bool clean)
 		if (errno != ENOENT) {
 			ERROR("Unable to open directory: %s\n", slashedPath.c_str());
 		}
-		return;
+		return false;
 	}
 
 	set<string, case_less> directorySet;
@@ -157,6 +157,8 @@ void FileLister::browse(const string& path, bool clean)
 		files.clear();
 		moveNames(move(fileSet), files);
 	}
+
+	return true;
 }
 
 string FileLister::operator[](uint x)

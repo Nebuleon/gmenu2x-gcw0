@@ -81,6 +81,13 @@ string readFileAsString(const char *filename) {
 	}
 }
 
+string parentDir(string const& dir) {
+	// Note that size() is unsigned, so for short strings the '- 2' wraps
+	// around and as a result the entire string is searched, which is fine.
+	auto p = dir.rfind('/', dir.size() - 2);
+	return p == string::npos ? "/" : dir.substr(0, p + 1);
+}
+
 bool fileExists(const string &file) {
 	fstream fin;
 	fin.open(file.c_str() ,ios::in);

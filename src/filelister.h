@@ -33,7 +33,14 @@ private:
 
 public:
 	FileLister();
-	void browse(const std::string& path, bool clean = true);
+
+	/**
+	 * Scans the given directory.
+	 * @param clean If true, start a new result set, if false add to the
+	 *   results from the previous scan.
+	 * @return True iff the given directory could be opened.
+	 */
+	bool browse(const std::string& path, bool clean = true);
 
 	unsigned int size() { return files.size() + directories.size(); }
 	unsigned int dirCount() { return directories.size(); }

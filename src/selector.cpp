@@ -53,7 +53,10 @@ int Selector::exec(int startSelection) {
 	FileLister fl;
 	fl.setShowDirectories(showDirectories);
 	fl.setFilter(link.getSelectorFilter());
-	prepare(fl);
+	while (!prepare(fl) && showDirectories && dir != "/") {
+		// The given directory could not be opened; try parent.
+		dir = parentDir(dir);
+	}
 
 	OffscreenSurface bg(*gmenu2x->bg);
 	drawTitleIcon(bg, link.getIconPath(), true);
@@ -185,15 +188,15 @@ int Selector::exec(int startSelection) {
 					result = false;
 					break;
 				}
-
+				// ...fall through...
 			case InputManager::LEFT:
 				if (showDirectories) {
-					string::size_type p = dir.rfind("/", dir.size()-2);
-					if (p==string::npos || dir.length() < 2 || dir[0] != '/') {
+					string oldDir = dir;
+					dir = parentDir(dir);
+					if (dir == "/" && oldDir == "/") {
 						close = true;
 						result = false;
 					} else {
-						dir = dir.substr(0,p+1);
 						selected = 0;
 						firstElement = 0;
 						prepare(fl);
@@ -227,12 +230,14 @@ int Selector::exec(int startSelection) {
 	return result ? (int)selected : -1;
 }
 
-void Selector::prepare(FileLister& fl) {
-	fl.browse(dir);
+bool Selector::prepare(FileLister& fl) {
+	bool opened = fl.browse(dir);
 
 	screendir = dir;
 	if (!screendir.empty() && screendir[screendir.length() - 1] != '/') {
 		screendir += "/";
 	}
 	screendir += "previews/";
+
+	return opened;
 }

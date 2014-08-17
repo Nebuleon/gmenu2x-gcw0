@@ -52,6 +52,14 @@ std::string readFileAsString(const char *filename);
 std::string strreplace(std::string orig, const std::string &search, const std::string &replace);
 std::string cmdclean(std::string cmdline);
 
+/**
+ * Returns the parent directory of the given directory path, or "/" if there is
+ * no parent.
+ * This function does not check the file system: it is only string manipulation.
+ * @return The parent directory path, including a trailing '/'.
+ */
+std::string parentDir(std::string const& dir);
+
 inline std::string trimExtension(std::string const& filename) {
 	return filename.substr(0, filename.rfind('.'));
 }
