@@ -120,9 +120,8 @@ LinkApp::LinkApp(GMenu2X *gmenu2x_, string const& linkfile, bool deletable)
 		pos = opkMount.rfind('.');
 		opkMount = opkMount.substr(0, pos);
 
-		file = gmenu2x->getHome() + "/sections/";
-
 		appTakesFileArg = false;
+		category = "applications";
 
 		while ((ret = opk_read_pair(opk, &key, &lkey, &val, &lval))) {
 			if (ret < 0) {
@@ -139,7 +138,6 @@ LinkApp::LinkApp(GMenu2X *gmenu2x_, string const& linkfile, bool deletable)
 				pos = category.find(';');
 				if (pos != category.npos)
 					category = category.substr(0, pos);
-				file += category + '/' + opkMount;
 
 			} else if ((!strncmp(key, "Name", lkey) && title.empty())
 						|| !strncmp(key, ("Name[" + gmenu2x->tr["Lng"] +
@@ -212,6 +210,7 @@ LinkApp::LinkApp(GMenu2X *gmenu2x_, string const& linkfile, bool deletable)
 #endif /* HAVE_LIBXDGMIME */
 		}
 
+		file = gmenu2x->getHome() + "/sections/" + category + '/' + opkMount;
 		opkMount = (string) "/mnt/" + opkMount + '/';
 		edited = true;
 	}
