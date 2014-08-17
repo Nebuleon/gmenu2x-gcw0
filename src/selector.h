@@ -37,6 +37,12 @@ private:
 
 	bool prepare(FileLister& fl);
 
+	/**
+	 * Changes 'dir' to its parent directory.
+	 * Returns the index of the old dir in the parent, or 0 if unknown.
+	 */
+	int goToParentDir(FileLister& fl);
+
 public:
 	Selector(GMenu2X *gmenu2x, LinkApp& link,
 			const std::string &selectorDir = "");

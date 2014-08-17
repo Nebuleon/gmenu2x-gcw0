@@ -191,10 +191,8 @@ int Selector::exec(int startSelection) {
 				// ...fall through...
 			case InputManager::LEFT:
 				if (showDirectories) {
-					dir = parentDir(dir);
-					selected = 0;
+					selected = goToParentDir(fl);
 					firstElement = 0;
-					prepare(fl);
 				}
 				break;
 
@@ -204,14 +202,19 @@ int Selector::exec(int startSelection) {
 						file = fl[selected];
 						close = true;
 					} else {
-						dir = dir+fl[selected];
-						char *buf = realpath(dir.c_str(), NULL);
-						dir = (string) buf + '/';
-						free(buf);
+						string subdir = fl[selected];
+						if (subdir == "..") {
+							selected = goToParentDir(fl);
+						} else {
+							dir += subdir;
+							char *buf = realpath(dir.c_str(), NULL);
+							dir = (string) buf + '/';
+							free(buf);
 
-						selected = 0;
+							prepare(fl);
+							selected = 0;
+						}
 						firstElement = 0;
-						prepare(fl);
 					}
 				}
 				break;
@@ -234,4 +237,14 @@ bool Selector::prepare(FileLister& fl) {
 	screendir += "previews/";
 
 	return opened;
+}
+
+int Selector::goToParentDir(FileLister& fl) {
+	string oldDir = dir;
+	dir = parentDir(dir);
+	prepare(fl);
+	string oldName = oldDir.substr(dir.size(), oldDir.size() - dir.size() - 1);
+	auto& subdirs = fl.getDirectories();
+	auto it = find(subdirs.begin(), subdirs.end(), oldName);
+	return it == subdirs.end() ? 0 : it - subdirs.begin();
 }
