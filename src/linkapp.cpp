@@ -328,7 +328,7 @@ bool LinkApp::targetExists()
 }
 
 bool LinkApp::save() {
-	if (!edited) return false;
+	if (!edited) return true;
 
 	std::ostringstream out;
 	if (!isOpk()) {
@@ -348,16 +348,7 @@ bool LinkApp::save() {
 
 	if (out.tellp() > 0) {
 		DEBUG("Saving app settings: %s\n", file.c_str());
-		ofstream f(file.c_str());
-		if (f.is_open()) {
-			f << out.str();
-			f.close();
-			sync();
-			return true;
-		} else {
-			ERROR("Error while opening the file '%s' for write.\n", file.c_str());
-			return false;
-		}
+		return writeStringToFile(file, out.str());
 	} else {
 		DEBUG("Empty app settings: %s\n", file.c_str());
 		return unlink(file.c_str()) == 0 || errno == ENOENT;
@@ -560,7 +551,9 @@ void LinkApp::selector(int startSelection, const string &selectorDir) {
 }
 
 unique_ptr<Launcher> LinkApp::prepareLaunch(const string &selectedFile) {
-	save();
+	if (!save()) {
+		ERROR("Error saving app settings to '%s'.\n", file.c_str());
+	}
 
 	if (!isOpk()) {
 		//Set correct working directory

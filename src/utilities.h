@@ -49,6 +49,14 @@ std::string rtrim(const std::string& s);
 /** Returns the contents of the given file as a string. */
 std::string readFileAsString(std::string const& filename);
 
+/**
+ * Writes the given string to a file.
+ * The update is done atomically but not durably; if you need durability
+ * when fsync() the parent directory afterwards.
+ * @return True iff the file was written successfully.
+ */
+bool writeStringToFile(std::string const& filename, std::string const& data);
+
 std::string strreplace(std::string orig, const std::string &search, const std::string &replace);
 std::string cmdclean(std::string cmdline);
 

@@ -28,6 +28,7 @@
 //for browsing the filesystem
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <fcntl.h>
 #include <dirent.h>
 #include <fstream>
 #include <iostream>
@@ -79,6 +80,36 @@ string readFileAsString(string const& filename) {
 		contents.shrink_to_fit();
 		return contents;
 	}
+}
+
+// Use C functions since STL doesn't seem to have any way of applying fsync().
+bool writeStringToFile(string const& filename, string const& data) {
+	// Open temporary file.
+	string tempname = filename + '~';
+	int fd = open(tempname.c_str(), O_CREAT | O_WRONLY | O_TRUNC | O_CLOEXEC);
+	if (fd < 0) {
+		return false;
+	}
+
+	// Write temporary file.
+	bool ok = write(fd, data.c_str(), data.size()) >= 0;
+	if (ok) {
+		ok = fsync(fd) == 0;
+	}
+
+	// Close temporary file.
+	while (close(fd)) {
+		if (errno != EINTR) {
+			return false;
+		}
+	}
+
+	// Replace actual output file with temporary file.
+	if (ok) {
+		ok = rename(tempname.c_str(), filename.c_str()) == 0;
+	}
+
+	return ok;
 }
 
 string parentDir(string const& dir) {
