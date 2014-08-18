@@ -140,6 +140,7 @@ static void set_handler(int signal, void (*handler)(int))
 	struct sigaction sig;
 	sigaction(signal, NULL, &sig);
 	sig.sa_handler = handler;
+	sig.sa_flags |= SA_RESTART;
 	sigaction(signal, &sig, NULL);
 }
 

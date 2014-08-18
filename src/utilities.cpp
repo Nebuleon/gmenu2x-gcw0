@@ -116,11 +116,7 @@ bool writeStringToFile(string const& filename, string const& data) {
 	}
 
 	// Close temporary file.
-	while (close(fd)) {
-		if (errno != EINTR) {
-			return false;
-		}
-	}
+	ok &= close(fd) == 0;
 
 	// Replace actual output file with temporary file.
 	if (ok) {
@@ -148,11 +144,7 @@ bool syncDir(string const& dirname)
 
 	bool ok = fsync(fd) == 0;
 
-	while (close(fd)) {
-		if (errno != EINTR) {
-			return false;
-		}
-	}
+	ok &= close(fd) == 0;
 
 	return ok;
 }
