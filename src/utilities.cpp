@@ -92,7 +92,19 @@ bool writeStringToFile(string const& filename, string const& data) {
 	}
 
 	// Write temporary file.
-	bool ok = write(fd, data.c_str(), data.size()) >= 0;
+	const char *bytes = data.c_str();
+	size_t remaining = data.size();
+	bool ok = true;
+	while (remaining != 0) {
+		ssize_t written = write(fd, bytes, remaining);
+		if (written <= 0) {
+			ok = false;
+			break;
+		} else {
+			bytes += written;
+			remaining -= written;
+		}
+	}
 	if (ok) {
 		ok = fsync(fd) == 0;
 	}
