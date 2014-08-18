@@ -82,11 +82,17 @@ string readFileAsString(string const& filename) {
 	}
 }
 
+constexpr int writeOpenFlags =
+#ifdef O_CLOEXEC
+		O_CLOEXEC | // Linux
+#endif
+		O_CREAT | O_WRONLY | O_TRUNC;
+
 // Use C functions since STL doesn't seem to have any way of applying fsync().
 bool writeStringToFile(string const& filename, string const& data) {
 	// Open temporary file.
 	string tempname = filename + '~';
-	int fd = open(tempname.c_str(), O_CREAT | O_WRONLY | O_TRUNC | O_CLOEXEC);
+	int fd = open(tempname.c_str(), writeOpenFlags);
 	if (fd < 0) {
 		return false;
 	}
@@ -126,10 +132,12 @@ bool writeStringToFile(string const& filename, string const& data) {
 
 constexpr int dirOpenFlags =
 #ifdef O_DIRECTORY
-	O_DIRECTORY | O_RDONLY; // Linux specific
-#else
-	O_RDONLY;
+		O_DIRECTORY | // Linux
 #endif
+#ifdef O_CLOEXEC
+		O_CLOEXEC | // Linux
+#endif
+		O_RDONLY;
 
 bool syncDir(string const& dirname)
 {
