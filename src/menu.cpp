@@ -643,9 +643,6 @@ void Menu::setLinkIndex(int i) {
 #ifdef HAVE_LIBOPK
 void Menu::openPackagesFromDir(std::string path)
 {
-	if (access(path.c_str(), F_OK))
-		return;
-
 	DEBUG("Opening packages from directory: %s\n", path.c_str());
 	readPackages(path);
 #ifdef ENABLE_INOTIFY
