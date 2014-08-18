@@ -29,19 +29,18 @@ bool Monitor::event_accepted(struct inotify_event &event)
 
 int Monitor::run()
 {
-	int wd, fd;
-
 	DEBUG("Starting inotify thread for path %s...\n", path.c_str());
 
-	fd = inotify_init1(IN_CLOEXEC);
+	int fd = inotify_init1(IN_CLOEXEC);
 	if (fd < 0) {
 		ERROR("Unable to start inotify\n");
 		return fd;
 	}
 
-	wd = inotify_add_watch(fd, path.c_str(), mask);
+	int wd = inotify_add_watch(fd, path.c_str(), mask);
 	if (wd < 0) {
-		ERROR("Unable to add inotify watch\n");
+		ERROR("Unable to add inotify watch on '%s': %s\n",
+				path.c_str(), strerror(errno));
 		close(fd);
 		return wd;
 	}
