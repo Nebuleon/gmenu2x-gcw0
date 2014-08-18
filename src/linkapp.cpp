@@ -334,7 +334,12 @@ bool LinkApp::targetExists()
 }
 
 bool LinkApp::save() {
-	if (!edited) return true;
+	// TODO: In theory a non-editable Link wouldn't have 'edited' set, but
+	//       currently 'edited' is set on more than a few non-edits, so this
+	//       extra check helps prevent write attempts that will never succeed.
+	//       Maybe we shouldn't have an 'edited' flag at all and make the
+	//       outside world fully responsible for calling save() when needed.
+	if (!editable || !edited) return true;
 
 	std::ostringstream out;
 	if (!isOpk()) {
