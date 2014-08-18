@@ -39,6 +39,7 @@
 #include <fcntl.h>
 
 #include <array>
+#include <cerrno>
 #include <fstream>
 #include <sstream>
 #include <utility>
@@ -329,30 +330,38 @@ bool LinkApp::targetExists()
 bool LinkApp::save() {
 	if (!edited) return false;
 
-	DEBUG("Saving file: %s\n", file.c_str());
+	std::ostringstream out;
+	if (!isOpk()) {
+		if (!title.empty()       ) out << "title="           << title           << endl;
+		if (!description.empty() ) out << "description="     << description     << endl;
+		if (!launchMsg.empty()   ) out << "launchmsg="       << launchMsg       << endl;
+		if (!icon.empty()        ) out << "icon="            << icon            << endl;
+		if (!exec.empty()        ) out << "exec="            << exec            << endl;
+		if (!params.empty()      ) out << "params="          << params          << endl;
+		if (!manual.empty()      ) out << "manual="          << manual          << endl;
+		if (consoleApp           ) out << "consoleapp=true"                     << endl;
+		if (selectorfilter != "*") out << "selectorfilter="  << selectorfilter  << endl;
+	}
+	if (iclock != 0              ) out << "clock="           << iclock          << endl;
+	if (!selectordir.empty()     ) out << "selectordir="     << selectordir     << endl;
+	if (!selectorbrowser         ) out << "selectorbrowser=false"               << endl;
 
-	ofstream f(file.c_str());
-	if (f.is_open()) {
-		if (!isOpk()) {
-			if (!title.empty()       ) f << "title="           << title           << endl;
-			if (!description.empty() ) f << "description="     << description     << endl;
-			if (!launchMsg.empty()   ) f << "launchmsg="       << launchMsg       << endl;
-			if (!icon.empty()        ) f << "icon="            << icon            << endl;
-			if (!exec.empty()        ) f << "exec="            << exec            << endl;
-			if (!params.empty()      ) f << "params="          << params          << endl;
-			if (!manual.empty()      ) f << "manual="          << manual          << endl;
-			if (consoleApp           ) f << "consoleapp=true"                     << endl;
-			if (selectorfilter != "*") f << "selectorfilter="  << selectorfilter  << endl;
+	if (out.tellp() > 0) {
+		DEBUG("Saving app settings: %s\n", file.c_str());
+		ofstream f(file.c_str());
+		if (f.is_open()) {
+			f << out.str();
+			f.close();
+			sync();
+			return true;
+		} else {
+			ERROR("Error while opening the file '%s' for write.\n", file.c_str());
+			return false;
 		}
-		if (iclock != 0              ) f << "clock="           << iclock          << endl;
-		if (!selectordir.empty()     ) f << "selectordir="     << selectordir     << endl;
-		if (!selectorbrowser         ) f << "selectorbrowser=false"               << endl;
-		f.close();
-		sync();
-		return true;
-	} else
-		ERROR("Error while opening the file '%s' for write.\n", file.c_str());
-	return false;
+	} else {
+		DEBUG("Empty app settings: %s\n", file.c_str());
+		return unlink(file.c_str()) == 0 || errno == ENOENT;
+	}
 }
 
 void LinkApp::drawLaunch(Surface& s) {
