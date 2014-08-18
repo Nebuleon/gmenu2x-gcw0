@@ -89,12 +89,7 @@ string parentDir(string const& dir) {
 }
 
 bool fileExists(const string &file) {
-	fstream fin;
-	fin.open(file.c_str() ,ios::in);
-	bool exists = fin.is_open();
-	fin.close();
-
-	return exists;
+	return access(file.c_str(), F_OK) == 0;
 }
 
 bool rmtree(string path) {
