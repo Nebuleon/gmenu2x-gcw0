@@ -58,7 +58,7 @@ string rtrim(const string& s) {
 
 // See this article for a performance comparison of different approaches:
 //   http://insanecoding.blogspot.com/2011/11/how-to-read-in-file-in-c.html
-string readFileAsString(const char *filename) {
+string readFileAsString(string const& filename) {
 	ifstream in(filename, ios::in | ios::binary);
 	if (!in) {
 		return "<error opening " + string(filename) + ">";

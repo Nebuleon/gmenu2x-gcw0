@@ -523,7 +523,7 @@ void LinkApp::showManual() {
 
 	// Txt manuals
 	if (manual.substr(manual.size()-8,8)==".man.txt") {
-		string text(readFileAsString(manual.c_str()));
+		string text(readFileAsString(manual));
 		TextManualDialog tmd(gmenu2x, getTitle(), getIconPath(), text);
 		tmd.exec();
 		return;

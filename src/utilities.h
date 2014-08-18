@@ -47,7 +47,7 @@ std::string ltrim(const std::string& s);
 std::string rtrim(const std::string& s);
 
 /** Returns the contents of the given file as a string. */
-std::string readFileAsString(const char *filename);
+std::string readFileAsString(std::string const& filename);
 
 std::string strreplace(std::string orig, const std::string &search, const std::string &replace);
 std::string cmdclean(std::string cmdline);
