@@ -92,7 +92,7 @@ constexpr int writeOpenFlags =
 bool writeStringToFile(string const& filename, string const& data) {
 	// Open temporary file.
 	string tempname = filename + '~';
-	int fd = open(tempname.c_str(), writeOpenFlags);
+	int fd = open(tempname.c_str(), writeOpenFlags, S_IRUSR | S_IWUSR);
 	if (fd < 0) {
 		return false;
 	}
