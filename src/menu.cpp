@@ -818,20 +818,20 @@ void Menu::readLinks()
 		int correct = (i>sections.size() ? iSection : i);
 		string const& section = sections[correct];
 
-		readLinksOfSection(GMENU2X_SYSTEM_DIR "/sections/" + section, i);
-		readLinksOfSection(GMenu2X::getHome() + "/sections/" + section, i);
+		readLinksOfSection(
+				links[i], GMENU2X_SYSTEM_DIR "/sections/" + section, false);
+		readLinksOfSection(
+				links[i], GMenu2X::getHome() + "/sections/" + section, true);
 	}
 
 	orderLinks();
 }
 
-void Menu::readLinksOfSection(std::string const& path, uint i)
+void Menu::readLinksOfSection(
+		vector<Link*>& links, string const& path, bool deletable)
 {
 	DIR *dirp = opendir(path.c_str());
 	if (!dirp) return;
-
-	// Check whether link files in this directory could be deleted.
-	bool deletable = access(path.c_str(), W_OK) == 0;
 
 	while (struct dirent *dptr = readdir(dirp)) {
 		if (dptr->d_type != DT_REG) continue;
@@ -842,7 +842,7 @@ void Menu::readLinksOfSection(std::string const& path, uint i)
 			link->setSize(
 					gmenu2x->skinConfInt["linkWidth"],
 					gmenu2x->skinConfInt["linkHeight"]);
-			links[i].push_back(link);
+			links.push_back(link);
 		} else {
 			delete link;
 		}
