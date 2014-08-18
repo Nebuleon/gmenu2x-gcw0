@@ -82,7 +82,7 @@ private:
 
 #ifdef HAVE_LIBOPK
 	// Load all the .opk packages of the given directory
-	void readPackages(std::string parentDir);
+	bool readPackages(std::string const& parentDir);
 #ifdef ENABLE_INOTIFY
 	std::vector<std::unique_ptr<Monitor>> monitors;
 #endif

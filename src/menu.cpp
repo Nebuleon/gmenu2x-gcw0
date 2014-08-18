@@ -644,10 +644,11 @@ void Menu::setLinkIndex(int i) {
 void Menu::openPackagesFromDir(std::string path)
 {
 	DEBUG("Opening packages from directory: %s\n", path.c_str());
-	readPackages(path);
+	if (readPackages(path)) {
 #ifdef ENABLE_INOTIFY
-	monitors.emplace_back(new Monitor(path.c_str()));
+		monitors.emplace_back(new Monitor(path.c_str()));
 #endif
+	}
 }
 
 void Menu::openPackage(std::string path, bool order)
@@ -716,23 +717,18 @@ void Menu::openPackage(std::string path, bool order)
 		orderLinks();
 }
 
-void Menu::readPackages(std::string parentDir)
+bool Menu::readPackages(std::string const& parentDir)
 {
-	DIR *dirp;
-	struct dirent *dptr;
-	vector<string> linkfiles;
+	DIR *dirp = opendir(parentDir.c_str());
+	if (!dirp) {
+		return false;
+	}
 
-	dirp = opendir(parentDir.c_str());
-	if (!dirp)
-		return;
-
-	while ((dptr = readdir(dirp))) {
-		char *c;
-
+	while (struct dirent *dptr = readdir(dirp)) {
 		if (dptr->d_type != DT_REG)
 			continue;
 
-		c = strrchr(dptr->d_name, '.');
+		char *c = strrchr(dptr->d_name, '.');
 		if (!c) /* File without extension */
 			continue;
 
@@ -750,6 +746,8 @@ void Menu::readPackages(std::string parentDir)
 
 	closedir(dirp);
 	orderLinks();
+
+	return true;
 }
 
 #ifdef ENABLE_INOTIFY
