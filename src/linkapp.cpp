@@ -348,7 +348,17 @@ bool LinkApp::save() {
 
 	if (out.tellp() > 0) {
 		DEBUG("Saving app settings: %s\n", file.c_str());
-		return writeStringToFile(file, out.str());
+		if (writeStringToFile(file, out.str())) {
+			string dir = parentDir(file);
+			if (!syncDir(dir)) {
+				ERROR("Failed to sync dir: %s\n", dir.c_str());
+				// Note: Even if syncDir fails, the app settings have been
+				//       written, so have save() return true.
+			}
+			return true;
+		} else {
+			return false;
+		}
 	} else {
 		DEBUG("Empty app settings: %s\n", file.c_str());
 		return unlink(file.c_str()) == 0 || errno == ENOENT;

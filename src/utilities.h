@@ -57,6 +57,12 @@ std::string readFileAsString(std::string const& filename);
  */
 bool writeStringToFile(std::string const& filename, std::string const& data);
 
+/**
+ * Tells the file system to commit the given directory to disk.
+ * @return True iff the sync was successful.
+ */
+bool syncDir(std::string const& dirname);
+
 std::string strreplace(std::string orig, const std::string &search, const std::string &replace);
 std::string cmdclean(std::string cmdline);
 

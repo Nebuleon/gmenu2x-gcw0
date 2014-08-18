@@ -112,6 +112,31 @@ bool writeStringToFile(string const& filename, string const& data) {
 	return ok;
 }
 
+constexpr int dirOpenFlags =
+#ifdef O_DIRECTORY
+	O_DIRECTORY | O_RDONLY; // Linux specific
+#else
+	O_RDONLY;
+#endif
+
+bool syncDir(string const& dirname)
+{
+	int fd = open(dirname.c_str(), dirOpenFlags);
+	if (fd < 0) {
+		return false;
+	}
+
+	bool ok = fsync(fd) == 0;
+
+	while (close(fd)) {
+		if (errno != EINTR) {
+			return false;
+		}
+	}
+
+	return ok;
+}
+
 string parentDir(string const& dir) {
 	// Note that size() is unsigned, so for short strings the '- 2' wraps
 	// around and as a result the entire string is searched, which is fine.
