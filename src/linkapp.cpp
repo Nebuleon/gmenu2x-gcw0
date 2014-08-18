@@ -214,8 +214,14 @@ LinkApp::LinkApp(GMenu2X *gmenu2x_, string const& linkfile, bool deletable)
 		file = gmenu2x->getHome() + "/sections/" + category + '/' + opkMount;
 		opkMount = (string) "/mnt/" + opkMount + '/';
 		edited = true;
-	}
+	} else
 #endif /* HAVE_LIBOPK */
+	{
+		// Non-packaged application.
+
+		// Consider non-deletable applications to be immutable.
+		editable = deletable;
+	}
 
 	string line;
 	ifstream infile (file.c_str(), ios_base::in);
