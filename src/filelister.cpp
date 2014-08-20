@@ -96,7 +96,7 @@ bool FileLister::browse(const string& path, bool clean)
 
 		bool isDir;
 #ifdef _DIRENT_HAVE_D_TYPE
-		if (dptr->d_type != DT_UNKNOWN) {
+		if (dptr->d_type != DT_UNKNOWN && dptr->d_type != DT_LNK) {
 			isDir = dptr->d_type == DT_DIR;
 		} else
 #endif
