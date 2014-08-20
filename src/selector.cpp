@@ -206,11 +206,7 @@ int Selector::exec(int startSelection) {
 						if (subdir == "..") {
 							selected = goToParentDir(fl);
 						} else {
-							dir += subdir;
-							char *buf = realpath(dir.c_str(), NULL);
-							dir = (string) buf + '/';
-							free(buf);
-
+							dir += subdir + '/';
 							prepare(fl);
 							selected = 0;
 						}
