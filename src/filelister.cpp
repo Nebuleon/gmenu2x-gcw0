@@ -94,10 +94,11 @@ bool FileLister::browse(const string& path, bool clean)
 			}
 		}
 
-		bool isDir;
+		bool isDir, isFile;
 #ifdef _DIRENT_HAVE_D_TYPE
 		if (dptr->d_type != DT_UNKNOWN && dptr->d_type != DT_LNK) {
 			isDir = dptr->d_type == DT_DIR;
+			isFile = dptr->d_type == DT_REG;
 		} else
 #endif
 		{
@@ -109,6 +110,7 @@ bool FileLister::browse(const string& path, bool clean)
 				continue;
 			}
 			isDir = S_ISDIR(st.st_mode);
+			isFile = S_ISREG(st.st_mode);
 		}
 
 		if (isDir) {
@@ -116,7 +118,7 @@ bool FileLister::browse(const string& path, bool clean)
 				continue;
 
 			directorySet.insert(string(dptr->d_name));
-		} else {
+		} else if (isFile) {
 			if (!showFiles)
 				continue;
 
