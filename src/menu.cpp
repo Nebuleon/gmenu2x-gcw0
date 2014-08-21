@@ -797,7 +797,7 @@ static bool compare_links(Link *a, Link *b)
 			return false;
 	if (app2_is_opk && !app1_is_opk)
 			return true;
-	return a->getTitle().compare(b->getTitle()) <= 0;
+	return a->getTitle().compare(b->getTitle()) < 0;
 }
 
 void Menu::orderLinks()
