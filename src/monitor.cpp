@@ -1,6 +1,7 @@
 #ifdef ENABLE_INOTIFY
 #include "debug.h"
 
+#include <climits>
 #include <dirent.h>
 #include <pthread.h>
 #include <SDL.h>
