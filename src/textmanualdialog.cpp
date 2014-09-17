@@ -54,16 +54,18 @@ TextManualDialog::TextManualDialog(GMenu2X *gmenu2x, const string &title, const 
 		pages.push_back(mp);
 	}
 
-	//delete first and last blank lines from each page
-	for (uint page=0; page<pages.size(); page++) {
-		if (pages[page].text.size() > 0) {
-			//first lines
-			while (trim(pages[page].text[0]).empty())
-				pages[page].text.erase(pages[page].text.begin());
-			//last lines
-			while (trim(pages[page].text[pages[page].text.size()-1]).empty())
-				pages[page].text.erase(pages[page].text.end());
-		}
+	//delete blank lines at the start and end of each page
+	for (auto& page : pages) {
+		//start lines
+		auto it = page.text.begin();
+		while (it != page.text.end() &&
+				it->find_first_not_of(" \t\r") == string::npos) ++it;
+		page.text.erase(page.text.begin(), it);
+		//end lines
+		it = page.text.end();
+		while (it != page.text.begin() &&
+				(it - 1)->find_first_not_of(" \t\r") == string::npos) --it;
+		page.text.erase(it, page.text.end());
 	}
 }
 
