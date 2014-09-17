@@ -62,8 +62,6 @@
 #include <sys/statvfs.h>
 #include <errno.h>
 
-#include <sys/fcntl.h> //for battery
-
 #ifdef PLATFORM_PANDORA
 //#include <pnd_container.h>
 //#include <pnd_conf.h>
