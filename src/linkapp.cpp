@@ -202,7 +202,7 @@ LinkApp::LinkApp(GMenu2X *gmenu2x_, string const& linkfile, bool deletable)
 
 				/* Remove last comma */
 				if (!selectorfilter.empty()) {
-					selectorfilter.erase(selectorfilter.end());
+					selectorfilter.pop_back();
 					DEBUG("Compatible extensions: %s\n", selectorfilter.c_str());
 				}
 
