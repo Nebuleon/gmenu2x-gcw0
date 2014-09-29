@@ -40,12 +40,3 @@ FileDialog::FileDialog(
 	fl.setFilter(filter);
 	setPath(path);
 }
-
-bool FileDialog::exec() {
-	bool ret = BrowseDialog::exec();
-	if (ret && fl.isDirectory(selected)) {
-		// FileDialog must only pick regular files.
-		ret = false;
-	}
-	return ret;
-}

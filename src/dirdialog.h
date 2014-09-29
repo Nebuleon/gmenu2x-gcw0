@@ -28,6 +28,8 @@ public:
 	DirDialog(
 			GMenu2X *gmenu2x,
 			const std::string &text, const std::string &dir = "");
+
+	virtual bool canSelect() override;
 };
 
 #endif // DIRDIALOG_H

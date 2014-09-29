@@ -29,7 +29,6 @@ public:
 			GMenu2X *gmenu2x, const std::string &text,
 			const std::string &filter="*", const std::string &file="",
 			const std::string &title = "File Dialog");
-	bool exec();
 };
 
 #endif // FILEDIALOG_H
