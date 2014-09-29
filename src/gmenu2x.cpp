@@ -893,7 +893,7 @@ void GMenu2X::showContextMenu() {
 void GMenu2X::changeWallpaper() {
 	WallpaperDialog wp(this, ts);
 
-	if (wp.exec() && confStr["wallpaper"] != wp.getFullPath()) {
+	if (wp.exec(confStr["wallpaper"]) && confStr["wallpaper"] != wp.getFullPath()) {
 		confStr["wallpaper"] = wp.getFullPath();
 		initBG();
 		writeConfig();

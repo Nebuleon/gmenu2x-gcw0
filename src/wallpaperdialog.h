@@ -32,12 +32,16 @@ public:
 	WallpaperDialog(GMenu2X *gmenu2x, Touchscreen &ts);
 
 	virtual void initPath() override;
+	virtual void initSelection() override;
 
 	virtual void paintBackground() override;
 
-	bool exec();
+	bool exec(std::string currentWallpaper);
 
 	std::string getFullPath();
+
+private:
+	std::string initialWallpaper;
 };
 
 #endif // WALLPAPERDIALOG_H
