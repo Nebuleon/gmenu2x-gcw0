@@ -12,6 +12,7 @@ using std::bind;
 using std::string;
 using std::unique_ptr;
 using std::tie;
+using std::min;
 using std::max;
 
 BrowseDialog::BrowseDialog(
@@ -327,18 +328,13 @@ void BrowseDialog::paint()
 	writeSubTitle(*gmenu2x->s, subtitle);
 	buttonBox.paint(*gmenu2x->s, 5, gmenu2x->resY - 1);
 
-	// TODO(MtH): I have no idea what the right value of firstElement would be,
-	//            but originally it was undefined and that is never a good idea.
-	firstElement = 0;
-	if (selected>firstElement+numRows - 1) {
-		firstElement = selected-numRows + 1;
-	} else if (selected < firstElement) {
-		firstElement = selected;
+	if (fl.size() <= numRows || selected <= numRows / 2) {
+		firstElement = 0;
+		lastElement = min(fl.size(), numRows);
+	} else {
+		lastElement = min(fl.size(), selected + (numRows - numRows / 2));
+		firstElement = lastElement - numRows;
 	}
-
-	lastElement = firstElement + numRows;
-	if (lastElement > fl.size())
-		lastElement = fl.size();
 
 	offsetY = topBarHeight + 1;
 
