@@ -90,10 +90,16 @@ void BrowseDialog::initIcons()
 void BrowseDialog::initDisplay()
 {
 	unsigned int top, height;
+	unsigned int lineSpacing = gmenu2x->font->getLineSpacing();
 	tie(top, height) = gmenu2x->getContentArea();
+	// Reserve space for the path display, if there's a path.
+	if (!getPath().empty()) {
+		top += lineSpacing;
+		height -= lineSpacing;
+	}
 
 	// Figure out how many items we can fit in the content area.
-	rowHeight = gmenu2x->font->getLineSpacing();
+	rowHeight = lineSpacing;
 	if (fl.getShowDirectories() && iconFolder) {
 		rowHeight = max(rowHeight, (unsigned int) (iconFolder->height() + 2));
 	}
@@ -334,6 +340,13 @@ void BrowseDialog::paint()
 	} else {
 		lastElement = min(fl.size(), selected + (numRows - numRows / 2));
 		firstElement = lastElement - numRows;
+	}
+
+	// Path display (you are here)
+	string path = getPath();
+	if (!path.empty()) {
+		gmenu2x->font->write(s, path, 5, topBarHeight,
+				Font::HAlignLeft, Font::VAlignBottom);
 	}
 
 	offsetY = topBarHeight + 1;
