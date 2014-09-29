@@ -29,6 +29,8 @@ public:
 			GMenu2X *gmenu2x, Touchscreen &ts,
 			const std::string &text, const std::string &dir = "");
 
+	virtual void initSelection() override;
+
 	virtual bool canSelect() override;
 };
 

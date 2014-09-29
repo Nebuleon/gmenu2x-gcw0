@@ -33,7 +33,14 @@ DirDialog::DirDialog(
 	setPath(dir);
 }
 
+void DirDialog::initSelection()
+{
+	// Position the cursor appropriately to select the initial directory
+	// among its parent's subdirectories.
+	directoryUp();
+}
+
 bool DirDialog::canSelect()
 {
-	return selected < fl.size();
+	return selected < fl.size() && fl[selected] != "..";
 }

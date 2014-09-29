@@ -50,16 +50,14 @@ void BrowseDialog::initButtonBox()
 
 	// Accept to enter a directory (as opposed to selecting it). -else-
 	// Accept to confirm the selection of a file, if files are allowed.
-	if (fl[selected] != "..") {
-		if (selected < fl.size() && fl.isDirectory(selected)) {
-			buttonBox.add(unique_ptr<IconButton>(new IconButton(
-					gmenu2x, ts, "skin:imgs/buttons/accept.png",
-					gmenu2x->tr["Enter"],
-					bind(&BrowseDialog::directoryEnter, this))));
-		} else if (canSelect()) {
-			buttonBox.add(unique_ptr<IconButton>(new IconButton(
-					gmenu2x, ts, "skin:imgs/buttons/accept.png")));
-		}
+	if (selected < fl.size() && fl.isDirectory(selected) && fl[selected] != "..") {
+		buttonBox.add(unique_ptr<IconButton>(new IconButton(
+				gmenu2x, ts, "skin:imgs/buttons/accept.png",
+				gmenu2x->tr["Enter"],
+				bind(&BrowseDialog::directoryEnter, this))));
+	} else if (canSelect()) {
+		buttonBox.add(unique_ptr<IconButton>(new IconButton(
+				gmenu2x, ts, "skin:imgs/buttons/accept.png")));
 	}
 
 	// Start to confirm the selection of a file or directory if allowed.

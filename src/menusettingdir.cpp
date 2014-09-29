@@ -48,5 +48,5 @@ MenuSettingDir::MenuSettingDir(
 void MenuSettingDir::edit()
 {
 	DirDialog dd(gmenu2x, ts, description, value());
-	if (dd.exec()) setValue(dd.getPath());
+	if (dd.exec()) setValue(dd.getPath() + dd.getFile() + "/");
 }
