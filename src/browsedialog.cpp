@@ -216,9 +216,9 @@ void BrowseDialog::handleInput()
 		break;
 	case BrowseDialog::ACT_SCROLLUP:
 		if (fl.size() > 0) {
-			selected = (selected <= numRows - 2)
+			selected = (selected <= numRows)
 					? 0
-					: selected - (numRows - 2);
+					: selected - numRows;
 		}
 		break;
 	case BrowseDialog::ACT_DOWN:
@@ -230,9 +230,9 @@ void BrowseDialog::handleInput()
 		break;
 	case BrowseDialog::ACT_SCROLLDOWN:
 		if (fl.size() > 0) {
-			selected = (selected + (numRows - 2) >= fl.size())
+			selected = (selected + numRows >= fl.size())
 					? fl.size() - 1
-					: selected + (numRows - 2);
+					: selected + numRows;
 		}
 		break;
 	case BrowseDialog::ACT_GOUP:
