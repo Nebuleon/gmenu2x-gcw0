@@ -21,16 +21,21 @@
 #ifndef WALLPAPERDIALOG_H
 #define WALLPAPERDIALOG_H
 
-#include "dialog.h"
+#include "browsedialog.h"
 
 #include <string>
 
-class WallpaperDialog : protected Dialog {
+class WallpaperDialog : public BrowseDialog {
 public:
 	WallpaperDialog(GMenu2X *gmenu2x);
-	std::string wallpaper;
 
 	bool exec();
+
+	std::string getFullPath();
+
+protected:
+	virtual void initPath() override;
+	virtual void paintBackground() override;
 };
 
 #endif // WALLPAPERDIALOG_H
