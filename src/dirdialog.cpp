@@ -32,3 +32,8 @@ DirDialog::DirDialog(
 	fl.setShowFiles(false);
 	setPath(dir);
 }
+
+bool DirDialog::canSelect()
+{
+	return selected < fl.size();
+}

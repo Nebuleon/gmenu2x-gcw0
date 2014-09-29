@@ -67,6 +67,7 @@ public:
 
 protected:
 	GMenu2X *gmenu2x;
+	Touchscreen &ts;
 	bool edited;
 	std::string title, description, launchMsg, icon, iconPath;
 
@@ -79,7 +80,6 @@ protected:
 private:
 	void recalcCoordinates();
 
-	Touchscreen &ts;
 	Action action;
 
 	SDL_Rect rect;

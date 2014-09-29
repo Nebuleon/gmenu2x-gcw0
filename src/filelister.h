@@ -52,6 +52,8 @@ public:
 
 	void setFilter(const std::string &filter);
 
+	bool getShowDirectories() { return showDirectories; }
+
 	void setShowDirectories(bool enabled) { showDirectories = enabled; }
 	void setShowUpdir(bool enabled) { showUpdir = enabled; }
 	void setShowFiles(bool enabled) { showFiles = enabled; }

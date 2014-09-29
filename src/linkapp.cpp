@@ -559,10 +559,10 @@ void LinkApp::showManual() {
 
 void LinkApp::selector(int startSelection, const string &selectorDir) {
 	//Run selector interface
-	Selector sel(gmenu2x, *this, selectorDir);
+	Selector sel(gmenu2x, ts, *this, selectorDir);
 	int selection = sel.exec(startSelection);
 	if (selection!=-1) {
-		const string &selectedDir = sel.getDir();
+		const string &selectedDir = sel.getPath();
 		if (!selectedDir.empty()) {
 			selectordir = selectedDir;
 		}

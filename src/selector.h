@@ -21,7 +21,7 @@
 #ifndef SELECTOR_H
 #define SELECTOR_H
 
-#include "dialog.h"
+#include "browsedialog.h"
 
 #include <string>
 #include <unordered_map>
@@ -30,27 +30,23 @@
 class LinkApp;
 class FileLister;
 
-class Selector : protected Dialog {
+class Selector : public BrowseDialog {
 private:
 	LinkApp& link;
-	std::string file, dir, screendir;
 
-	bool prepare(FileLister& fl);
-
-	/**
-	 * Changes 'dir' to its parent directory.
-	 * Returns the index of the old dir in the parent, or 0 if unknown.
-	 */
-	int goToParentDir(FileLister& fl);
+	bool prepare();
 
 public:
-	Selector(GMenu2X *gmenu2x, LinkApp& link,
+	Selector(GMenu2X *gmenu2x, Touchscreen &ts, LinkApp& link,
 			const std::string &selectorDir = "");
 
-	int exec(int startSelection = 0);
+	virtual void initSelection() override;
 
-	const std::string &getFile() { return file; }
-	const std::string &getDir() { return dir; }
+	virtual void paintBackground() override;
+
+	virtual void paintIcon() override;
+
+	int exec(int initialSelection = 0);
 };
 
 #endif // SELECTOR_H

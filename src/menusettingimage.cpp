@@ -36,7 +36,7 @@ MenuSettingImage::MenuSettingImage(
 
 void MenuSettingImage::edit() {
 	ImageDialog id(gmenu2x, ts, description, filter, value());
-	if (id.exec()) setValue(id.getPath() + "/" + id.getFile());
+	if (id.exec()) setValue(id.getPath() + id.getFile());
 }
 
 void MenuSettingImage::setValue(const string &value) {
