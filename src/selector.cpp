@@ -24,6 +24,8 @@
 #include "debug.h"
 #include "linkapp.h"
 
+#include <algorithm>
+
 using std::string;
 
 Selector::Selector(GMenu2X *gmenu2x, LinkApp& link, const string &selectorDir)
@@ -56,11 +58,39 @@ void Selector::paintIcon()
 
 void Selector::initSelection()
 {
-	// Leave the selection as exec puts it.
+	BrowseDialog::initSelection();
+
+	if (!fileHint.empty()) {
+		case_less comparator;
+
+		auto& files = fl.getFiles();
+		/* Get the start of a range of file entries having the same name,
+		 * case-insensitive, as the hint. */
+		auto it = lower_bound(files.begin(), files.end(), fileHint, comparator);
+
+		if (it != files.end()) {
+			/* Look for a file having the same name, case-sensitive, up until
+			 * the last file having the same name, case-insensitive. */
+			for (auto itCS = it;
+					itCS != files.end() && !comparator(fileHint, *itCS);
+					++itCS) {
+				if (*itCS == fileHint) {
+					it = itCS;
+					break;
+				}
+			}
+			selected = fl.dirCount() + (it - files.begin());
+		} else if (fl.size() > 0) {
+			/* If we get here, then the file hint comes after the name of
+			 * the last file in the list, case-insensitive (and there is
+			 * at least one file). */
+			selected = fl.size() - 1;
+		}
+	}
 }
 
-int Selector::exec(int initialSelection) {
-	selected = initialSelection;
+bool Selector::exec(string fileHint) {
+	this->fileHint = fileHint;
 
-	return BrowseDialog::exec() ? (int) selected : -1;
+	return BrowseDialog::exec();
 }

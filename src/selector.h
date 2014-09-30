@@ -35,7 +35,13 @@ public:
 	Selector(GMenu2X *gmenu2x, LinkApp& link,
 			const std::string &selectorDir = "");
 
-	int exec(int initialSelection = 0);
+	/*
+	 * Executes the selector, using fileHint to initially select a file.
+	 * If fileHint matches the name of a file exactly, then that file is
+	 * selected. Otherwise, the nearest file, in case-insensitive order,
+	 * is selected.
+	 */
+	bool exec(std::string fileHint = "");
 
 protected:
 	virtual void initSelection() override;
@@ -45,7 +51,7 @@ protected:
 private:
 	LinkApp& link;
 
-	bool prepare();
+	std::string fileHint;
 };
 
 #endif // SELECTOR_H

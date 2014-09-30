@@ -39,7 +39,7 @@ class LinkApp : public Link {
 private:
 	std::string sclock;
 	int iclock;
-	std::string exec, params, workdir, manual, selectordir, selectorfilter;
+	std::string exec, params, workdir, manual, selectordir, selectorfile, selectorfilter;
 	bool selectorbrowser, deletable, editable;
 
 	std::string file;
@@ -80,6 +80,15 @@ public:
 	void setManual(const std::string &manual);
 	const std::string &getSelectorDir();
 	void setSelectorDir(const std::string &selectordir);
+	/**
+	 * Gets the last file selected by this user to launch this application.
+	 */
+	std::string const& getSelectorFile();
+	/**
+	 * Sets the last selected file, which will act as a selection hint for
+	 * the next invocation of the selector for this LinkApp.
+	 */
+	void setSelectorFile(std::string const& selectorfile);
 	bool getSelectorBrowser();
 	void setSelectorBrowser(bool value);
 	const std::string &getSelectorFilter();
@@ -91,7 +100,7 @@ public:
 
 	bool save();
 	void showManual();
-	void selector(int startSelection=0, const std::string &selectorDir="");
+	void selector();
 	bool targetExists();
 	bool isDeletable() { return deletable; }
 	bool isEditable() { return editable; }

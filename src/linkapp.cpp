@@ -94,6 +94,7 @@ LinkApp::LinkApp(GMenu2X *gmenu2x_, string const& linkfile, bool deletable)
 	setClock(0);
 #endif
 	selectordir = "";
+	selectorfile = "";
 	selectorfilter = "*";
 	icon = iconPath = "";
 	selectorbrowser = true;
@@ -234,6 +235,8 @@ LinkApp::LinkApp(GMenu2X *gmenu2x_, string const& linkfile, bool deletable)
 			setClock( atoi(value.c_str()) );
 		} else if (name == "selectordir") {
 			if (appTakesFileArg) setSelectorDir(value);
+		} else if (name == "selectorfile") {
+			setSelectorFile(value);
 		} else if (name == "selectorbrowser") {
 			if (value=="false") selectorbrowser = false;
 		} else if (!isOpk()) {
@@ -351,6 +354,7 @@ bool LinkApp::save() {
 	}
 	if (iclock != 0              ) out << "clock="           << iclock          << endl;
 	if (!selectordir.empty()     ) out << "selectordir="     << selectordir     << endl;
+	if (!selectorfile.empty()    ) out << "selectorfile="    << selectorfile    << endl;
 	if (!selectorbrowser         ) out << "selectorbrowser=false"               << endl;
 
 	if (out.tellp() > 0) {
@@ -553,18 +557,21 @@ void LinkApp::showManual() {
 	}
 }
 
-void LinkApp::selector(int startSelection, const string &selectorDir) {
+void LinkApp::selector() {
 	//Run selector interface
-	Selector sel(gmenu2x, *this, selectorDir);
-	int selection = sel.exec(startSelection);
-	if (selection!=-1) {
-		const string &selectedDir = sel.getPath();
+	Selector sel(gmenu2x, *this, selectordir);
+	if (sel.exec(selectorfile)) {
+		string const& selectedDir = sel.getPath();
 		if (!selectedDir.empty()) {
 			selectordir = selectedDir;
 		}
-		gmenu2x->writeTmp(selection, selectedDir);
+		string const& selectedFile = sel.getFile();
+		if (!selectedFile.empty()) {
+			selectorfile = selectedFile;
+		}
+		gmenu2x->writeTmp(true);
 		gmenu2x->queueLaunch(
-				prepareLaunch(selectedDir + sel.getFile()),
+				prepareLaunch(selectedDir + selectedFile),
 				make_shared<LaunchLayer>(*this));
 	}
 }
@@ -678,6 +685,15 @@ void LinkApp::setSelectorDir(const string &selectordir) {
 	if (!selectordir.empty() && selectordir[selectordir.length() - 1] != '/') {
 		this->selectordir += "/";
 	}
+	edited = true;
+}
+
+string const& LinkApp::getSelectorFile() {
+	return selectorfile;
+}
+
+void LinkApp::setSelectorFile(string const& selectorfile) {
+	this->selectorfile = selectorfile;
 	edited = true;
 }
 
