@@ -556,7 +556,6 @@ void GMenu2X::writeSkinConfig() {
 }
 
 void GMenu2X::readTmp() {
-	lastSelectorElement = -1;
 	ifstream inf("/tmp/gmenu2x.tmp", ios_base::in);
 	if (inf.is_open()) {
 		string line;
@@ -570,25 +569,21 @@ void GMenu2X::readTmp() {
 				menu->setSectionIndex(atoi(value.c_str()));
 			else if (name=="link")
 				menu->setLinkIndex(atoi(value.c_str()));
-			else if (name=="selectorelem")
-				lastSelectorElement = atoi(value.c_str());
-			else if (name=="selectordir")
-				lastSelectorDir = value;
+			else if (name=="showselector" && value=="true")
+				showSelectorAgain = true;
 		}
 		inf.close();
 	}
 }
 
-void GMenu2X::writeTmp(int selelem, const string &selectordir) {
+void GMenu2X::writeTmp(bool showSelectorAgain) {
 	string conffile = "/tmp/gmenu2x.tmp";
 	ofstream inf(conffile.c_str());
 	if (inf.is_open()) {
 		inf << "section=" << menu->selSectionIndex() << endl;
 		inf << "link=" << menu->selLinkIndex() << endl;
-		if (selelem>-1)
-			inf << "selectorelem=" << selelem << endl;
-		if (!selectordir.empty())
-			inf << "selectordir=" << selectordir << endl;
+		if (showSelectorAgain)
+			inf << "showselector=true" << endl;
 		inf.close();
 	}
 }
@@ -599,10 +594,8 @@ void GMenu2X::mainLoop() {
 
 	// Recover last session
 	readTmp();
-	if (lastSelectorElement > -1 && menu->selLinkApp() &&
-				(!menu->selLinkApp()->getSelectorDir().empty()
-				 || !lastSelectorDir.empty()))
-		menu->selLinkApp()->selector(lastSelectorElement, lastSelectorDir);
+	if (menu->selLinkApp() && showSelectorAgain)
+		menu->selLinkApp()->selector();
 
 	while (true) {
 		// Remove dismissed layers from the stack.

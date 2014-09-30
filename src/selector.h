@@ -34,6 +34,8 @@ class Selector : public BrowseDialog {
 private:
 	LinkApp& link;
 
+	std::string fileHint;
+
 	bool prepare();
 
 public:
@@ -46,7 +48,11 @@ public:
 
 	virtual void paintIcon() override;
 
-	int exec(int initialSelection = 0);
+	// Executes the selector, using fileHint to initially select a file.
+	// If fileHint matches the name of a file exactly, then that file is
+	// selected. Otherwise, the nearest file, in case-insensitive order,
+	// is selected.
+	bool exec(std::string fileHint = "");
 };
 
 #endif // SELECTOR_H

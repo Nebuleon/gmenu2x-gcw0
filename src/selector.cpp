@@ -73,11 +73,27 @@ void Selector::paintIcon()
 
 void Selector::initSelection()
 {
-	// Leave the selection as exec puts it.
+	BrowseDialog::initSelection();
+
+	if (!fileHint.empty()) {
+		auto& files = fl.getFiles();
+		auto it = find(files.begin(), files.end(), fileHint);
+
+		if (it != files.end()) {
+			selected = fl.dirCount() + (it - files.begin());
+		} else {
+			it = lower_bound(files.begin(), files.end(), fileHint, case_less());
+			if (it != files.end()) {
+				selected = fl.dirCount() + (it - files.begin());
+			} else if (fl.size() > 0) {
+				selected = fl.size() - 1;
+			}
+		}
+	}
 }
 
-int Selector::exec(int initialSelection) {
-	selected = initialSelection;
+bool Selector::exec(string fileHint) {
+	this->fileHint = fileHint;
 
-	return BrowseDialog::exec() ? (int) selected : -1;
+	return BrowseDialog::exec();
 }

@@ -107,7 +107,8 @@ private:
 		samba,
 		web;
 
-	std::string ip, defaultgw, lastSelectorDir;
+	std::string ip, defaultgw;
+	bool showSelectorAgain;
 	int lastSelectorElement;
 	void readConfig();
 	void readConfig(std::string path);
@@ -196,7 +197,7 @@ public:
 	void saveSelection();
 	void writeConfig();
 	void writeSkinConfig();
-	void writeTmp(int selelem=-1, const std::string &selectordir="");
+	void writeTmp(bool showSelectorAgain = false);
 
 	void addLink();
 	void editLink();
