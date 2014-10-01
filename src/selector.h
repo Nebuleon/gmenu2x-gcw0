@@ -31,6 +31,11 @@ class LinkApp;
 class FileLister;
 
 class Selector : public BrowseDialog {
+protected:
+	virtual void initSelection() override;
+	virtual void paintBackground() override;
+	virtual void paintIcon() override;
+
 private:
 	LinkApp& link;
 
@@ -41,12 +46,6 @@ private:
 public:
 	Selector(GMenu2X *gmenu2x, Touchscreen &ts, LinkApp& link,
 			const std::string &selectorDir = "");
-
-	virtual void initSelection() override;
-
-	virtual void paintBackground() override;
-
-	virtual void paintIcon() override;
 
 	// Executes the selector, using fileHint to initially select a file.
 	// If fileHint matches the name of a file exactly, then that file is

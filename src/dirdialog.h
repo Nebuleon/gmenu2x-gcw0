@@ -24,14 +24,15 @@
 #include "browsedialog.h"
 
 class DirDialog : public BrowseDialog {
+protected:
+	virtual void initSelection() override;
+	virtual bool canSelect() override;
+
 public:
 	DirDialog(
 			GMenu2X *gmenu2x, Touchscreen &ts,
 			const std::string &text, const std::string &dir = "");
 
-	virtual void initSelection() override;
-
-	virtual bool canSelect() override;
 };
 
 #endif // DIRDIALOG_H

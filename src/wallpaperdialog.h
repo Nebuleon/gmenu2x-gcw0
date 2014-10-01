@@ -28,13 +28,13 @@
 class Touchscreen;
 
 class WallpaperDialog : public BrowseDialog {
-public:
-	WallpaperDialog(GMenu2X *gmenu2x, Touchscreen &ts);
-
+protected:
 	virtual void initPath() override;
 	virtual void initSelection() override;
-
 	virtual void paintBackground() override;
+
+public:
+	WallpaperDialog(GMenu2X *gmenu2x, Touchscreen &ts);
 
 	bool exec(std::string currentWallpaper);
 
