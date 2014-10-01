@@ -40,7 +40,8 @@
 using namespace std;
 
 Selector::Selector(GMenu2X *gmenu2x, LinkApp& link, const string &selectorDir)
-	: BrowseDialog(gmenu2x, link.getTitle(), link.getDescription())
+	: BrowseDialog(gmenu2x, link.getTitle(),
+			gmenu2x->tr["Select a file to use in this application"])
 	, link(link)
 {
 	setPath(selectorDir.empty() ? link.getSelectorDir() : selectorDir);
