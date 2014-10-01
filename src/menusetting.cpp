@@ -44,11 +44,6 @@ void MenuSetting::draw(int /*valueX*/, int y, int /*h*/)
 	gmenu2x->font->write(s, name, 5, y, Font::HAlignLeft, Font::VAlignTop);
 }
 
-void MenuSetting::handleTS(int /*valueX*/, int /*y*/, int /*h*/)
-{
-	buttonBox.handleTS();
-}
-
 void MenuSetting::drawSelected(int valueX, int y, int h)
 {
 	Surface& s = *gmenu2x->s;

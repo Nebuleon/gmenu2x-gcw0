@@ -72,10 +72,6 @@ public:
 		return true;
 	}
 
-	bool handleTouchscreen(Touchscreen&) override {
-		return true;
-	}
-
 private:
 	LinkApp& app;
 };
@@ -563,7 +559,7 @@ void LinkApp::showManual() {
 
 void LinkApp::selector() {
 	//Run selector interface
-	Selector sel(gmenu2x, ts, *this, selectordir);
+	Selector sel(gmenu2x, *this, selectordir);
 	if (sel.exec(selectorfile)) {
 		const string &selectedDir = sel.getPath();
 		if (!selectedDir.empty()) {

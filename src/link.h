@@ -43,9 +43,6 @@ public:
 	Link(GMenu2X *gmenu2x, Action action);
 	virtual ~Link() {};
 
-	bool isPressed();
-	bool handleTS();
-
 	virtual void paint();
 	void paintHover();
 
@@ -67,7 +64,6 @@ public:
 
 protected:
 	GMenu2X *gmenu2x;
-	Touchscreen &ts;
 	bool edited;
 	std::string title, description, launchMsg, icon, iconPath;
 

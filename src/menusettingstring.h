@@ -22,12 +22,7 @@
 
 #include "menusettingstringbase.h"
 
-class Touchscreen;
-
 class MenuSettingString : public MenuSettingStringBase {
-private:
-	Touchscreen &ts;
-
 protected:
 	virtual void edit();
 
@@ -35,7 +30,7 @@ protected:
 
 public:
 	MenuSettingString(
-			GMenu2X *gmenu2x, Touchscreen &ts, const std::string &name,
+			GMenu2X *gmenu2x, const std::string &name,
 			const std::string &description, std::string *value,
 			const std::string &diagTitle = "",
 			const std::string &diagIcon = "");

@@ -34,11 +34,9 @@ using namespace std;
 
 Link::Link(GMenu2X *gmenu2x, Action action)
 	: gmenu2x(gmenu2x)
-	, ts(gmenu2x->getTouchscreen())
 	, action(action)
 	, lastTick(0)
 {
-//	ts = gmenu2x->getTouchscreen();
 	rect.w = gmenu2x->skinConfInt["linkWidth"];
 	rect.h = gmenu2x->skinConfInt["linkHeight"];
 	edited = false;
@@ -47,23 +45,6 @@ Link::Link(GMenu2X *gmenu2x, Action action)
 	padding = 0;
 
 	updateSurfaces();
-}
-
-bool Link::isPressed() {
-	return ts.pressed() && ts.inRect(rect);
-}
-
-bool Link::handleTS() {
-	if (ts.released() && ts.inRect(rect)) {
-		int tickNow = SDL_GetTicks();
-		if (tickNow - lastTick < 400) {
-			ts.setHandled();
-			action();
-		}
-		lastTick = tickNow;
-		return true;
-	}
-	return false;
 }
 
 void Link::paint() {

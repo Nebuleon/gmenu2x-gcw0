@@ -30,12 +30,11 @@
 #include <string>
 
 class OffscreenSurface;
-class Touchscreen;
 
 class BrowseDialog : protected Dialog {
 protected:
 	BrowseDialog(
-			GMenu2X *gmenu2x, Touchscreen &ts,
+			GMenu2X *gmenu2x,
 			const std::string &title, const std::string &subtitle);
 	virtual ~BrowseDialog();
 
@@ -60,7 +59,6 @@ protected:
 	ButtonBox buttonBox;
 
 	SDL_Rect clipRect;
-	SDL_Rect touchRect;
 
 	unsigned int topBarHeight;
 	unsigned int numRows;
@@ -151,13 +149,10 @@ private:
 	OffscreenSurface *iconFolder;
 	OffscreenSurface *iconFile;
 
-	Touchscreen &ts;
 	bool close, result;
 
 	std::string title;
 	std::string subtitle;
-
-	bool ts_pressed;
 
 public:
 	bool exec();

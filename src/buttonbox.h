@@ -16,7 +16,6 @@ public:
 	void clear();
 
 	void paint(Surface& s, int x, int y);
-	void handleTS();
 
 private:
 	std::vector<std::unique_ptr<IconButton>> buttons;

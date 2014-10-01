@@ -44,7 +44,7 @@ private:
 	bool prepare();
 
 public:
-	Selector(GMenu2X *gmenu2x, Touchscreen &ts, LinkApp& link,
+	Selector(GMenu2X *gmenu2x, LinkApp& link,
 			const std::string &selectorDir = "");
 
 	// Executes the selector, using fileHint to initially select a file.

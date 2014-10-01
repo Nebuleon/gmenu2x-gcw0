@@ -26,11 +26,9 @@
 #include "inputmanager.h"
 
 class GMenu2X;
-class Touchscreen;
 
 class MenuSettingRGBA : public MenuSetting {
 private:
-	Touchscreen &ts;
 	unsigned short selPart;
 	std::string strR, strG, strB, strA;
 	RGBAColor originalValue;
@@ -47,13 +45,12 @@ private:
 
 public:
 	MenuSettingRGBA(
-			GMenu2X *gmenu2x, Touchscreen &ts,
+			GMenu2X *gmenu2x,
 			const std::string &name, const std::string &description,
 			RGBAColor *value);
 	virtual ~MenuSettingRGBA() {};
 
 	virtual void draw(int valueX, int y, int h);
-	virtual void handleTS(int valueX, int y, int h);
 	virtual bool handleButtonPress(InputManager::Button button);
 	virtual void drawSelected(int valueX, int y, int h);
 	virtual bool edited();

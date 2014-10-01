@@ -32,10 +32,9 @@ using std::string;
 using std::unique_ptr;
 
 MenuSettingBool::MenuSettingBool(
-		GMenu2X *gmenu2x, Touchscreen &ts,
+		GMenu2X *gmenu2x,
 		const string &name, const string &description, int *value)
 	: MenuSetting(gmenu2x, name, description)
-	, ts(ts)
 {
 	_ivalue = value;
 	_value = NULL;
@@ -45,10 +44,9 @@ MenuSettingBool::MenuSettingBool(
 }
 
 MenuSettingBool::MenuSettingBool(
-		GMenu2X *gmenu2x, Touchscreen &ts,
+		GMenu2X *gmenu2x,
 		const string &name, const string &description, bool *value)
 	: MenuSetting(gmenu2x, name, description)
-	, ts(ts)
 {
 	_value = value;
 	_ivalue = NULL;
@@ -60,7 +58,7 @@ MenuSettingBool::MenuSettingBool(
 void MenuSettingBool::initButton()
 {
 	buttonBox.add(unique_ptr<IconButton>(new IconButton(
-			gmenu2x, ts, "skin:imgs/buttons/accept.png",
+			gmenu2x, "skin:imgs/buttons/accept.png",
 			gmenu2x->tr["Switch"],
 			bind(&MenuSettingBool::toggle, this))));
 }

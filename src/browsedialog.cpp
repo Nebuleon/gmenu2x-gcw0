@@ -16,13 +16,11 @@ using std::min;
 using std::max;
 
 BrowseDialog::BrowseDialog(
-		GMenu2X *gmenu2x, Touchscreen &ts_,
+		GMenu2X *gmenu2x,
 		const string &title, const string &subtitle)
 	: Dialog(gmenu2x)
-	, ts(ts_)
 	, title(title)
 	, subtitle(subtitle)
-	, ts_pressed(false)
 {
 }
 
@@ -39,10 +37,10 @@ void BrowseDialog::initButtonBox()
 	if (fl.getShowDirectories() && getPath() != "/") {
 		if (selected < fl.size() && fl[selected] == "..") {
 			buttonBox.add(unique_ptr<IconButton>(new IconButton(
-					gmenu2x, ts, "skin:imgs/buttons/accept.png")));
+					gmenu2x, "skin:imgs/buttons/accept.png")));
 		}
 		buttonBox.add(unique_ptr<IconButton>(new IconButton(
-				gmenu2x, ts, "skin:imgs/buttons/cancel.png",
+				gmenu2x, "skin:imgs/buttons/cancel.png",
 				gmenu2x->tr["Up one folder"],
 				bind(&BrowseDialog::directoryUp, this))));
 	}
@@ -51,18 +49,18 @@ void BrowseDialog::initButtonBox()
 	// Accept to confirm the selection of a file, if files are allowed.
 	if (selected < fl.size() && fl.isDirectory(selected) && fl[selected] != "..") {
 		buttonBox.add(unique_ptr<IconButton>(new IconButton(
-				gmenu2x, ts, "skin:imgs/buttons/accept.png",
+				gmenu2x, "skin:imgs/buttons/accept.png",
 				gmenu2x->tr["Enter"],
 				bind(&BrowseDialog::directoryEnter, this))));
 	} else if (canSelect()) {
 		buttonBox.add(unique_ptr<IconButton>(new IconButton(
-				gmenu2x, ts, "skin:imgs/buttons/accept.png")));
+				gmenu2x, "skin:imgs/buttons/accept.png")));
 	}
 
 	// Start to confirm the selection of a file or directory if allowed.
 	if (canSelect()) {
 		buttonBox.add(unique_ptr<IconButton>(new IconButton(
-				gmenu2x, ts, "skin:imgs/buttons/start.png",
+				gmenu2x, "skin:imgs/buttons/start.png",
 				gmenu2x->tr["Select"],
 				bind(&BrowseDialog::confirm, this))));
 	}
@@ -70,10 +68,10 @@ void BrowseDialog::initButtonBox()
 	// Cancel (if directories are hidden) or Select to exit.
 	if (!fl.getShowDirectories()) {
 		buttonBox.add(unique_ptr<IconButton>(new IconButton(
-				gmenu2x, ts, "skin:imgs/buttons/cancel.png")));
+				gmenu2x, "skin:imgs/buttons/cancel.png")));
 	}
 	buttonBox.add(unique_ptr<IconButton>(new IconButton(
-			gmenu2x, ts, "skin:imgs/buttons/select.png",
+			gmenu2x, "skin:imgs/buttons/select.png",
 			gmenu2x->tr["Exit"],
 			bind(&BrowseDialog::quit, this))));
 }
@@ -112,12 +110,6 @@ void BrowseDialog::initDisplay()
 		static_cast<Uint16>(gmenu2x->resX - 9),
 		static_cast<Uint16>(height - 1)
 	};
-	touchRect = (SDL_Rect) {
-		2,
-		static_cast<Sint16>(topBarHeight + 4),
-		static_cast<Uint16>(gmenu2x->resX - 12),
-		clipRect.h
-	};
 }
 
 void BrowseDialog::initPath()
@@ -150,7 +142,6 @@ bool BrowseDialog::exec()
 	close = false;
 	while (!close) {
 		initButtonBox();
-		if (ts.available()) ts.poll();
 
 		paint();
 
@@ -188,17 +179,7 @@ void BrowseDialog::handleInput()
 {
 	InputManager::Button button = gmenu2x->input.waitForPressedButton();
 
-	BrowseDialog::Action action;
-	if (ts_pressed && !ts.pressed()) {
-		action = BrowseDialog::ACT_SELECT;
-		ts_pressed = false;
-	} else {
-		action = getAction(button);
-	}
-
-	if (ts.available() && ts.pressed() && !ts.inRect(touchRect)) {
-		ts_pressed = false;
-	}
+	BrowseDialog::Action action = getAction(button);
 
 	// Various fixups.
 	if (action == BrowseDialog::ACT_SELECT
@@ -258,8 +239,6 @@ void BrowseDialog::handleInput()
 	default:
 		break;
 	}
-
-	buttonBox.handleTS();
 }
 
 #include <iostream>
@@ -379,12 +358,6 @@ void BrowseDialog::paint()
 			}
 			gmenu2x->font->write(s, fl[i], nameX, offsetY + rowHeight / 2,
 					Font::HAlignLeft, Font::VAlignMiddle);
-
-			if (ts.available() && ts.pressed()
-					&& ts.inRect(touchRect.x, offsetY + 3, touchRect.w, rowHeight)) {
-				ts_pressed = true;
-				selected = i;
-			}
 
 			offsetY += rowHeight;
 		}

@@ -29,27 +29,26 @@ using std::string;
 using std::unique_ptr;
 
 MenuSettingFile::MenuSettingFile(
-		GMenu2X *gmenu2x, Touchscreen &ts_,
+		GMenu2X *gmenu2x,
 		const string &name, const string &description,
 		string *value, const string &filter_)
 	: MenuSettingStringBase(gmenu2x, name, description, value)
-	, ts(ts_)
 	, filter(filter_)
 {
 	buttonBox.add(unique_ptr<IconButton>(new IconButton(
-			gmenu2x, ts, "skin:imgs/buttons/cancel.png",
+			gmenu2x, "skin:imgs/buttons/cancel.png",
 			gmenu2x->tr["Clear"],
 			bind(&MenuSettingFile::clear, this))));
 
 	buttonBox.add(unique_ptr<IconButton>(new IconButton(
-			gmenu2x, ts, "skin:imgs/buttons/accept.png",
+			gmenu2x, "skin:imgs/buttons/accept.png",
 			gmenu2x->tr["Select"],
 			bind(&MenuSettingFile::edit, this))));
 }
 
 void MenuSettingFile::edit()
 {
-	FileDialog fd(gmenu2x, ts, description, filter, value());
+	FileDialog fd(gmenu2x, description, filter, value());
 	if (fd.exec()) {
 		setValue(fd.getPath() + fd.getFile());
 	}

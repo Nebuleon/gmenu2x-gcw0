@@ -36,11 +36,3 @@ bool HelpPopup::handleButtonPress(InputManager::Button button) {
 	}
 	return true;
 }
-
-bool HelpPopup::handleTouchscreen(Touchscreen& ts) {
-	if (ts.pressed()) {
-		dismiss();
-		ts.setHandled();
-	}
-	return true;
-}

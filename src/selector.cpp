@@ -39,8 +39,8 @@
 
 using namespace std;
 
-Selector::Selector(GMenu2X *gmenu2x, Touchscreen &ts, LinkApp& link, const string &selectorDir)
-	: BrowseDialog(gmenu2x, ts, link.getTitle(), link.getDescription())
+Selector::Selector(GMenu2X *gmenu2x, LinkApp& link, const string &selectorDir)
+	: BrowseDialog(gmenu2x, link.getTitle(), link.getDescription())
 	, link(link)
 {
 	setPath(selectorDir.empty() ? link.getSelectorDir() : selectorDir);

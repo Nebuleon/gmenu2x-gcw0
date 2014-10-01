@@ -30,7 +30,7 @@ protected:
 
 public:
 	DirDialog(
-			GMenu2X *gmenu2x, Touchscreen &ts,
+			GMenu2X *gmenu2x,
 			const std::string &text, const std::string &dir = "");
 
 };

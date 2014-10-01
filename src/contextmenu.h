@@ -24,7 +24,6 @@ public:
 	virtual bool runAnimations();
 	virtual void paint(Surface &s);
 	virtual bool handleButtonPress(InputManager::Button button);
-	virtual bool handleTouchscreen(Touchscreen &ts);
 
 private:
 	struct MenuOption;

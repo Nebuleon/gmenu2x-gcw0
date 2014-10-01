@@ -25,8 +25,6 @@
 
 #include <string>
 
-class Touchscreen;
-
 class WallpaperDialog : public BrowseDialog {
 protected:
 	virtual void initPath() override;
@@ -34,7 +32,7 @@ protected:
 	virtual void paintBackground() override;
 
 public:
-	WallpaperDialog(GMenu2X *gmenu2x, Touchscreen &ts);
+	WallpaperDialog(GMenu2X *gmenu2x);
 
 	bool exec(std::string currentWallpaper);
 

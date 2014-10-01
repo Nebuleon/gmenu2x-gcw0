@@ -55,7 +55,6 @@ private:
 	};
 
 	GMenu2X *gmenu2x;
-	Touchscreen &ts;
 	IconButton btnContextMenu;
 	int iSection, iLink;
 	uint iFirstDispRow;
@@ -102,7 +101,7 @@ private:
 public:
 	typedef std::function<void(void)> Action;
 
-	Menu(GMenu2X *gmenu2x, Touchscreen &ts);
+	Menu(GMenu2X *gmenu2x);
 	virtual ~Menu();
 
 #ifdef HAVE_LIBOPK
@@ -132,7 +131,6 @@ public:
 	virtual bool runAnimations();
 	virtual void paint(Surface &s);
 	virtual bool handleButtonPress(InputManager::Button button);
-	virtual bool handleTouchscreen(Touchscreen &ts);
 
 	bool linkChangeSection(uint linkIndex, uint oldSectionIndex, uint newSectionIndex);
 

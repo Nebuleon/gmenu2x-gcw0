@@ -24,7 +24,6 @@
 #include "contextmenu.h"
 #include "surfacecollection.h"
 #include "translator.h"
-#include "touchscreen.h"
 #include "inputmanager.h"
 #include "powersaver.h"
 #include "surface.h"
@@ -70,7 +69,6 @@ enum color {
 
 class GMenu2X {
 private:
-	Touchscreen ts;
 	std::shared_ptr<Menu> menu;
 #ifdef ENABLE_INOTIFY
 	MediaMonitor *monitor;
@@ -212,8 +210,6 @@ public:
 
 	void drawTopBar(Surface& s);
 	void drawBottomBar(Surface& s);
-
-	Touchscreen &getTouchscreen() { return ts; }
 };
 
 #endif // GMENU2X_H

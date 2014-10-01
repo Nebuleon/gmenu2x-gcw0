@@ -38,11 +38,10 @@ static bool utf8Code(unsigned char c)
 }
 
 InputDialog::InputDialog(GMenu2X *gmenu2x, InputManager &inputMgr_,
-		Touchscreen &ts_, const string &text,
+		const string &text,
 		const string &startvalue, const string &title, const string &icon)
 	: Dialog(gmenu2x)
 	, inputMgr(inputMgr_)
-	, ts(ts_)
 {
 	if (title.empty()) {
 		this->title = text;
@@ -97,22 +96,22 @@ InputDialog::InputDialog(GMenu2X *gmenu2x, InputManager &inputMgr_,
 	setKeyboard(0);
 
 	buttonbox.add(unique_ptr<IconButton>(new IconButton(
-			gmenu2x, ts, "skin:imgs/buttons/l.png",
+			gmenu2x, "skin:imgs/buttons/l.png",
 			gmenu2x->tr["Backspace"],
 			bind(&InputDialog::backspace, this))));
 
 	buttonbox.add(unique_ptr<IconButton>(new IconButton(
-			gmenu2x, ts, "skin:imgs/buttons/r.png",
+			gmenu2x, "skin:imgs/buttons/r.png",
 			gmenu2x->tr["Space"],
 			bind(&InputDialog::space, this))));
 
 	buttonbox.add(unique_ptr<IconButton>(new IconButton(
-			gmenu2x, ts, "skin:imgs/buttons/accept.png",
+			gmenu2x, "skin:imgs/buttons/accept.png",
 			gmenu2x->tr["Confirm"],
 			bind(&InputDialog::confirm, this))));
 
 	buttonbox.add(unique_ptr<IconButton>(new IconButton(
-			gmenu2x, ts, "skin:imgs/buttons/cancel.png",
+			gmenu2x, "skin:imgs/buttons/cancel.png",
 			gmenu2x->tr["Change keys"],
 			bind(&InputDialog::changeKeys, this))));
 }
@@ -182,7 +181,6 @@ bool InputDialog::exec() {
 					gmenu2x->skinConfColors[COLOR_SELECTION_BG]);
 		}
 
-		if (ts.available()) ts.poll();
 		drawVirtualKeyboard();
 		s.flip();
 
@@ -306,12 +304,6 @@ void InputDialog::drawVirtualKeyboard() {
 				KEY_HEIGHT - 2
 			};
 
-			//if ts on rect, change selection
-			if (ts.available() && ts.pressed() && ts.inRect(re)) {
-				selCol = xc;
-				selRow = l;
-			}
-
 			s.rectangle(re,
 					gmenu2x->skinConfColors[COLOR_SELECTION_BG]);
 			gmenu2x->font->write(s, charX,
@@ -330,10 +322,6 @@ void InputDialog::drawVirtualKeyboard() {
 		KEY_HEIGHT - 1
 	};
 	s.rectangle(re, gmenu2x->skinConfColors[COLOR_SELECTION_BG]);
-	if (ts.available() && ts.pressed() && ts.inRect(re)) {
-		selCol = 0;
-		selRow = kb->size();
-	}
 	gmenu2x->font->write(s, gmenu2x->tr["Cancel"],
 			(int)(160 - kbLength * KEY_WIDTH / 4),
 			KB_TOP + kb->size() * KEY_HEIGHT + KEY_HEIGHT / 2,
@@ -341,10 +329,6 @@ void InputDialog::drawVirtualKeyboard() {
 
 	re.x = kbLeft + kbLength * KEY_WIDTH / 2 - 1;
 	s.rectangle(re, gmenu2x->skinConfColors[COLOR_SELECTION_BG]);
-	if (ts.available() && ts.pressed() && ts.inRect(re)) {
-		selCol = 1;
-		selRow = kb->size();
-	}
 	gmenu2x->font->write(s, gmenu2x->tr["OK"],
 			(int)(160 + kbLength * KEY_WIDTH / 4),
 			KB_TOP + kb->size() * KEY_HEIGHT + KEY_HEIGHT / 2,

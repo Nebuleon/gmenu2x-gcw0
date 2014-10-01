@@ -30,17 +30,15 @@
 
 class InputManager;
 class MenuSetting;
-class Touchscreen;
 
 class SettingsDialog : protected Dialog {
 private:
 	InputManager &inputMgr;
-	Touchscreen &ts;
 	std::vector<std::unique_ptr<MenuSetting>> settings;
 	std::string text, icon;
 
 public:
-	SettingsDialog(GMenu2X *gmenu2x, InputManager &inputMgr, Touchscreen &ts,
+	SettingsDialog(GMenu2X *gmenu2x, InputManager &inputMgr,
 			const std::string &text,
 			const std::string &icon = "skin:sections/settings.png");
 
