@@ -178,8 +178,6 @@ void BrowseDialog::handleInput()
 	buttonBox.handleTS();
 }
 
-#include <iostream>
-
 void BrowseDialog::directoryUp()
 {
 	string path = getPath();
