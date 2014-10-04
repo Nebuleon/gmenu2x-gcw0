@@ -202,39 +202,20 @@ int evalIntConf (ConfIntHash& hash, const std::string &key, int def, int imin, i
 	}
 }
 
-bool split (vector<string> &vec, const string &str, const string &delim, bool destructive) {
+void split(vector<string>& vec, string const& str, string const& delim) {
 	vec.clear();
 
 	if (delim.empty()) {
 		vec.push_back(str);
-		return false;
+		return;
 	}
 
-	std::string::size_type i = 0;
-	std::string::size_type j = 0;
-
-	while(1) {
-		j = str.find(delim,i);
-		if (j==std::string::npos) {
-			vec.push_back(str.substr(i));
-			break;
-		}
-
-		if (!destructive)
-			j += delim.size();
-
-		vec.push_back(str.substr(i,j-i));
-
-		if (destructive)
-			i = j + delim.size();
-
-		if (i==str.size()) {
-			vec.push_back(std::string());
-			break;
-		}
+	string::size_type i = 0, j;
+	while ((j = str.find(delim, i)) != string::npos) {
+		vec.push_back(str.substr(i, j - i));
+		i = j + delim.size();
 	}
-
-	return true;
+	vec.push_back(str.substr(i));
 }
 
 string strreplace (string orig, const string &search, const string &replace) {

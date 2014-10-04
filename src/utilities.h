@@ -85,8 +85,16 @@ int constrain(int x, int imin, int imax);
 
 int evalIntConf(ConfIntHash& hash, const std::string &key, int def, int imin, int imax);
 
-bool split(std::vector<std::string> &vec, const std::string &str,
-		const std::string &delim, bool destructive=true);
+/**
+ * Splits the given string on the given delimiter, returning the split elements
+ * in the given vector.
+ * A delimiter can be a string of multiple characters, in which case that
+ * entire delimiter string acts as a single delimiter.
+ * If the delimiter is empty, the entire string is returned as a single element.
+ * Any previous contents of the vector are discarded.
+ */
+void split(std::vector<std::string>& vec, std::string const& str,
+		std::string const& delim);
 
 int intTransition(int from, int to, long int tickStart, long duration=500,
 		long tickNow=-1);
