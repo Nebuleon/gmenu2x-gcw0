@@ -29,24 +29,23 @@ using std::string;
 using std::unique_ptr;
 
 MenuSettingDir::MenuSettingDir(
-		GMenu2X *gmenu2x, Touchscreen &ts_,
+		GMenu2X *gmenu2x,
 		const string &name, const string &description, string *value)
 	: MenuSettingStringBase(gmenu2x, name, description, value)
-	, ts(ts_)
 {
 	buttonBox.add(unique_ptr<IconButton>(new IconButton(
-			gmenu2x, ts, "skin:imgs/buttons/cancel.png",
+			gmenu2x, "skin:imgs/buttons/cancel.png",
 			gmenu2x->tr["Clear"],
 			bind(&MenuSettingDir::clear, this))));
 
 	buttonBox.add(unique_ptr<IconButton>(new IconButton(
-			gmenu2x, ts, "skin:imgs/buttons/accept.png",
+			gmenu2x, "skin:imgs/buttons/accept.png",
 			gmenu2x->tr["Select"],
 			bind(&MenuSettingDir::edit, this))));
 }
 
 void MenuSettingDir::edit()
 {
-	DirDialog dd(gmenu2x, ts, description, value());
+	DirDialog dd(gmenu2x, description, value());
 	if (dd.exec()) setValue(dd.getPath());
 }

@@ -26,9 +26,9 @@
 using namespace std;
 
 FileDialog::FileDialog(
-		GMenu2X *gmenu2x, Touchscreen &ts, const string &text,
+		GMenu2X *gmenu2x, const string &text,
 		const string &filter, const string &file, const string &title)
-	: BrowseDialog(gmenu2x, ts, title, text)
+	: BrowseDialog(gmenu2x, title, text)
 {
 	string path(CARD_ROOT);
 	if (!file.empty()) {

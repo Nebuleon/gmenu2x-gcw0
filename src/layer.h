@@ -7,7 +7,6 @@
 #include "inputmanager.h"
 
 class Surface;
-class Touchscreen;
 
 
 /**
@@ -36,13 +35,6 @@ public:
 	 * Returns true iff the button press event was fully handled by this layer.
 	 */
 	virtual bool handleButtonPress(InputManager::Button button) = 0;
-
-	/**
-	 * Handles the touch screen.
-	 * Only called if there is a touch screen available.
-	 * Returns true iff the touch screen was fully handled by this layer.
-	 */
-	virtual bool handleTouchscreen(Touchscreen &ts) = 0;
 
 	Status getStatus() { return status; }
 

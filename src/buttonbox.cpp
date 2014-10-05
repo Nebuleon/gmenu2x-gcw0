@@ -25,10 +25,3 @@ void ButtonBox::paint(Surface& s, int x, int y)
 		x += button->getRect().w + 6;
 	}
 }
-
-void ButtonBox::handleTS()
-{
-	for (auto& button : buttons) {
-		button->handleTS();
-	}
-}

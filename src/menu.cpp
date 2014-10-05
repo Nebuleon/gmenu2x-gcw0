@@ -67,10 +67,9 @@ void Menu::Animation::step()
 	}
 }
 
-Menu::Menu(GMenu2X *gmenu2x, Touchscreen &ts)
+Menu::Menu(GMenu2X *gmenu2x)
 	: gmenu2x(gmenu2x)
-	, ts(ts)
-	, btnContextMenu(gmenu2x, ts, "skin:imgs/menu.png", "",
+	, btnContextMenu(gmenu2x, "skin:imgs/menu.png", "",
 			std::bind(&GMenu2X::showContextMenu, gmenu2x))
 {
 	readSections(GMENU2X_SYSTEM_DIR "/sections");
@@ -262,10 +261,6 @@ void Menu::paint(Surface &s) {
 			sc.skinRes("imgs/manual.png")->blit(
 					s, gmenu2x->manualX, gmenu2x->bottomBarIconY);
 	}
-
-	if (ts.available()) {
-		btnContextMenu.paint(s);
-	}
 }
 
 bool Menu::handleButtonPress(InputManager::Button button) {
@@ -297,43 +292,6 @@ bool Menu::handleButtonPress(InputManager::Button button) {
 		default:
 			return false;
 	}
-}
-
-bool Menu::handleTouchscreen(Touchscreen &ts) {
-	btnContextMenu.handleTS();
-
-	ConfIntHash &skinConfInt = gmenu2x->skinConfInt;
-	const int topBarHeight = skinConfInt["topBarHeight"];
-	const int screenWidth = gmenu2x->resX;
-
-	if (ts.pressed() && ts.getY() < topBarHeight) {
-		int leftSection, rightSection;
-		calcSectionRange(leftSection, rightSection);
-
-		const int linkWidth = skinConfInt["linkWidth"];
-		const int leftSectionX = screenWidth / 2 + leftSection * linkWidth;
-		const int i = min(
-				leftSection + max((ts.getX() - leftSectionX) / linkWidth, 0),
-				rightSection);
-		const uint numSections = sections.size();
-		setSectionIndex((iSection + numSections + i) % numSections);
-
-		ts.setHandled();
-		return true;
-	}
-
-	const uint linksPerPage = linkColumns * linkRows;
-	uint i = iFirstDispRow * linkColumns;
-	while (i < (iFirstDispRow * linkColumns) + linksPerPage && i < sectionLinks()->size()) {
-		if (sectionLinks()->at(i)->isPressed()) {
-			setLinkIndex(i);
-		}
-		if (sectionLinks()->at(i)->handleTS()) {
-			i = sectionLinks()->size();
-		}
-		i++;
-	}
-	return ts.handled();
 }
 
 /*====================================

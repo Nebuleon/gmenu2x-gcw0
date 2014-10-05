@@ -8,10 +8,9 @@ using namespace std;
 
 
 IconButton::IconButton(
-		GMenu2X *gmenu2x, Touchscreen &ts,
+		GMenu2X *gmenu2x,
 		const string &icon, const string &label, Action action)
 	: gmenu2x(gmenu2x)
-	, ts(ts)
 	, icon(icon)
 	, label(label)
 	, action(action)
@@ -50,15 +49,6 @@ void IconButton::recalcRects() {
 
 	rect.w = w;
 	rect.h = h;
-}
-
-bool IconButton::handleTS() {
-	if (action && ts.released() && ts.inRect(rect)) {
-		ts.setHandled();
-		action();
-		return true;
-	}
-	return false;
 }
 
 void IconButton::paint(Surface& s) {

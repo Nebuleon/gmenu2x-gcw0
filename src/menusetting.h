@@ -45,7 +45,6 @@ public:
 	virtual ~MenuSetting();
 
 	virtual void draw(int valueX, int y, int h);
-	virtual void handleTS(int valueX, int y, int h);
 
 	virtual bool handleButtonPress(InputManager::Button button) = 0;
 	virtual void drawSelected(int valueX, int y, int h);

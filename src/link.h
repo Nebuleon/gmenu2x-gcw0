@@ -28,7 +28,6 @@
 
 class GMenu2X;
 class OffscreenSurface;
-class Touchscreen;
 
 
 /**
@@ -42,9 +41,6 @@ public:
 
 	Link(GMenu2X *gmenu2x, Action action);
 	virtual ~Link() {};
-
-	bool isPressed();
-	bool handleTS();
 
 	virtual void paint();
 	void paintHover();
@@ -79,7 +75,6 @@ protected:
 private:
 	void recalcCoordinates();
 
-	Touchscreen &ts;
 	Action action;
 
 	SDL_Rect rect;

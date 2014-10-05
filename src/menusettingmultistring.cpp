@@ -31,7 +31,7 @@ using std::vector;
 using std::unique_ptr;
 
 MenuSettingMultiString::MenuSettingMultiString(
-		GMenu2X *gmenu2x, Touchscreen &ts,
+		GMenu2X *gmenu2x,
 		const string &name, const string &description,
 		string *value, const vector<string> *choices_)
 	: MenuSettingStringBase(gmenu2x, name, description, value)
@@ -40,10 +40,10 @@ MenuSettingMultiString::MenuSettingMultiString(
 	setSel(find(choices->begin(), choices->end(), *value) - choices->begin());
 
 	buttonBox.add(unique_ptr<IconButton>(new IconButton(
-			gmenu2x, ts, "skin:imgs/buttons/left.png", "",
+			gmenu2x, "skin:imgs/buttons/left.png", "",
 			bind(&MenuSettingMultiString::decSel, this))));
 	buttonBox.add(unique_ptr<IconButton>(new IconButton(
-			gmenu2x, ts, "skin:imgs/buttons/right.png",
+			gmenu2x, "skin:imgs/buttons/right.png",
 			gmenu2x->tr["Change value"],
 			bind(&MenuSettingMultiString::incSel, this))));
 }

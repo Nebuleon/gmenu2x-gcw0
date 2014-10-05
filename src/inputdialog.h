@@ -29,11 +29,10 @@
 #include <vector>
 
 class InputManager;
-class Touchscreen;
 
 class InputDialog : protected Dialog {
 public:
-	InputDialog(GMenu2X *gmenu2x, InputManager &inputMgr, Touchscreen &ts,
+	InputDialog(GMenu2X *gmenu2x, InputManager &inputMgr,
 			const std::string &text, const std::string &startvalue="",
 			const std::string &title="", const std::string &icon="");
 
@@ -50,7 +49,6 @@ private:
 	void setKeyboard(int);
 
 	InputManager &inputMgr;
-	Touchscreen &ts;
 	int selRow, selCol;
 	bool close, ok;
 	std::string title, text, icon;

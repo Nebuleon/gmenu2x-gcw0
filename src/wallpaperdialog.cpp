@@ -32,9 +32,8 @@
 
 using namespace std;
 
-WallpaperDialog::WallpaperDialog(GMenu2X *gmenu2x, Touchscreen &ts_)
+WallpaperDialog::WallpaperDialog(GMenu2X *gmenu2x)
 	: Dialog(gmenu2x)
-	, ts(ts_)
 {
 }
 
@@ -63,8 +62,8 @@ bool WallpaperDialog::exec()
 	uint i, selected = 0, firstElement = 0, iY;
 
 	ButtonBox buttonbox;
-	buttonbox.add(unique_ptr<IconButton>(new IconButton(gmenu2x, ts, "skin:imgs/buttons/accept.png", gmenu2x->tr["Select"])));
-	buttonbox.add(unique_ptr<IconButton>(new IconButton(gmenu2x, ts, "skin:imgs/buttons/cancel.png", gmenu2x->tr["Exit"])));
+	buttonbox.add(unique_ptr<IconButton>(new IconButton(gmenu2x, "skin:imgs/buttons/accept.png", gmenu2x->tr["Select"])));
+	buttonbox.add(unique_ptr<IconButton>(new IconButton(gmenu2x, "skin:imgs/buttons/cancel.png", gmenu2x->tr["Exit"])));
 
 	unsigned int top, height;
 	tie(top, height) = gmenu2x->getContentArea();

@@ -25,8 +25,6 @@
 
 #include <vector>
 
-class Touchscreen;
-
 class MenuSettingMultiString : public MenuSettingStringBase {
 private:
 	virtual void edit() {
@@ -42,7 +40,7 @@ private:
 
 public:
 	MenuSettingMultiString(
-			GMenu2X *gmenu2x, Touchscreen &ts,
+			GMenu2X *gmenu2x,
 			const std::string &name, const std::string &description,
 			std::string *value, const std::vector<std::string> *choices);
 	virtual ~MenuSettingMultiString() {};

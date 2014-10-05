@@ -28,11 +28,10 @@
 using namespace std;
 
 SettingsDialog::SettingsDialog(
-		GMenu2X *gmenu2x_, InputManager &inputMgr_, Touchscreen &ts_,
+		GMenu2X *gmenu2x_, InputManager &inputMgr_,
 		const string &text_, const string &icon)
 	: Dialog(gmenu2x_)
 	, inputMgr(inputMgr_)
-	, ts(ts_)
 	, text(text_)
 {
 	if (!icon.empty() && gmenu2x->sc[icon] != NULL) {
@@ -46,22 +45,10 @@ bool SettingsDialog::exec() {
 	OffscreenSurface bg(*gmenu2x->bg);
 	bg.convertToDisplayFormat();
 
-	bool close = false, ts_pressed = false;
+	bool close = false;
 	uint i, sel = 0, firstElement = 0;
 
 	const int topBarHeight = gmenu2x->skinConfInt["topBarHeight"];
-	SDL_Rect clipRect = {
-		0,
-		static_cast<Sint16>(topBarHeight + 1),
-		static_cast<Uint16>(gmenu2x->resX - 9),
-		static_cast<Uint16>(gmenu2x->resY - topBarHeight - 25)
-	};
-	SDL_Rect touchRect = {
-		2,
-		static_cast<Sint16>(topBarHeight + 4),
-		static_cast<Uint16>(gmenu2x->resX - 12),
-		static_cast<Uint16>(clipRect.h)
-	};
 	uint rowHeight = gmenu2x->font->getLineSpacing() + 1; // gp2x=15+1 / pandora=19+1
 	uint numRows = (gmenu2x->resY - topBarHeight - 20) / rowHeight;
 
@@ -72,8 +59,6 @@ bool SettingsDialog::exec() {
 
 	while (!close) {
 		OutputSurface& s = *gmenu2x->s;
-
-		if (ts.available()) ts.poll();
 
 		bg.blit(s, 0, 0);
 
@@ -93,22 +78,9 @@ bool SettingsDialog::exec() {
 		//selected option
 		settings[sel]->drawSelected(maxNameWidth + 15, iY, rowHeight);
 
-		if (ts_pressed && !ts.pressed()) {
-			ts_pressed = false;
-		}
-		if (ts.available() && ts.pressed() && !ts.inRect(touchRect)) {
-			ts_pressed = false;
-		}
 		for (i=firstElement; i<settings.size() && i<firstElement+numRows; i++) {
 			iY = i-firstElement;
 			settings[i]->draw(maxNameWidth + 15, iY * rowHeight + topBarHeight + 2, rowHeight);
-			if (ts.available() && ts.pressed() && ts.inRect(
-					touchRect.x, touchRect.y + (iY * rowHeight),
-					touchRect.w, rowHeight
-					)) {
-				ts_pressed = true;
-				sel = i;
-			}
 		}
 
 		gmenu2x->drawScrollBar(numRows, settings.size(), firstElement);
@@ -117,7 +89,6 @@ bool SettingsDialog::exec() {
 		writeSubTitle(s, settings[sel]->getDescription());
 
 		s.flip();
-		settings[sel]->handleTS(maxNameWidth + 15, iY, rowHeight);
 
 		InputManager::Button button = inputMgr.waitForPressedButton();
 		if (!settings[sel]->handleButtonPress(button)) {

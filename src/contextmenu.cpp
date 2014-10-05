@@ -157,21 +157,3 @@ bool ContextMenu::handleButtonPress(InputManager::Button button) {
 	}
 	return true;
 }
-
-bool ContextMenu::handleTouchscreen(Touchscreen &ts) {
-	if (ts.inRect(box)) {
-		int i = std::max(0, std::min(static_cast<int>(options.size()) - 1,
-				(ts.getY() - (box.y + 4)) / (gmenu2x.font->getLineSpacing() + 2)));
-		if (ts.released()) {
-			options[i]->action();
-			dismiss();
-		} else if (ts.pressed()) {
-			selected = i;
-		}
-	} else {
-		if (ts.released()) {
-			dismiss();
-		}
-	}
-	return true;
-}

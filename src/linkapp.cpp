@@ -72,10 +72,6 @@ public:
 		return true;
 	}
 
-	bool handleTouchscreen(Touchscreen&) override {
-		return true;
-	}
-
 private:
 	LinkApp& app;
 };

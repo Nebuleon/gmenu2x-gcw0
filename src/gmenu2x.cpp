@@ -376,7 +376,7 @@ void GMenu2X::initFont() {
 
 void GMenu2X::initMenu() {
 	//Menu structure handler
-	menu.reset(new Menu(this, ts));
+	menu.reset(new Menu(this));
 	for (uint i=0; i<menu->getSections().size(); i++) {
 		//Add virtual links in the applications section
 		if (menu->getSections()[i]=="applications") {
@@ -631,16 +631,6 @@ void GMenu2X::mainLoop() {
 			break;
 		}
 
-		// Handle touchscreen events.
-		if (ts.available()) {
-			ts.poll();
-			for (auto it = layers.rbegin(); it != layers.rend(); ++it) {
-				if ((*it)->handleTouchscreen(ts)) {
-					break;
-				}
-			}
-		}
-
 		// Handle other input events.
 		InputManager::Button button;
 		bool gotEvent;
@@ -659,7 +649,7 @@ void GMenu2X::mainLoop() {
 }
 
 void GMenu2X::explorer() {
-	FileDialog fd(this, ts, tr["Select an application"], "sh,bin,py,elf,");
+	FileDialog fd(this, tr["Select an application"], "sh,bin,py,elf,");
 	if (fd.exec()) {
 		if (confInt["saveSelection"] && (confInt["section"]!=menu->selSectionIndex() || confInt["link"]!=menu->selLinkIndex()))
 			writeConfig();
@@ -704,35 +694,35 @@ void GMenu2X::showSettings() {
 	encodings.push_back("NTSC");
 	encodings.push_back("PAL");
 
-	SettingsDialog sd(this, input, ts, tr["Settings"]);
+	SettingsDialog sd(this, input, tr["Settings"]);
 	sd.addSetting(unique_ptr<MenuSetting>(new MenuSettingMultiString(
-			this, ts, tr["Language"],
+			this, tr["Language"],
 			tr["Set the language used by GMenu2X"],
 			&lang, &translations)));
 	sd.addSetting(unique_ptr<MenuSetting>(new MenuSettingBool(
-			this, ts, tr["Save last selection"],
+			this, tr["Save last selection"],
 			tr["Save the last selected link and section on exit"],
 			&confInt["saveSelection"])));
 #ifdef ENABLE_CPUFREQ
 	sd.addSetting(unique_ptr<MenuSetting>(new MenuSettingInt(
-			this, ts, tr["Clock for GMenu2X"],
+			this, tr["Clock for GMenu2X"],
 			tr["Set the cpu working frequency when running GMenu2X"],
 			&confInt["menuClock"], cpuFreqMin, cpuFreqSafeMax, cpuFreqMultiple)));
 	sd.addSetting(unique_ptr<MenuSetting>(new MenuSettingInt(
-			this, ts, tr["Maximum overclock"],
+			this, tr["Maximum overclock"],
 			tr["Set the maximum overclock for launching links"],
 			&confInt["maxClock"], cpuFreqMin, cpuFreqMax, cpuFreqMultiple)));
 #endif
 	sd.addSetting(unique_ptr<MenuSetting>(new MenuSettingBool(
-			this, ts, tr["Output logs"],
+			this, tr["Output logs"],
 			tr["Logs the output of the links. Use the Log Viewer to read them."],
 			&confInt["outputLogs"])));
 	sd.addSetting(unique_ptr<MenuSetting>(new MenuSettingInt(
-			this, ts, tr["Screen Timeout"],
+			this, tr["Screen Timeout"],
 			tr["Set screen's backlight timeout in seconds"],
 			&confInt["backlightTimeout"], 0, 120)));
 	sd.addSetting(unique_ptr<MenuSetting>(new MenuSettingInt(
-			this, ts, tr["Button repeat rate"],
+			this, tr["Button repeat rate"],
 			tr["Set button repetitions per second"],
 			&confInt["buttonRepeatRate"], 0, 20)));
 
@@ -764,33 +754,33 @@ void GMenu2X::skinMenu() {
 
 	string curSkin = confStr["skin"];
 
-	SettingsDialog sd(this, input, ts, tr["Skin"]);
+	SettingsDialog sd(this, input, tr["Skin"]);
 	sd.addSetting(unique_ptr<MenuSetting>(new MenuSettingMultiString(
-			this, ts, tr["Skin"],
+			this, tr["Skin"],
 			tr["Set the skin used by GMenu2X"],
 			&confStr["skin"], &fl_sk.getDirectories())));
 	sd.addSetting(unique_ptr<MenuSetting>(new MenuSettingRGBA(
-			this, ts, tr["Top Bar"],
+			this, tr["Top Bar"],
 			tr["Color of the top bar"],
 			&skinConfColors[COLOR_TOP_BAR_BG])));
 	sd.addSetting(unique_ptr<MenuSetting>(new MenuSettingRGBA(
-			this, ts, tr["Bottom Bar"],
+			this, tr["Bottom Bar"],
 			tr["Color of the bottom bar"],
 			&skinConfColors[COLOR_BOTTOM_BAR_BG])));
 	sd.addSetting(unique_ptr<MenuSetting>(new MenuSettingRGBA(
-			this, ts, tr["Selection"],
+			this, tr["Selection"],
 			tr["Color of the selection and other interface details"],
 			&skinConfColors[COLOR_SELECTION_BG])));
 	sd.addSetting(unique_ptr<MenuSetting>(new MenuSettingRGBA(
-			this, ts, tr["Message Box"],
+			this, tr["Message Box"],
 			tr["Background color of the message box"],
 			&skinConfColors[COLOR_MESSAGE_BOX_BG])));
 	sd.addSetting(unique_ptr<MenuSetting>(new MenuSettingRGBA(
-			this, ts, tr["Message Box Border"],
+			this, tr["Message Box Border"],
 			tr["Border color of the message box"],
 			&skinConfColors[COLOR_MESSAGE_BOX_BORDER])));
 	sd.addSetting(unique_ptr<MenuSetting>(new MenuSettingRGBA(
-			this, ts, tr["Message Box Selection"],
+			this, tr["Message Box Selection"],
 			tr["Color of the selection of the message box"],
 			&skinConfColors[COLOR_MESSAGE_BOX_SELECTION])));
 
@@ -891,7 +881,7 @@ void GMenu2X::showContextMenu() {
 }
 
 void GMenu2X::changeWallpaper() {
-	WallpaperDialog wp(this, ts);
+	WallpaperDialog wp(this);
 	if (wp.exec() && confStr["wallpaper"] != wp.wallpaper) {
 		confStr["wallpaper"] = wp.wallpaper;
 		initBG();
@@ -900,7 +890,7 @@ void GMenu2X::changeWallpaper() {
 }
 
 void GMenu2X::addLink() {
-	FileDialog fd(this, ts, tr["Select an application"], "sh,bin,py,elf,");
+	FileDialog fd(this, tr["Select an application"], "sh,bin,py,elf,");
 	if (fd.exec())
 		menu->addLink(fd.getPath(), fd.getFile());
 }
@@ -928,52 +918,52 @@ void GMenu2X::editLink() {
 	string diagTitle = tr.translate("Edit $1",linkTitle.c_str(),NULL);
 	string diagIcon = linkApp->getIconPath();
 
-	SettingsDialog sd(this, input, ts, diagTitle, diagIcon);
+	SettingsDialog sd(this, input, diagTitle, diagIcon);
 	if (!linkApp->isOpk()) {
 		sd.addSetting(unique_ptr<MenuSetting>(new MenuSettingString(
-				this, ts, tr["Title"],
+				this, tr["Title"],
 				tr["Link title"],
 				&linkTitle, diagTitle, diagIcon)));
 		sd.addSetting(unique_ptr<MenuSetting>(new MenuSettingString(
-				this, ts, tr["Description"],
+				this, tr["Description"],
 				tr["Link description"],
 				&linkDescription, diagTitle, diagIcon)));
 		sd.addSetting(unique_ptr<MenuSetting>(new MenuSettingMultiString(
-				this, ts, tr["Section"],
+				this, tr["Section"],
 				tr["The section this link belongs to"],
 				&newSection, &menu->getSections())));
 		sd.addSetting(unique_ptr<MenuSetting>(new MenuSettingImage(
-				this, ts, tr["Icon"],
+				this, tr["Icon"],
 				tr.translate("Select an icon for this link", linkTitle.c_str(), NULL),
 				&linkIcon, "png")));
 		sd.addSetting(unique_ptr<MenuSetting>(new MenuSettingFile(
-				this, ts, tr["Manual"],
+				this, tr["Manual"],
 				tr["Select a manual or README file"],
 				&linkManual, "man.png,txt")));
 	}
 	if (!linkApp->isOpk() || !linkApp->getSelectorDir().empty()) {
 		sd.addSetting(unique_ptr<MenuSetting>(new MenuSettingDir(
-				this, ts, tr["Selector Directory"],
+				this, tr["Selector Directory"],
 				tr["Directory to scan for the selector"],
 				&linkSelDir)));
 		sd.addSetting(unique_ptr<MenuSetting>(new MenuSettingBool(
-				this, ts, tr["Selector Browser"],
+				this, tr["Selector Browser"],
 				tr["Allow the selector to change directory"],
 				&linkSelBrowser)));
 	}
 #ifdef ENABLE_CPUFREQ
 	sd.addSetting(unique_ptr<MenuSetting>(new MenuSettingInt(
-			this, ts, tr["Clock frequency"],
+			this, tr["Clock frequency"],
 			tr["CPU clock frequency for this link"],
 			&linkClock, cpuFreqMin, confInt["maxClock"], cpuFreqMultiple)));
 #endif
 	if (!linkApp->isOpk()) {
 		sd.addSetting(unique_ptr<MenuSetting>(new MenuSettingString(
-				this, ts, tr["Selector Filter"],
+				this, tr["Selector Filter"],
 				tr["Selector filter (Separate values with a comma)"],
 				&linkSelFilter, diagTitle, diagIcon)));
 		sd.addSetting(unique_ptr<MenuSetting>(new MenuSettingBool(
-				this, ts, tr["Display Console"],
+				this, tr["Display Console"],
 				tr["Must be enabled for console-based applications"],
 				&linkApp->consoleApp)));
 	}
@@ -1024,7 +1014,7 @@ void GMenu2X::deleteLink() {
 }
 
 void GMenu2X::addSection() {
-	InputDialog id(this, input, ts, tr["Insert a name for the new section"]);
+	InputDialog id(this, input, tr["Insert a name for the new section"]);
 	if (id.exec()) {
 		//only if a section with the same name does not exist
 		if (find(menu->getSections().begin(), menu->getSections().end(), id.getInput())
@@ -1037,7 +1027,7 @@ void GMenu2X::addSection() {
 }
 
 void GMenu2X::renameSection() {
-	InputDialog id(this, input, ts, tr["Insert a new name for this section"],menu->selSection());
+	InputDialog id(this, input, tr["Insert a new name for this section"],menu->selSection());
 	if (id.exec()) {
 		//only if a section with the same name does not exist & !samename
 		if (menu->selSection() != id.getInput()

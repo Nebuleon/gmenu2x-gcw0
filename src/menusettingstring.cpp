@@ -29,21 +29,20 @@ using std::string;
 using std::unique_ptr;
 
 MenuSettingString::MenuSettingString(
-		GMenu2X *gmenu2x, Touchscreen &ts_,
+		GMenu2X *gmenu2x,
 		const string &name, const string &description, string *value,
 		const string &diagTitle_, const string &diagIcon_)
 	: MenuSettingStringBase(gmenu2x, name, description, value)
-	, ts(ts_)
 	, diagTitle(diagTitle_)
 	, diagIcon(diagIcon_)
 {
 	buttonBox.add(unique_ptr<IconButton>(new IconButton(
-			gmenu2x, ts, "skin:imgs/buttons/cancel.png",
+			gmenu2x, "skin:imgs/buttons/cancel.png",
 			gmenu2x->tr["Clear"],
 			bind(&MenuSettingString::clear, this))));
 
 	buttonBox.add(unique_ptr<IconButton>(new IconButton(
-			gmenu2x, ts, "skin:imgs/buttons/accept.png",
+			gmenu2x, "skin:imgs/buttons/accept.png",
 			gmenu2x->tr["Edit"],
 			bind(&MenuSettingString::edit, this))));
 }
@@ -51,7 +50,7 @@ MenuSettingString::MenuSettingString(
 void MenuSettingString::edit()
 {
 	InputDialog id(
-			gmenu2x, gmenu2x->input, ts,
+			gmenu2x, gmenu2x->input,
 			description, value(), diagTitle, diagIcon);
 	if (id.exec()) setValue(id.getInput());
 }

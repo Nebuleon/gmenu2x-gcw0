@@ -9,7 +9,7 @@ gmenu2x_SOURCES = font.cpp cpu.cpp dirdialog.cpp filedialog.cpp \
 	menusettingstringbase.cpp \
 	messagebox.cpp selector.cpp \
 	settingsdialog.cpp surfacecollection.cpp surface.cpp \
-	textdialog.cpp textmanualdialog.cpp touchscreen.cpp translator.cpp \
+	textdialog.cpp textmanualdialog.cpp translator.cpp \
 	utilities.cpp wallpaperdialog.cpp \
 	browsedialog.cpp buttonbox.cpp dialog.cpp \
 	imageio.cpp powersaver.cpp monitor.cpp mediamonitor.cpp clock.cpp \
@@ -24,7 +24,7 @@ noinst_HEADERS = font.h cpu.h dirdialog.h \
 	menusettingstringbase.h \
 	messagebox.h selector.h settingsdialog.h \
 	surfacecollection.h surface.h textdialog.h textmanualdialog.h \
-	touchscreen.h translator.h utilities.h wallpaperdialog.h \
+	translator.h utilities.h wallpaperdialog.h \
 	browsedialog.h buttonbox.h dialog.h \
 	imageio.h powersaver.h monitor.h mediamonitor.h clock.h \
 	layer.h helppopup.h contextmenu.h background.h battery.h

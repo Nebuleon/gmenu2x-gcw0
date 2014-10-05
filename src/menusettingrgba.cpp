@@ -34,10 +34,9 @@ using std::unique_ptr;
 constexpr unsigned int COMPONENT_WIDTH = 28;
 
 MenuSettingRGBA::MenuSettingRGBA(
-		GMenu2X *gmenu2x, Touchscreen &ts_,
+		GMenu2X *gmenu2x,
 		const string &name, const string &description, RGBAColor *value)
 	: MenuSetting(gmenu2x, name, description)
-	, ts(ts_)
 {
 	edit = false;
 
@@ -63,19 +62,6 @@ void MenuSettingRGBA::draw(int valueX, int y, int h) {
 	gmenu2x->font->write(s, strG, valueX + h + COMPONENT_WIDTH * 2 - 2, y, Font::HAlignRight, Font::VAlignTop);
 	gmenu2x->font->write(s, strB, valueX + h + COMPONENT_WIDTH * 3 - 2, y, Font::HAlignRight, Font::VAlignTop);
 	gmenu2x->font->write(s, strA, valueX + h + COMPONENT_WIDTH * 4 - 2, y, Font::HAlignRight, Font::VAlignTop);
-}
-
-void MenuSettingRGBA::handleTS(int valueX, int y, int h) {
-	if (ts.pressed()) {
-		for (int i=0; i<4; i++) {
-			if (i!=selPart && ts.inRect(valueX + h + i * COMPONENT_WIDTH,y,COMPONENT_WIDTH,h)) {
-				selPart = i;
-				break;
-			}
-		}
-	}
-
-	MenuSetting::handleTS(valueX, y, h);
 }
 
 bool MenuSettingRGBA::handleButtonPress(InputManager::Button button)
@@ -229,14 +215,14 @@ void MenuSettingRGBA::updateButtonBox()
 {
 	buttonBox.clear();
 	if (edit) {
-		buttonBox.add(unique_ptr<IconButton>(new IconButton(gmenu2x, ts, "skin:imgs/buttons/l.png")));
-		buttonBox.add(unique_ptr<IconButton>(new IconButton(gmenu2x, ts, "skin:imgs/buttons/left.png", gmenu2x->tr["Decrease"])));
-		buttonBox.add(unique_ptr<IconButton>(new IconButton(gmenu2x, ts, "skin:imgs/buttons/r.png")));
-		buttonBox.add(unique_ptr<IconButton>(new IconButton(gmenu2x, ts, "skin:imgs/buttons/right.png", gmenu2x->tr["Increase"])));
-		buttonBox.add(unique_ptr<IconButton>(new IconButton(gmenu2x, ts, "skin:imgs/buttons/accept.png", gmenu2x->tr["Confirm"])));
+		buttonBox.add(unique_ptr<IconButton>(new IconButton(gmenu2x, "skin:imgs/buttons/l.png")));
+		buttonBox.add(unique_ptr<IconButton>(new IconButton(gmenu2x, "skin:imgs/buttons/left.png", gmenu2x->tr["Decrease"])));
+		buttonBox.add(unique_ptr<IconButton>(new IconButton(gmenu2x, "skin:imgs/buttons/r.png")));
+		buttonBox.add(unique_ptr<IconButton>(new IconButton(gmenu2x, "skin:imgs/buttons/right.png", gmenu2x->tr["Increase"])));
+		buttonBox.add(unique_ptr<IconButton>(new IconButton(gmenu2x, "skin:imgs/buttons/accept.png", gmenu2x->tr["Confirm"])));
 	} else {
-		buttonBox.add(unique_ptr<IconButton>(new IconButton(gmenu2x, ts, "skin:imgs/buttons/left.png")));
-		buttonBox.add(unique_ptr<IconButton>(new IconButton(gmenu2x, ts, "skin:imgs/buttons/right.png", gmenu2x->tr["Change color component"])));
-		buttonBox.add(unique_ptr<IconButton>(new IconButton(gmenu2x, ts, "skin:imgs/buttons/accept.png", gmenu2x->tr["Edit"])));
+		buttonBox.add(unique_ptr<IconButton>(new IconButton(gmenu2x, "skin:imgs/buttons/left.png")));
+		buttonBox.add(unique_ptr<IconButton>(new IconButton(gmenu2x, "skin:imgs/buttons/right.png", gmenu2x->tr["Change color component"])));
+		buttonBox.add(unique_ptr<IconButton>(new IconButton(gmenu2x, "skin:imgs/buttons/accept.png", gmenu2x->tr["Edit"])));
 	}
 }

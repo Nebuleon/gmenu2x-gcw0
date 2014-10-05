@@ -19,7 +19,6 @@ public:
 	// Layer implementation:
 	virtual void paint(Surface& s);
 	virtual bool handleButtonPress(InputManager::Button button);
-	virtual bool handleTouchscreen(Touchscreen& ts);
 
 private:
 	GMenu2X& gmenu2x;

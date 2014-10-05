@@ -33,7 +33,7 @@ using std::stringstream;
 using std::unique_ptr;
 
 MenuSettingInt::MenuSettingInt(
-		GMenu2X *gmenu2x, Touchscreen &ts,
+		GMenu2X *gmenu2x,
 		const string &name, const string &description,
 		int *value, int min, int max, int increment)
 	: MenuSetting(gmenu2x,name,description)
@@ -50,17 +50,17 @@ MenuSettingInt::MenuSettingInt(
 	IconButton::Action actionDec = bind(&MenuSettingInt::dec, this);
 
 	buttonBox.add(unique_ptr<IconButton>(new IconButton(
-			gmenu2x, ts, "skin:imgs/buttons/l.png",
+			gmenu2x, "skin:imgs/buttons/l.png",
 			"", actionDec)));
 	buttonBox.add(unique_ptr<IconButton>(new IconButton(
-			gmenu2x, ts, "skin:imgs/buttons/left.png",
+			gmenu2x, "skin:imgs/buttons/left.png",
 			gmenu2x->tr["Decrease"], actionDec)));
 
 	buttonBox.add(unique_ptr<IconButton>(new IconButton(
-			gmenu2x, ts, "skin:imgs/buttons/r.png",
+			gmenu2x, "skin:imgs/buttons/r.png",
 			"", actionInc)));
 	buttonBox.add(unique_ptr<IconButton>(new IconButton(
-			gmenu2x, ts, "skin:imgs/buttons/right.png",
+			gmenu2x, "skin:imgs/buttons/right.png",
 			gmenu2x->tr["Increase"], actionInc)));
 }
 
