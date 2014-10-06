@@ -268,6 +268,7 @@ GMenu2X::GMenu2X()
 		DEBUG("No wallpaper defined; we will take the default one.\n");
 		confStr["wallpaper"] = DEFAULT_WALLPAPER_PATH;
 	}
+	layers.insert(layers.begin(), make_shared<Background>(*this));
 
 	ParallelTask* initBGTask = parallelRun(initBGFunc, this);
 	ParallelTask* initMenuTask = parallelRun(initMenuFunc, this);
@@ -281,7 +282,6 @@ GMenu2X::GMenu2X()
 	}
 
 	s = OutputSurface::open(resX, resY, confInt["videoBpp"]);
-	layers.insert(layers.begin(), make_shared<Background>(*this));
 
 	parallelAwait(initBGTask);
 
