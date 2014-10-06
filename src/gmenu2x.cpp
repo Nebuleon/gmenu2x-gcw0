@@ -213,11 +213,27 @@ void GMenu2X::initCPULimits() {
 }
 #endif
 
+static void* initBGFunc(void* arg)
+{
+	GMenu2X* gmenu2x = (GMenu2X*) arg;
+	gmenu2x->initBG();
+	return NULL;
+}
+
+static void* initMenuFunc(void* arg)
+{
+	GMenu2X* gmenu2x = (GMenu2X*) arg;
+	gmenu2x->initMenu();
+	return NULL;
+}
+
 GMenu2X::GMenu2X()
 	: input(powerSaver)
 {
 	usbnet = samba = inet = web = false;
 	useSelectionPng = false;
+	bg = NULL;
+	font = NULL;
 
 #ifdef ENABLE_CPUFREQ
 	initCPULimits();
@@ -237,6 +253,7 @@ GMenu2X::GMenu2X()
 	 */
 	setenv("SDL_FBCON_DONT_CLEAR", "1", 0);
 
+	// Initialising timers is required by setSkin.
 	if( SDL_Init(SDL_INIT_TIMER) < 0) {
 		ERROR("Could not initialize SDL: %s\n", SDL_GetError());
 		// TODO: We don't use exceptions, so don't put things that can fail
@@ -244,14 +261,18 @@ GMenu2X::GMenu2X()
 		exit(EXIT_FAILURE);
 	}
 
-	bg = NULL;
-	font = NULL;
+	// We must know the skin and resolve inexistent wallpapers before loading
+	// the wallpaper or application icons.
 	setSkin(confStr["skin"], !fileExists(confStr["wallpaper"]));
-	layers.insert(layers.begin(), make_shared<Background>(*this));
+	if (!fileExists(confStr["wallpaper"])) {
+		DEBUG("No wallpaper defined; we will take the default one.\n");
+		confStr["wallpaper"] = DEFAULT_WALLPAPER_PATH;
+	}
 
-	/* We enable video at a later stage, so that the menu elements are
-	 * loaded before SDL inits the video; this is made so that we won't show
-	 * a black screen for a couple of seconds. */
+	ParallelTask* initBGTask = parallelRun(initBGFunc, this);
+	ParallelTask* initMenuTask = parallelRun(initMenuFunc, this);
+
+	// In parallel with everything, get our video mode.
 	if( SDL_InitSubSystem(SDL_INIT_VIDEO) < 0) {
 		ERROR("Could not initialize SDL: %s\n", SDL_GetError());
 		// TODO: We don't use exceptions, so don't put things that can fail
@@ -260,28 +281,24 @@ GMenu2X::GMenu2X()
 	}
 
 	s = OutputSurface::open(resX, resY, confInt["videoBpp"]);
+	layers.insert(layers.begin(), make_shared<Background>(*this));
 
-	if (!fileExists(confStr["wallpaper"])) {
-		DEBUG("No wallpaper defined; we will take the default one.\n");
-		confStr["wallpaper"] = DEFAULT_WALLPAPER_PATH;
-	}
-
-	initBG();
+	parallelAwait(initBGTask);
 
 	/* the menu may take a while to load, so we show the background here */
 	for (auto layer : layers)
 		layer->paint(*s);
 	s->flip();
 
-	initMenu();
+	if (!input.init(this, menu.get())) {
+		exit(EXIT_FAILURE);
+	}
+
+	parallelAwait(initMenuTask);
 
 #ifdef ENABLE_INOTIFY
 	monitor = new MediaMonitor(CARD_ROOT);
 #endif
-
-	if (!input.init(this, menu.get())) {
-		exit(EXIT_FAILURE);
-	}
 
 	powerSaver.setScreenTimeout(confInt["backlightTimeout"]);
 

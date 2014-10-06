@@ -32,6 +32,7 @@
 #include <dirent.h>
 #include <fstream>
 #include <iostream>
+#include <string.h>
 #include <strings.h>
 #include <unistd.h>
 
@@ -255,4 +256,25 @@ void inject_user_event(enum EventCode code, void *data1, void *data2)
 	 * event by the InputManager */
 	SDL_PushEvent((SDL_Event *) &e);
 	DEBUG("Injecting event code %i\n", e.code);
+}
+
+ParallelTask* parallelRun(void* (*func) (void*), void* arg)
+{
+	pthread_t thread;
+	int error;
+	if ((error = pthread_create(&thread, NULL, func, arg)) == 0) {
+		return new ParallelTask(thread);
+	} else {
+		WARNING("Could not create a thread to run a function in parallel: %s\n", strerror(error));
+		func(arg);
+		return nullptr;
+	}
+}
+
+void parallelAwait(ParallelTask* task)
+{
+	if (task) {
+		pthread_join(task->thread, NULL);
+		delete task;
+	}
 }

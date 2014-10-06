@@ -21,14 +21,21 @@
 #ifndef UTILITIES_H
 #define UTILITIES_H
 
+#include "inputmanager.h"
+
+#include <pthread.h>
+
 #include <string>
 #include <vector>
 #include <unordered_map>
 
-#include "inputmanager.h"
-
 typedef std::unordered_map<std::string, std::string, std::hash<std::string>> ConfStrHash;
 typedef std::unordered_map<std::string, int, std::hash<std::string>> ConfIntHash;
+
+struct ParallelTask {
+	pthread_t thread;
+	ParallelTask(pthread_t thread) : thread(thread) {}
+};
 
 class case_less {
 public:
@@ -101,5 +108,22 @@ int intTransition(int from, int to, long int tickStart, long duration=500,
 
 void inject_user_event(enum EventCode code = REPAINT_MENU,
 			void *data1 = NULL, void *data2 = NULL);
+
+/**
+ * Attempts to run the specified function in parallel with the code in the
+ * thread calling this function. If required by the function, the specified
+ * argument is passed to it.
+ * This function never fails. If it cannot create a thread, it will run the
+ * function in the caller's thread.
+ * Returns an opaque task hint that must be passed to parallelAwait to make
+ * the caller's thread await the termination of the task at some later time.
+ */
+ParallelTask* parallelRun(void* (*func) (void*), void* arg = NULL);
+
+/**
+ * Awaits the termination of a parallel task started with a call to
+ * parallelRun.
+ */
+void parallelAwait(ParallelTask* task);
 
 #endif // UTILITIES_H

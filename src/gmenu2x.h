@@ -113,10 +113,10 @@ private:
 
 	void initServices();
 	void initFont();
-	void initMenu();
-	void initBG();
 
 public:
+	void initMenu();
+	void initBG();
 	static void run();
 
 	GMenu2X();
