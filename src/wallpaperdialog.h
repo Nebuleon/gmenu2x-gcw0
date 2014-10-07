@@ -29,13 +29,17 @@ class WallpaperDialog : public BrowseDialog {
 public:
 	WallpaperDialog(GMenu2X *gmenu2x);
 
-	bool exec();
+	bool exec(std::string currentWallpaper);
 
 	std::string getFullPath();
 
 protected:
 	virtual void initPath() override;
+	virtual void initSelection() override;
 	virtual void paintBackground() override;
+
+private:
+	std::string initialWallpaper;
 };
 
 #endif // WALLPAPERDIALOG_H

@@ -22,6 +22,7 @@
 
 #include "debug.h"
 
+#include <algorithm>
 #include <iostream>
 
 using namespace std;
@@ -50,6 +51,27 @@ void WallpaperDialog::initPath()
 	DEBUG("Wallpapers: %i\n", fl.size());
 }
 
+void WallpaperDialog::initSelection()
+{
+	BrowseDialog::initSelection();
+
+	if (!initialWallpaper.empty()) {
+		string::size_type pos = initialWallpaper.rfind("/");
+		if (pos != string::npos)
+			initialWallpaper = initialWallpaper.substr(pos + 1);
+
+		auto& wallpapers = fl.getFiles();
+
+		// TODO (Nebuleon) Optimise this with a binary search. Because
+		//      FileLister returns files in case-insensitive order, a
+		//      case-sensitive binary search would fail, however.
+		auto it = find(wallpapers.begin(), wallpapers.end(), initialWallpaper);
+		if (it != wallpapers.end()) {
+			selected = it - wallpapers.begin();
+		}
+	}
+}
+
 void WallpaperDialog::paintBackground()
 {
 	// Preview the new wallpaper.
@@ -59,8 +81,10 @@ void WallpaperDialog::paintBackground()
 	gmenu2x->drawBottomBar(*gmenu2x->s);
 }
 
-bool WallpaperDialog::exec()
+bool WallpaperDialog::exec(string currentWallpaper)
 {
+	initialWallpaper = currentWallpaper;
+
 	bool result = BrowseDialog::exec();
 
 	for (size_t i = 0; i < fl.size(); i++) {
