@@ -31,11 +31,9 @@ void BrowseDialog::initButtonBox()
 {
 	buttonBox.clear();
 
-	// Left or Cancel to go up a directory, if directories are shown.
+	// Cancel to go up a directory, if directories are shown.
 	// Accept also goes up a directory if the selection is "..".
 	if (fl.getShowDirectories() && getPath() != "/") {
-		buttonBox.add(unique_ptr<IconButton>(new IconButton(
-				gmenu2x, "skin:imgs/buttons/left.png")));
 		if (selected < fl.size() && fl[selected] == "..") {
 			buttonBox.add(unique_ptr<IconButton>(new IconButton(
 					gmenu2x, "skin:imgs/buttons/accept.png")));
@@ -161,7 +159,6 @@ BrowseDialog::Action BrowseDialog::getAction(InputManager::Button button)
 			return BrowseDialog::ACT_SCROLLUP;
 		case InputManager::ALTRIGHT:
 			return BrowseDialog::ACT_SCROLLDOWN;
-		case InputManager::LEFT:
 		case InputManager::CANCEL:
 			return BrowseDialog::ACT_GOUP;
 		case InputManager::ACCEPT:
