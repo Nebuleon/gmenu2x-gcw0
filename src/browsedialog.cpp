@@ -10,6 +10,7 @@
 
 using std::bind;
 using std::max;
+using std::min;
 using std::string;
 using std::tie;
 using std::unique_ptr;
@@ -107,6 +108,30 @@ void BrowseDialog::initDisplay()
 	};
 }
 
+void BrowseDialog::centerSelection()
+{
+	if (fl.size() <= numRows || selected <= numRows / 2) {
+		firstElement = 0;
+	} else {
+		unsigned int lastElement = min(fl.size(), selected + (numRows - numRows / 2));
+		firstElement = lastElement - numRows;
+	}
+}
+
+void BrowseDialog::adjustSelection()
+{
+	// If the user is moving upwards and the selection would be before the
+	// second quarter of the visible rows, or downwards and the selection
+	// would be beyond the third quarter of the visible rows, move the
+	// viewport if possible. Otherwise leave it where it is.
+	const unsigned int bufferRows = numRows / 4;
+	if (selected < firstElement + bufferRows) {
+		firstElement = max(selected, bufferRows) - bufferRows;
+	} else if (selected >= firstElement + numRows - bufferRows) {
+		firstElement = min(selected + bufferRows + 1, fl.size()) - numRows;
+	}
+}
+
 void BrowseDialog::initPath()
 {
 	string path = getPath();
@@ -133,6 +158,7 @@ bool BrowseDialog::exec()
 
 	initPath();
 	initSelection();
+	centerSelection();
 
 	close = false;
 	while (!close) {
@@ -186,6 +212,7 @@ void BrowseDialog::handleInput()
 			selected = (selected == 0)
 					? fl.size() - 1
 					: selected - 1;
+			adjustSelection();
 		}
 		break;
 	case BrowseDialog::ACT_SCROLLUP:
@@ -193,6 +220,7 @@ void BrowseDialog::handleInput()
 			selected = (selected <= numRows - 2)
 					? 0
 					: selected - (numRows - 2);
+			adjustSelection();
 		}
 		break;
 	case BrowseDialog::ACT_DOWN:
@@ -200,6 +228,7 @@ void BrowseDialog::handleInput()
 			selected = (fl.size() - 1 <= selected)
 					? 0
 					: selected + 1;
+			adjustSelection();
 		}
 		break;
 	case BrowseDialog::ACT_SCROLLDOWN:
@@ -207,6 +236,7 @@ void BrowseDialog::handleInput()
 			selected = (selected + (numRows - 2) >= fl.size())
 					? fl.size() - 1
 					: selected + (numRows - 2);
+			adjustSelection();
 		}
 		break;
 	case BrowseDialog::ACT_GOUP:
@@ -248,6 +278,7 @@ void BrowseDialog::directoryUp()
 
 		auto it = find(subdirs.begin(), subdirs.end(), oldName);
 		selected = it == subdirs.end() ? 0 : it - subdirs.begin();
+		centerSelection();
 	}
 }
 
@@ -258,6 +289,7 @@ void BrowseDialog::directoryEnter()
 
 	fl.browse(newDir);
 	selected = 0;
+	adjustSelection();
 }
 
 void BrowseDialog::confirm()
@@ -287,7 +319,6 @@ void BrowseDialog::paint()
 	OutputSurface& s = *gmenu2x->s;
 
 	unsigned int i, iY;
-	unsigned int firstElement, lastElement;
 	unsigned int offsetY;
 
 	paintBackground();
@@ -296,18 +327,11 @@ void BrowseDialog::paint()
 	writeSubTitle(*gmenu2x->s, subtitle);
 	buttonBox.paint(*gmenu2x->s, 5, gmenu2x->resY - 1);
 
-	// TODO(MtH): I have no idea what the right value of firstElement would be,
-	//            but originally it was undefined and that is never a good idea.
-	firstElement = 0;
-	if (selected>firstElement+numRows - 1) {
-		firstElement = selected-numRows + 1;
-	} else if (selected < firstElement) {
-		firstElement = selected;
-	}
-
-	lastElement = firstElement + numRows;
-	if (lastElement > fl.size())
+	unsigned int lastElement = firstElement + numRows;
+	if (lastElement > fl.size()) {
 		lastElement = fl.size();
+		firstElement = max(lastElement, numRows) - numRows;
+	}
 
 	offsetY = topBarHeight + 1;
 

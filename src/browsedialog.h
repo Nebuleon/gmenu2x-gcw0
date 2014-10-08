@@ -98,6 +98,9 @@ protected:
 	 */
 	virtual void initDisplay();
 
+	void centerSelection();
+	void adjustSelection();
+
 	/**
 	 * Sets the initial path of the file browser.
 	 * The implementation in BrowseDialog attempts to resolve the initial path
@@ -193,6 +196,8 @@ private:
 
 	std::string title;
 	std::string subtitle;
+
+	unsigned int firstElement;
 };
 
 #endif // INPUTDIALOG_H
