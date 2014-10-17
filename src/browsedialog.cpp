@@ -181,9 +181,9 @@ BrowseDialog::Action BrowseDialog::getAction(InputManager::Button button)
 			return BrowseDialog::ACT_UP;
 		case InputManager::DOWN:
 			return BrowseDialog::ACT_DOWN;
-		case InputManager::ALTLEFT:
+		case InputManager::LEFT:
 			return BrowseDialog::ACT_SCROLLUP;
-		case InputManager::ALTRIGHT:
+		case InputManager::RIGHT:
 			return BrowseDialog::ACT_SCROLLDOWN;
 		case InputManager::CANCEL:
 			return BrowseDialog::ACT_GOUP;
