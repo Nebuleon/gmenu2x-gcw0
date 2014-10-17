@@ -377,7 +377,7 @@ void BrowseDialog::paint()
 	} else {
 		//Selection
 		iY = topBarHeight + 1 + (selected - firstElement) * rowHeight;
-		s.box(2, iY, gmenu2x->resX - 12, rowHeight - 1,
+		s.box(2, iY, clipRect.x + clipRect.w - 2, rowHeight - 1,
 				gmenu2x->skinConfColors[COLOR_SELECTION_BG]);
 
 		for (i = firstElement; i < lastElement; i++) {
