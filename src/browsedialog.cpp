@@ -19,6 +19,7 @@ BrowseDialog::BrowseDialog(
 		GMenu2X *gmenu2x,
 		const string &title, const string &subtitle)
 	: Dialog(gmenu2x)
+	, nameScroll(0)
 	, title(title)
 	, subtitle(subtitle)
 {
@@ -100,10 +101,11 @@ void BrowseDialog::initDisplay()
 	rowHeight = height / numRows;
 	topBarHeight = top + (height - rowHeight * numRows) / 2;
 
+	int nameX = fl.getShowDirectories() ? 24 : 5;
 	clipRect = (SDL_Rect) {
-		0,
+		static_cast<Sint16>(nameX),
 		static_cast<Sint16>(topBarHeight + 1),
-		static_cast<Uint16>(gmenu2x->resX - 9),
+		static_cast<Uint16>(gmenu2x->resX - 9 - nameX),
 		static_cast<Uint16>(height - 1)
 	};
 }
@@ -129,6 +131,22 @@ void BrowseDialog::adjustSelection()
 		firstElement = max(selected, bufferRows) - bufferRows;
 	} else if (selected >= firstElement + numRows - bufferRows) {
 		firstElement = min(selected + bufferRows + 1, fl.size()) - numRows;
+	}
+}
+
+void BrowseDialog::resetNameScroll()
+{
+	nameScroll = 0;
+}
+
+void BrowseDialog::applyNameScroll(bool left)
+{
+	if (selected < fl.size()) {
+		int newNameScroll = (int) nameScroll + (left ? -5 : 5);
+		int nameWidth = gmenu2x->font->getTextWidth(fl[selected]);
+		newNameScroll = min(newNameScroll, min(nameWidth, 32767) - clipRect.w);
+		newNameScroll = max(newNameScroll, 0);
+		nameScroll = newNameScroll;
 	}
 }
 
@@ -185,6 +203,10 @@ BrowseDialog::Action BrowseDialog::getAction(InputManager::Button button)
 			return BrowseDialog::ACT_SCROLLUP;
 		case InputManager::RIGHT:
 			return BrowseDialog::ACT_SCROLLDOWN;
+		case InputManager::ALTLEFT:
+			return BrowseDialog::ACT_SCROLLLEFT;
+		case InputManager::ALTRIGHT:
+			return BrowseDialog::ACT_SCROLLRIGHT;
 		case InputManager::CANCEL:
 			return BrowseDialog::ACT_GOUP;
 		case InputManager::ACCEPT:
@@ -213,6 +235,7 @@ void BrowseDialog::handleInput()
 					? fl.size() - 1
 					: selected - 1;
 			adjustSelection();
+			resetNameScroll();
 		}
 		break;
 	case BrowseDialog::ACT_SCROLLUP:
@@ -221,6 +244,7 @@ void BrowseDialog::handleInput()
 					? 0
 					: selected - (numRows - 2);
 			adjustSelection();
+			resetNameScroll();
 		}
 		break;
 	case BrowseDialog::ACT_DOWN:
@@ -229,6 +253,7 @@ void BrowseDialog::handleInput()
 					? 0
 					: selected + 1;
 			adjustSelection();
+			resetNameScroll();
 		}
 		break;
 	case BrowseDialog::ACT_SCROLLDOWN:
@@ -237,7 +262,14 @@ void BrowseDialog::handleInput()
 					? fl.size() - 1
 					: selected + (numRows - 2);
 			adjustSelection();
+			resetNameScroll();
 		}
+		break;
+	case BrowseDialog::ACT_SCROLLLEFT:
+		applyNameScroll(true);
+		break;
+	case BrowseDialog::ACT_SCROLLRIGHT:
+		applyNameScroll(false);
 		break;
 	case BrowseDialog::ACT_GOUP:
 		if (fl.getShowDirectories()) {
@@ -279,6 +311,7 @@ void BrowseDialog::directoryUp()
 		auto it = find(subdirs.begin(), subdirs.end(), oldName);
 		selected = it == subdirs.end() ? 0 : it - subdirs.begin();
 		centerSelection();
+		resetNameScroll();
 	}
 }
 
@@ -290,6 +323,7 @@ void BrowseDialog::directoryEnter()
 	fl.browse(newDir);
 	selected = 0;
 	adjustSelection();
+	resetNameScroll();
 }
 
 void BrowseDialog::confirm()
@@ -336,7 +370,6 @@ void BrowseDialog::paint()
 	offsetY = topBarHeight + 1;
 
 	//Files & Directories
-	s.setClipRect(clipRect);
 	if (fl.size() == 0) {
 		gmenu2x->font->write(s, "(" + gmenu2x->tr["no items"] + ")",
 				4, topBarHeight + rowHeight / 2,
@@ -347,7 +380,6 @@ void BrowseDialog::paint()
 		s.box(2, iY, gmenu2x->resX - 12, rowHeight - 1,
 				gmenu2x->skinConfColors[COLOR_SELECTION_BG]);
 
-		const int nameX = fl.getShowDirectories() ? 24 : 5;
 		for (i = firstElement; i < lastElement; i++) {
 			if (fl.getShowDirectories()) {
 				Surface *icon;
@@ -364,13 +396,16 @@ void BrowseDialog::paint()
 					icon->blit(s, 5, offsetY);
 				}
 			}
-			gmenu2x->font->write(s, fl[i], nameX, offsetY + rowHeight / 2,
+			s.setClipRect(clipRect);
+			gmenu2x->font->write(s, fl[i],
+					clipRect.x - (i == selected ? nameScroll : 0),
+					offsetY + rowHeight / 2,
 					Font::HAlignLeft, Font::VAlignMiddle);
+			s.clearClipRect();
 
 			offsetY += rowHeight;
 		}
 	}
-	s.clearClipRect();
 
 	gmenu2x->drawScrollBar(numRows, fl.size(), firstElement);
 	s.flip();

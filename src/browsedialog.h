@@ -52,6 +52,8 @@ protected:
 		ACT_DOWN,
 		ACT_SCROLLUP,
 		ACT_SCROLLDOWN,
+		ACT_SCROLLLEFT,
+		ACT_SCROLLRIGHT,
 		ACT_GOUP,
 		ACT_CONFIRM,
 	};
@@ -77,6 +79,14 @@ protected:
 	unsigned int rowHeight;
 
 	/**
+	 * The first (zero-based) column of pixels to be displayed from the render
+	 * of the selected file's name.
+	 * The range of valid values for this member variable is 0 to 32767, the
+	 * intersection of the ranges of 'unsigned int' and SDL's Sint16 type.
+	 */
+	unsigned int nameScroll;
+
+	/**
 	 * Initialises the buttonBox member with the buttons used by the dialog.
 	 * This method can use the current selection of member variable 'fl', and
 	 * is called before paint() in each run through the loop in exec.
@@ -100,6 +110,15 @@ protected:
 
 	void centerSelection();
 	void adjustSelection();
+
+	void resetNameScroll();
+
+	/**
+	 * Scrolls the viewport for the name of the currently selected file
+	 * to the left (i.e. more pixels from the left are shown) or
+	 * to the right (i.e. more pixels from the right are shown) by one step.
+	 */
+	void applyNameScroll(bool left);
 
 	/**
 	 * Sets the initial path of the file browser.
