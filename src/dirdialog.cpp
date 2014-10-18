@@ -26,8 +26,8 @@ using namespace std;
 
 DirDialog::DirDialog(
 		GMenu2X *gmenu2x,
-		const string &text, const string &dir)
-	: BrowseDialog(gmenu2x, "Directory Browser", text)
+		const string &title, const string &dir)
+	: BrowseDialog(gmenu2x, title)
 {
 	fl.setShowFiles(false);
 	setPath(dir);

@@ -41,7 +41,7 @@ public:
 protected:
 	BrowseDialog(
 			GMenu2X *gmenu2x,
-			const std::string &title, const std::string &subtitle);
+			const std::string &title, const std::string &subtitle = "");
 	virtual ~BrowseDialog();
 
 	enum Action {

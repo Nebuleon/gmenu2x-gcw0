@@ -29,7 +29,6 @@ using namespace std;
 
 WallpaperDialog::WallpaperDialog(GMenu2X *gmenu2x)
 	: BrowseDialog(gmenu2x,
-			gmenu2x->tr["Wallpaper selection"],
 			gmenu2x->tr["Select a wallpaper from the list"])
 {
 	fl.setShowDirectories(false);

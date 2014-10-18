@@ -26,9 +26,8 @@
 class FileDialog : public BrowseDialog {
 public:
 	FileDialog(
-			GMenu2X *gmenu2x, const std::string &text,
-			const std::string &filter="*", const std::string &file="",
-			const std::string &title = "File Dialog");
+			GMenu2X *gmenu2x, const std::string &title,
+			const std::string &filter="*", const std::string &file="");
 };
 
 #endif // FILEDIALOG_H

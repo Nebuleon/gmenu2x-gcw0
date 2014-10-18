@@ -27,7 +27,7 @@ class DirDialog : public BrowseDialog {
 public:
 	DirDialog(
 			GMenu2X *gmenu2x,
-			const std::string &text, const std::string &dir = "");
+			const std::string &title, const std::string &dir = "");
 
 	virtual bool canSelect() override;
 };
