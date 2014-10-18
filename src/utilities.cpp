@@ -156,6 +156,13 @@ string parentDir(string const& dir) {
 	return p == string::npos ? "/" : dir.substr(0, p + 1);
 }
 
+string sanitizeFileName(string const& fileName)
+{
+	string newName(fileName);
+	replace(newName.begin(), newName.end(), '\n', ' ');
+	return newName;
+}
+
 bool fileExists(const string &file) {
 	return access(file.c_str(), F_OK) == 0;
 }

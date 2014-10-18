@@ -74,6 +74,8 @@ std::string cmdclean(std::string cmdline);
  */
 std::string parentDir(std::string const& dir);
 
+std::string sanitizeFileName(std::string const& fileName);
+
 inline std::string trimExtension(std::string const& filename) {
 	return filename.substr(0, filename.rfind('.'));
 }

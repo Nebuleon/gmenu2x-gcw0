@@ -397,7 +397,7 @@ void BrowseDialog::paint()
 				}
 			}
 			s.setClipRect(clipRect);
-			gmenu2x->font->write(s, fl[i],
+			gmenu2x->font->write(s, sanitizeFileName(fl[i]),
 					clipRect.x - (i == selected ? nameScroll : 0),
 					offsetY + rowHeight / 2,
 					Font::HAlignLeft, Font::VAlignMiddle);
