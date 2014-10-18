@@ -42,9 +42,13 @@ void Selector::paintBackground()
 	BrowseDialog::paintBackground();
 
 	if (selected < fl.size() && fl.isFile(selected)) {
-		string previewDir = getPath() + "previews/";
-		string previewFile = previewDir + trimExtension(fl[selected]) + ".png";
-		auto screenshot = OffscreenSurface::loadImage(previewFile, false);
+		string fileName = trimExtension(fl[selected]) + ".png";
+		auto screenshot = OffscreenSurface::loadImage(
+				getPath() + "previews/" + fileName, false);
+		if (!screenshot) {
+			screenshot = OffscreenSurface::loadImage(
+					getPath() + ".previews/" + fileName, false);
+		}
 		if (screenshot) {
 			screenshot->blitRight(*gmenu2x->s, 320, 0, 320, 240, 128u);
 		}
