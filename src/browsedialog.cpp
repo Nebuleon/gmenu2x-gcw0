@@ -133,11 +133,15 @@ void BrowseDialog::adjustSelection()
 	// second quarter of the visible rows, or downwards and the selection
 	// would be beyond the third quarter of the visible rows, move the
 	// viewport if possible. Otherwise leave it where it is.
-	const unsigned int bufferRows = numRows / 4;
-	if (selected < firstElement + bufferRows) {
-		firstElement = max(selected, bufferRows) - bufferRows;
-	} else if (selected >= firstElement + numRows - bufferRows) {
-		firstElement = min(selected + bufferRows + 1, fl.size()) - numRows;
+	if (fl.size() < numRows) {
+		firstElement = 0;
+	} else {
+		const unsigned int bufferRows = numRows / 4;
+		if (selected < firstElement + bufferRows) {
+			firstElement = max(selected, bufferRows) - bufferRows;
+		} else if (selected >= firstElement + numRows - bufferRows) {
+			firstElement = min(selected + bufferRows + 1, fl.size()) - numRows;
+		}
 	}
 }
 
