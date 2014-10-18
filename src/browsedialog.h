@@ -86,6 +86,8 @@ protected:
 	 */
 	unsigned int nameScroll;
 
+	void writePath(Surface& s);
+
 	/**
 	 * Initialises the buttonBox member with the buttons used by the dialog.
 	 * This method can use the current selection of member variable 'fl', and
@@ -215,6 +217,7 @@ private:
 
 	std::string title;
 	std::string subtitle;
+	std::string displayedPath;
 
 	unsigned int firstElement;
 };

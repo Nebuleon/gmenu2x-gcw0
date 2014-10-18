@@ -187,6 +187,47 @@ string Font::wordWrapSingleLine(const string &text, size_t start, size_t end, in
 	return result;
 }
 
+string Font::shortenPath(string const& path, int width)
+{
+	if (getTextWidth(path) < width) {
+		return path;
+	} else {
+		string result;
+		result.reserve(path.length());
+		width -= getTextWidth("...");
+
+		size_t fits = 0, doesntFit = path.length();
+		/* End this loop when N full characters fit but N + 1 don't. */
+		while (fits + 1 < doesntFit) {
+			size_t guess = fits + (doesntFit - fits) / 2;
+			if (!isUTF8Starter(path[path.length() - guess])) {
+				size_t oldGuess = guess;
+				/* Adjust the guess to fully include a UTF-8 character. */
+				for (size_t offset = 1; offset < (doesntFit - fits) / 2 - 1; offset++) {
+					if (isUTF8Starter(path[path.length() - (guess - offset)])) {
+						guess -= offset;
+						break;
+					} else if (isUTF8Starter(path[path.length() - (guess + offset)])) {
+						guess += offset;
+						break;
+					}
+				}
+				/* If there's no such character, exit early. */
+				if (guess == oldGuess) {
+					break;
+				}
+			}
+			if (getTextWidth(path.substr(path.length() - guess)) <= width) {
+				fits = guess;
+			} else {
+				doesntFit = guess;
+			}
+		}
+
+		return "..." + path.substr(path.length() - fits);
+	}
+}
+
 int Font::getTextHeight(const string &text)
 {
 	int nLines = 1;

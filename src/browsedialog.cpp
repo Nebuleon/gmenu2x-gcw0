@@ -29,6 +29,13 @@ BrowseDialog::~BrowseDialog()
 {
 }
 
+void BrowseDialog::writePath(Surface& s)
+{
+	gmenu2x->font->write(s, displayedPath, 40,
+			gmenu2x->skinConfInt["topBarHeight"],
+			Font::HAlignLeft, Font::VAlignBottom);
+}
+
 void BrowseDialog::initButtonBox()
 {
 	buttonBox.clear();
@@ -358,7 +365,12 @@ void BrowseDialog::paint()
 	paintBackground();
 	paintIcon();
 	writeTitle(*gmenu2x->s, title);
-	writeSubTitle(*gmenu2x->s, subtitle);
+	string path = getPath();
+	if (!path.empty()) {
+		writePath(*gmenu2x->s);
+	} else {
+		writeSubTitle(*gmenu2x->s, subtitle);
+	}
 	buttonBox.paint(*gmenu2x->s, 5, gmenu2x->resY - 1);
 
 	unsigned int lastElement = firstElement + numRows;
@@ -421,6 +433,9 @@ void BrowseDialog::setPath(std::string const& path)
 	if (!path.empty() && path.back() != '/') {
 		this->path.push_back('/');
 	}
+	displayedPath = gmenu2x->font->shortenPath(
+			sanitizeFileName(this->path),
+			gmenu2x->resX - 40);
 }
 
 string BrowseDialog::getFile() {

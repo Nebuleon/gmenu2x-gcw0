@@ -30,6 +30,8 @@ public:
 
 	std::string wordWrap(const std::string &text, int width);
 
+	std::string shortenPath(std::string const& path, int width);
+
 	int getTextWidth(const std::string& text);
 	int getTextHeight(const std::string& text);
 
