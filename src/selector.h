@@ -22,7 +22,9 @@
 #define SELECTOR_H
 
 #include "browsedialog.h"
+#include "surface.h"
 
+#include <memory>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -45,11 +47,14 @@ public:
 
 protected:
 	virtual void initSelection() override;
+	virtual void selectionChanged() override;
 	virtual void paintBackground() override;
 	virtual void paintIcon() override;
 
 private:
 	LinkApp& link;
+
+	std::unique_ptr<OffscreenSurface> preview;
 
 	std::string fileHint;
 };

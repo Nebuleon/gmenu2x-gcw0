@@ -117,6 +117,10 @@ void BrowseDialog::initDisplay()
 	};
 }
 
+void BrowseDialog::selectionChanged()
+{
+}
+
 void BrowseDialog::centerSelection()
 {
 	if (fl.size() <= numRows || selected <= numRows / 2) {
@@ -125,6 +129,7 @@ void BrowseDialog::centerSelection()
 		unsigned int lastElement = min(fl.size(), selected + (numRows - numRows / 2));
 		firstElement = lastElement - numRows;
 	}
+	selectionChanged();
 }
 
 void BrowseDialog::adjustSelection()
@@ -143,6 +148,7 @@ void BrowseDialog::adjustSelection()
 			firstElement = min(selected + bufferRows + 1, fl.size()) - numRows;
 		}
 	}
+	selectionChanged();
 }
 
 void BrowseDialog::resetNameScroll()
@@ -245,8 +251,8 @@ void BrowseDialog::handleInput()
 			selected = (selected == 0)
 					? fl.size() - 1
 					: selected - 1;
-			adjustSelection();
 			resetNameScroll();
+			adjustSelection();
 		}
 		break;
 	case BrowseDialog::ACT_SCROLLUP:
@@ -254,8 +260,8 @@ void BrowseDialog::handleInput()
 			selected = (selected <= numRows - 2)
 					? 0
 					: selected - (numRows - 2);
-			adjustSelection();
 			resetNameScroll();
+			adjustSelection();
 		}
 		break;
 	case BrowseDialog::ACT_DOWN:
@@ -263,8 +269,8 @@ void BrowseDialog::handleInput()
 			selected = (fl.size() - 1 <= selected)
 					? 0
 					: selected + 1;
-			adjustSelection();
 			resetNameScroll();
+			adjustSelection();
 		}
 		break;
 	case BrowseDialog::ACT_SCROLLDOWN:
@@ -272,8 +278,8 @@ void BrowseDialog::handleInput()
 			selected = (selected + (numRows - 2) >= fl.size())
 					? fl.size() - 1
 					: selected + (numRows - 2);
-			adjustSelection();
 			resetNameScroll();
+			adjustSelection();
 		}
 		break;
 	case BrowseDialog::ACT_SCROLLLEFT:
@@ -321,8 +327,8 @@ void BrowseDialog::directoryUp()
 
 		auto it = find(subdirs.begin(), subdirs.end(), oldName);
 		selected = it == subdirs.end() ? 0 : it - subdirs.begin();
-		centerSelection();
 		resetNameScroll();
+		centerSelection();
 	}
 }
 
@@ -333,8 +339,8 @@ void BrowseDialog::directoryEnter()
 
 	fl.browse(newDir);
 	selected = 0;
-	adjustSelection();
 	resetNameScroll();
+	adjustSelection();
 }
 
 void BrowseDialog::confirm()

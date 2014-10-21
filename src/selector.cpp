@@ -37,21 +37,28 @@ Selector::Selector(GMenu2X *gmenu2x, LinkApp& link, const string &selectorDir)
 	fl.setFilter(link.getSelectorFilter());
 }
 
-void Selector::paintBackground()
+void Selector::selectionChanged()
 {
-	BrowseDialog::paintBackground();
+	preview.reset();
 
 	if (selected < fl.size() && fl.isFile(selected)) {
 		string fileName = trimExtension(fl[selected]) + ".png";
-		auto screenshot = OffscreenSurface::loadImage(
+		std::unique_ptr<OffscreenSurface> screenshot = OffscreenSurface::loadImage(
 				getPath() + "previews/" + fileName, false);
 		if (!screenshot) {
 			screenshot = OffscreenSurface::loadImage(
 					getPath() + ".previews/" + fileName, false);
 		}
-		if (screenshot) {
-			screenshot->blitRight(*gmenu2x->s, 320, 0, 320, 240, 128u);
-		}
+		preview = std::move(screenshot);
+	}
+}
+
+void Selector::paintBackground()
+{
+	BrowseDialog::paintBackground();
+
+	if (preview) {
+		preview->blitRight(*gmenu2x->s, 320, 0, 320, 240, 128u);
 	}
 }
 

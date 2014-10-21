@@ -110,6 +110,12 @@ protected:
 	 */
 	virtual void initDisplay();
 
+	/**
+	 * Notifies implementations about changes to the selection. The
+	 * implementation in BrowseDialog does nothing.
+	 */
+	virtual void selectionChanged();
+
 	void centerSelection();
 	void adjustSelection();
 
