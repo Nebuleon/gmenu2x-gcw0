@@ -126,6 +126,16 @@ public:
 	 */
 	void convertToDisplayFormat();
 
+	std::unique_ptr<OffscreenSurface> scaleTo(int newWidth, int newHeight);
+
+	/**
+	 * Scales this surface so as to preserve its aspect ratio. The returned
+	 * surface has a width of newWidth or a height of newHeight, according
+	 * to which limit is first encountered when adding pixels in one of the
+	 * dimensions.
+	 */
+	std::unique_ptr<OffscreenSurface> scaleToFit(int newWidth, int newHeight);
+
 private:
 	OffscreenSurface(SDL_Surface *raw) : Surface(raw) {}
 };

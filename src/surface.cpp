@@ -302,6 +302,143 @@ unique_ptr<OffscreenSurface> OffscreenSurface::loadImage(
 	return unique_ptr<OffscreenSurface>(new OffscreenSurface(raw));
 }
 
+/**
+ * Returns the value resulting from the linear interpolation of the values
+ * 'a', considered to be at 0.0, and 'b', considered to be at 1.0, given
+ * the specified weight.
+ */
+static inline uint32_t interpolate(uint32_t a, uint32_t b, float weight)
+{
+	return static_cast<uint32_t>(a * (1.0f - weight) + b * weight);
+}
+
+unique_ptr<OffscreenSurface> OffscreenSurface::scaleTo(int newWidth, int newHeight)
+{
+	if (newWidth == raw->w && newHeight == raw->h) {
+		return unique_ptr<OffscreenSurface>(new OffscreenSurface(*this));
+	}
+
+	SDL_PixelFormat *format = raw->format;
+	uint32_t const& rMask = format->Rmask;
+	uint32_t const& gMask = format->Gmask;
+	uint32_t const& bMask = format->Bmask;
+	uint32_t const& aMask = format->Amask;
+
+	SDL_Surface *result = SDL_CreateRGBSurface(SDL_SWSURFACE,
+		newWidth, newHeight, format->BitsPerPixel,
+		rMask, gMask, bMask, aMask
+	);
+
+	if (!result) {
+		return unique_ptr<OffscreenSurface>();
+	}
+	if (SDL_MUSTLOCK(result)) {
+		if (SDL_LockSurface(result) < 0) {
+			return unique_ptr<OffscreenSurface>();
+		}
+	}
+	if (SDL_MUSTLOCK(raw)) {
+		if (SDL_LockSurface(raw) < 0) {
+			return unique_ptr<OffscreenSurface>();
+		}
+	}
+
+	uint8_t *oLine = static_cast<uint8_t*>(result->pixels);
+
+	/* In the algorithm below, only 4 neighboring pixels in the input image
+	 * are ever considered for any given output pixel, even if scaling the
+	 * input image to below half of either of its dimensions. This allows
+	 * the algorithm's run time to be determined by the area of the output
+	 * image instead of the input, but the output image may be uglier.
+	 * o* variables refer to the output image; i* refer to the input image. */
+	for (int oY = 0; oY < newHeight; oY++) {
+		float iY = static_cast<float>(oY * (raw->h - 1)) / newHeight;
+		int iY_i = (int) iY; // Index of the top pixel in the input image
+		float iY_f = iY - iY_i; // Interpolant between input rows
+		uint8_t *iLine_top = static_cast<uint8_t*>(raw->pixels)
+				+ iY_i * raw->pitch;
+		uint8_t *iLine_bottom = static_cast<uint8_t*>(raw->pixels)
+				+ (iY_i + 1) * raw->pitch;
+
+		for (int oX = 0; oX < newWidth; oX++) {
+			float iX = static_cast<float>(oX * (raw->w - 1)) / newWidth;
+			int iX_i = (int) iX; // Index of the left pixel in the input row
+			float iX_f = iX - iX_i; // Interpolant between input pixels
+
+			/* Split the color components of each pixel, interpolate them
+			 * where they are, mask off the lower bits that result from the
+			 * interpolation, then write the result once the value of all
+			 * color components is known. For example, if Red is at bits
+			 * 31..24, it is interpolated in bits 31..24, but bits 23..0
+			 * may get some residual values, so those are masked off. */
+			if (format->BytesPerPixel == 2) {
+				uint16_t& iA = reinterpret_cast<uint16_t*>(iLine_top)[iX_i];
+				uint16_t& iB = reinterpret_cast<uint16_t*>(iLine_top)[iX_i + 1];
+				uint16_t& iC = reinterpret_cast<uint16_t*>(iLine_bottom)[iX_i];
+				uint16_t& iD = reinterpret_cast<uint16_t*>(iLine_bottom)[iX_i + 1];
+				uint32_t rA = iA & rMask, gA = iA & gMask, bA = iA & bMask;
+				uint32_t rB = iB & rMask, gB = iB & gMask, bB = iB & bMask;
+				uint32_t rC = iC & rMask, gC = iC & gMask, bC = iC & bMask;
+				uint32_t rD = iD & rMask, gD = iD & gMask, bD = iD & bMask;
+				reinterpret_cast<uint16_t*>(oLine)[oX] =
+					(interpolate(
+						interpolate(rA, rB, iX_f), interpolate(rC, rD, iX_f), iY_f
+					) & rMask) |
+					(interpolate(
+						interpolate(gA, gB, iX_f), interpolate(gC, gD, iX_f), iY_f
+					) & gMask) |
+					(interpolate(
+						interpolate(bA, bB, iX_f), interpolate(bC, bD, iX_f), iY_f
+					) & bMask);
+			} else if (format->BytesPerPixel == 4) {
+				uint32_t& iA = reinterpret_cast<uint32_t*>(iLine_top)[iX_i];
+				uint32_t& iB = reinterpret_cast<uint32_t*>(iLine_top)[iX_i + 1];
+				uint32_t& iC = reinterpret_cast<uint32_t*>(iLine_bottom)[iX_i];
+				uint32_t& iD = reinterpret_cast<uint32_t*>(iLine_bottom)[iX_i + 1];
+				uint32_t rA = iA & rMask, gA = iA & gMask, bA = iA & bMask, aA = iA & aMask;
+				uint32_t rB = iB & rMask, gB = iB & gMask, bB = iB & bMask, aB = iB & aMask;
+				uint32_t rC = iC & rMask, gC = iC & gMask, bC = iC & bMask, aC = iC & aMask;
+				uint32_t rD = iD & rMask, gD = iD & gMask, bD = iD & bMask, aD = iD & aMask;
+				reinterpret_cast<uint32_t*>(oLine)[oX] =
+					(interpolate(
+						interpolate(rA, rB, iX_f), interpolate(rC, rD, iX_f), iY_f
+					) & rMask) |
+					(interpolate(
+						interpolate(gA, gB, iX_f), interpolate(gC, gD, iX_f), iY_f
+					) & gMask) |
+					(interpolate(
+						interpolate(bA, bB, iX_f), interpolate(bC, bD, iX_f), iY_f
+					) & bMask) |
+					(interpolate(
+						interpolate(aA, aB, iX_f), interpolate(aC, aD, iX_f), iY_f
+					) & aMask);
+			} else {
+				assert(false);
+			}
+		}
+
+		oLine += result->pitch;
+	}
+
+	if (SDL_MUSTLOCK(raw)) {
+		SDL_UnlockSurface(raw);
+	}
+	if (SDL_MUSTLOCK(result)) {
+		SDL_UnlockSurface(result);
+	}
+
+	return unique_ptr<OffscreenSurface>(new OffscreenSurface(result));
+}
+
+unique_ptr<OffscreenSurface> OffscreenSurface::scaleToFit(int newWidth, int newHeight)
+{
+	float widthRatio = (float) newWidth / raw->w,
+	      heightRatio = (float) newHeight / raw->h;
+	return (widthRatio < heightRatio) ? scaleTo(newWidth, (int) (raw->h * widthRatio))
+	     : (heightRatio < widthRatio) ? scaleTo((int) (raw->w * heightRatio), newHeight)
+	     : scaleTo(newWidth, newHeight);
+}
+
 OffscreenSurface::OffscreenSurface(OffscreenSurface&& other)
 	: Surface(other.raw)
 {

@@ -49,6 +49,9 @@ void Selector::selectionChanged()
 			screenshot = OffscreenSurface::loadImage(
 					getPath() + ".previews/" + fileName, false);
 		}
+		if (screenshot) {
+			screenshot = screenshot->scaleToFit(gmenu2x->resX, gmenu2x->resY);
+		}
 		preview = std::move(screenshot);
 	}
 }
