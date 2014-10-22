@@ -1136,10 +1136,14 @@ int GMenu2X::drawButtonRight(Surface& s, const string &btn, const string &text, 
 	return x - w;
 }
 
-void GMenu2X::drawScrollBar(uint pageSize, uint totalSize, uint pagePos) {
+void GMenu2X::drawScrollBar(uint pageSize, uint totalSize, uint pagePos, int right) {
 	if (totalSize <= pageSize) {
 		// Everything fits on one screen, no scroll bar needed.
 		return;
+	}
+
+	if (right == -1) {
+		right = resX;
 	}
 
 	unsigned int top, height;
@@ -1147,14 +1151,14 @@ void GMenu2X::drawScrollBar(uint pageSize, uint totalSize, uint pagePos) {
 	top += 1;
 	height -= 2;
 
-	s->rectangle(resX - 8, top, 7, height, skinConfColors[COLOR_SELECTION_BG]);
+	s->rectangle(right - 8, top, 7, height, skinConfColors[COLOR_SELECTION_BG]);
 	top += 2;
 	height -= 4;
 
 	const uint barSize = max(height * pageSize / totalSize, 4u);
 	const uint barPos = (height - barSize) * pagePos / (totalSize - pageSize);
 
-	s->box(resX - 6, top + barPos, 3, barSize,
+	s->box(right - 6, top + barPos, 3, barSize,
 			skinConfColors[COLOR_SELECTION_BG]);
 }
 
