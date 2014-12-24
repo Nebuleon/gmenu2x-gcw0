@@ -225,14 +225,46 @@ LinkApp::LinkApp(GMenu2X *gmenu2x_, string const& linkfile, bool deletable)
 
 	string line;
 	ifstream infile (file.c_str(), ios_base::in);
-	while (getline(infile, line, '\n')) {
-		line = trim(line);
-		if (line.empty()) continue;
-		if (line[0]=='#') continue;
-
-		string::size_type position = line.find("=");
-		string name = trim(line.substr(0,position));
-		string value = trim(line.substr(position+1));
+	while (true) {
+		int c = infile.get();
+		string name, value;
+		/* Skip over whitespace, if any, including empty lines, before reading
+		 * this setting. */
+		while (c == ' ' || c == '\t' || c == '\r' || c == '\n') {
+			c = infile.get();
+		}
+		if (c == '#') {
+			/* This line is a comment. Ignore it all. */
+			while (c != '\n' && c != EOF) {
+				c = infile.get();
+			}
+			continue;
+		} else if (c == EOF) {
+			/* We're done reading the entire file. */
+			break;
+		} else {
+			/* Read the setting name. a-z and 0-9 are allowed in names. */
+			while ((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9')) {
+				name.push_back(c);
+				c = infile.get();
+			}
+			/* Skip whitespace, if any, before '='. */
+			while (c == ' ' || c == '\t') {
+				c = infile.get();
+			}
+			if (c != '=') {
+				if (c == '\n' || c == EOF) {
+					WARNING("Malformed application setting file '%s': Setting name '%s' is not followed by =value\n", file.c_str(), name.c_str());
+				} else {
+					WARNING("Malformed application setting file '%s': Stopped reading a setting name at an invalid character\n", file.c_str());
+				}
+				break;
+			}
+			/* Read the setting value. */
+			getline(infile, value, '\n');
+			value = trim(value);
+			printf("Read new key-value pair: key=%s, value=%s\n", name.c_str(), value.c_str());
+		}
 
 		if (name == "clock") {
 			setClock( atoi(value.c_str()) );
